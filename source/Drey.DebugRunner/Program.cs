@@ -1,17 +1,27 @@
 ﻿using System;
+using Topshelf;
 
 namespace Drey.DebugRunner
 {
     class Program
     {
-        static void Main(string[] args)
+        static int Main(string[] args)
         {
-            using (var horde = new Horde())
+            return (int)HostFactory.Run(f =>
             {
-                horde.Startup();
-                Console.WriteLine("Hoarde is online.");
-                Console.ReadLine();
-            }
+                f.SetInstanceName("DebugRunner");
+                f.SetDisplayName("Horde Debug Runner");
+                f.SetServiceName("DebugRunner");
+
+                f.Service<HordeServiceControl>();
+
+                f.EnableShutdown();
+
+                f.EnableServiceRecovery(rc =>
+                {
+                    rc.RestartService(1);
+                });
+            });
         }
     }
 }

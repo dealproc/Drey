@@ -38,11 +38,14 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="Topshelf">
+      <HintPath>..\..\packages\Topshelf.3.2.0\lib\net40-full\Topshelf.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppConfigApplicationSettings.cs" />
     <Compile Include="AppConfigConnectionStrings.cs" />
-    <Compile Include="Horde.cs" />
+    <Compile Include="HordeServiceControl.cs" />
     <Compile Include="ApplicationHostNutConfiguration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -51,6 +54,9 @@
       <Project>{c47ec8a2-f67d-46a7-80de-8c3e48d0b80b}</Project>
       <Name>Drey.Nut</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

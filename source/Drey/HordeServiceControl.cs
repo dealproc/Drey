@@ -1,30 +1,44 @@
 ﻿using Drey.Nut;
 using System;
-using System.IO;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
+using Topshelf;
 
 namespace Drey
 {
-    public class Horde : IDisposable
+    public class HordeServiceControl : ServiceControl
     {
         INutConfiguration _nutConfiguration = new ApplicationHostNutConfiguration();
         List<IShell> _shells = new List<IShell>();
         string _dreyConfigurationPackagePath;
 
-        public void Startup()
+        public bool Start(HostControl hostControl)
         {
             DiscoverConfigurationPackage();
 
             var shell = ShellFactory.Create(_dreyConfigurationPackagePath, _nutConfiguration);
             shell.ShellCallback += shell_ShellCallback;
             _shells.Add(shell);
+
+            return true;
+        }
+
+        public bool Stop(HostControl hostControl)
+        {
+            foreach (var shell in _shells)
+            {
+                shell.ShellCallback -= shell_ShellCallback;
+                shell.Dispose();
+            }
+            
+            return true;
         }
 
         void shell_ShellCallback(object sender, ShellEventArgs e)
         {
-            
+
         }
 
         private void DiscoverConfigurationPackage()
@@ -51,15 +65,6 @@ namespace Drey
             var latestVersion = versionFolders.OrderByDescending(x => x).First();
 
             _dreyConfigurationPackagePath = Path.Combine(configurationPath, latestVersion.ToString());
-        }
-
-        public void Dispose()
-        {
-            foreach (var shell in _shells)
-            {
-                shell.ShellCallback -= shell_ShellCallback;
-                shell.Dispose();
-            }
         }
     }
 }
