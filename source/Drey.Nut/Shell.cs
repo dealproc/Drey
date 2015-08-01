@@ -5,7 +5,6 @@ using System.Security.Policy;
 
 namespace Drey.Nut
 {
-    [Serializable]
     public class Shell : MarshalByRefObject, Drey.Nut.IShell
     {
         AppDomain _hostedApplication;
