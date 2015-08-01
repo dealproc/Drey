@@ -11,11 +11,11 @@ namespace Drey.Nut
 {
     public static class ShellFactory
     {
-        public static IShell Create(string assemblyPath)
+        public static IShell Create(string assemblyPath, INutConfiguration config)
         {
             var startupOptions = DiscoverEntryDLL(assemblyPath);
 
-            return startupOptions == null ? null : new Shell(startupOptions);
+            return startupOptions == null ? null : new Shell(startupOptions, config);
         }
 
         private static ShellStartOptions DiscoverEntryDLL(string assemblyPath)

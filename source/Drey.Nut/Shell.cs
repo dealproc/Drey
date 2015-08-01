@@ -11,7 +11,7 @@ namespace Drey.Nut
         IDisposable _Startup;
         public event EventHandler<ShellEventArgs> ShellCallback;
 
-        public Shell(ShellStartOptions options)
+        public Shell(ShellStartOptions options, Drey.Nut.INutConfiguration config)
         {
             var domainSetup = new AppDomainSetup();
             domainSetup.ApplicationBase = Path.GetDirectoryName(options.DllPath);
@@ -22,7 +22,14 @@ namespace Drey.Nut
                         
             var startup = (StartupProxy)_hostedApplication.CreateInstanceFromAndUnwrap(typeof(StartupProxy).Assembly.Location, typeof(StartupProxy).FullName);
             startup.Instantiate(options.DllPath, options.StartupClass);
-            startup.Invoke("Configuration");
+            if (options.ProvideConfigurationOptions)
+            {
+                startup.Invoke("Configuration", config);
+            }
+            else
+            {
+                startup.Invoke("Configuration");
+            }
 
             _Startup = startup as IDisposable;
         }

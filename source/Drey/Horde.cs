@@ -17,7 +17,7 @@ namespace Drey
         {
             DiscoverConfigurationPackage();
 
-            var shell = ShellFactory.Create(_dreyConfigurationPackagePath);
+            var shell = ShellFactory.Create(_dreyConfigurationPackagePath, _nutConfiguration);
             shell.ShellCallback += shell_ShellCallback;
             _shells.Add(shell);
         }

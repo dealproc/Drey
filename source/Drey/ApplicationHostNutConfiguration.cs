@@ -3,7 +3,7 @@ using System;
 
 namespace Drey
 {
-    public class ApplicationHostNutConfiguration : INutConfiguration
+    public class ApplicationHostNutConfiguration : MarshalByRefObject, INutConfiguration
     {
         IApplicationSettings _applicationSettings;
         IConnectionStrings _connectionStrings;

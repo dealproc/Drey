@@ -1,9 +1,10 @@
 ﻿using Drey.Nut;
+using System;
 using System.Configuration;
 
 namespace Drey
 {
-    public class AppConfigApplicationSettings : IApplicationSettings
+    public class AppConfigApplicationSettings : MarshalByRefObject, IApplicationSettings
     {
         public string this[string key]
         {

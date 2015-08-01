@@ -8,9 +8,9 @@ namespace Drey.Configuration
     {
         IDisposable _WebApp;
 
-        public void Configuration()
+        public void Configuration(INutConfiguration configurationManager)
         {
-            var startupUri = "http://localhost:8080/";
+            var startupUri = string.Format("http://localhost:{0}/", configurationManager.ApplicationSettings["drey.configuration.consoleport"]);
             var host = new NancyHost(new Uri(startupUri));
             host.Start();
 
