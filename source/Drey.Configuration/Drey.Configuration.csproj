@@ -40,6 +40,18 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Startup.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Drey.Nut\Drey.Nut.csproj">
+      <Project>{c47ec8a2-f67d-46a7-80de-8c3e48d0b80b}</Project>
+      <Name>Drey.Nut</Name>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\Drey\Drey.csproj">
+      <Project>{6403704c-14d9-4069-ad3d-8eeef95f499c}</Project>
+      <Name>Drey</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

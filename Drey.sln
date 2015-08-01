@@ -11,6 +11,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Drey.Configuration", "sourc
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Drey.Server", "source\Drey.Server\Drey.Server.csproj", "{2E3619DB-2B50-46E7-A8B2-22B89FC6E1BD}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{0769F612-7ECF-40CA-9E9C-FD5E3C6B1760}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Drey.DebugRunner", "source\Drey.DebugRunner\Drey.DebugRunner.csproj", "{4EAC3258-A641-48F7-9E80-0C99D6DD2729}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +37,10 @@ Global
 		{2E3619DB-2B50-46E7-A8B2-22B89FC6E1BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2E3619DB-2B50-46E7-A8B2-22B89FC6E1BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2E3619DB-2B50-46E7-A8B2-22B89FC6E1BD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4EAC3258-A641-48F7-9E80-0C99D6DD2729}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4EAC3258-A641-48F7-9E80-0C99D6DD2729}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4EAC3258-A641-48F7-9E80-0C99D6DD2729}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4EAC3258-A641-48F7-9E80-0C99D6DD2729}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

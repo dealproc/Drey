@@ -1,16 +1,15 @@
 ﻿using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using Drey.Nut;
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Drey.Configuration")]
+[assembly: AssemblyTitle("Drey.DebugRunner")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Drey.Configuration")]
+[assembly: AssemblyProduct("Drey.DebugRunner")]
 [assembly: AssemblyCopyright("Copyright ©  2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -21,7 +20,7 @@ using Drey.Nut;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("08556526-3543-41fe-9b6a-529ff2985e7c")]
+[assembly: Guid("854ebd9f-4132-4508-baf3-9f7804a153bb")]
 
 // Version information for an assembly consists of the following four values:
 //
@@ -35,4 +34,3 @@ using Drey.Nut;
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
-[assembly: Cracking(typeof(Drey.Configuration.Startup), false, "Drey Configuration")]

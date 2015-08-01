@@ -39,8 +39,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
+    <Compile Include="CrackingAttribute.cs" />
+    <Compile Include="IApplicationSettings.cs" />
+    <Compile Include="IConnectionStrings.cs" />
+    <Compile Include="INutConfiguration.cs" />
+    <Compile Include="IShell.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Proxy.cs" />
+    <Compile Include="Shell.cs" />
+    <Compile Include="ShellEventArgs.cs" />
+    <Compile Include="ShellFactory.cs" />
+    <Compile Include="ShellStartOptions.cs" />
+    <Compile Include="StartupProxy.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
