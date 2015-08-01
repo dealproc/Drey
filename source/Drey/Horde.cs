@@ -30,10 +30,20 @@ namespace Drey
         private void DiscoverConfigurationPackage()
         {
             // discover the main horde folder
-#if DEBUG
-            _dreyConfigurationPackagePath  = _nutConfiguration.HordeBaseDirectory;
-#else
             var configurationPath = Path.Combine(_nutConfiguration.HordeBaseDirectory + "drey.configuration");
+
+            if (configurationPath.StartsWith("~/"))
+            {
+                var dir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase.Remove(0, 8)) + "\\";
+                configurationPath = configurationPath.Replace("~/", dir);
+            }
+
+            if (!configurationPath.EndsWith("\\"))
+            {
+                configurationPath += "\\";
+            }
+
+            configurationPath = configurationPath.Replace("/", "\\");
 
             // discover the latest version
             var versionFolders = Directory.GetDirectories(configurationPath).Select(dir => (new DirectoryInfo(dir)).Name);
@@ -41,7 +51,6 @@ namespace Drey
             var latestVersion = versionFolders.OrderByDescending(x => x).First();
 
             _dreyConfigurationPackagePath = Path.Combine(configurationPath, latestVersion.ToString());
-#endif
         }
 
         public void Dispose()
