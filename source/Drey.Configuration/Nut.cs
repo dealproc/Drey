@@ -21,7 +21,7 @@ namespace Drey.Configuration
 
         public void Dispose()
         {
-            throw new NotImplementedException();
+            _WebApp.Dispose();
         }
     }
 }

@@ -6,7 +6,7 @@ namespace Drey.Configuration.Modules
     {
         public HomeModule()
         {
-            Get["/"] = _ => { return "Hello World!"; };
+            Get["/"] = _ => Negotiate.WithView("index").WithModel(new { });
         }
     }
 }
