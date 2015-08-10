@@ -31,6 +31,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Drey.Configuration.DomainMo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Samples.AppOne", "source\Samples.AppOne\Samples.AppOne.csproj", "{0F6D533D-5CA0-4DCD-A83C-D2303AF96698}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Samples.AppTwo", "source\Samples.AppTwo\Samples.AppTwo.csproj", "{E7B67ADF-F02E-4FF9-A1D1-DE25844B906B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -65,6 +67,10 @@ Global
 		{0F6D533D-5CA0-4DCD-A83C-D2303AF96698}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0F6D533D-5CA0-4DCD-A83C-D2303AF96698}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0F6D533D-5CA0-4DCD-A83C-D2303AF96698}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E7B67ADF-F02E-4FF9-A1D1-DE25844B906B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E7B67ADF-F02E-4FF9-A1D1-DE25844B906B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E7B67ADF-F02E-4FF9-A1D1-DE25844B906B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E7B67ADF-F02E-4FF9-A1D1-DE25844B906B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -72,5 +78,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{4EAC3258-A641-48F7-9E80-0C99D6DD2729} = {F478FEE7-BD56-4D53-BA03-D8372C84EA09}
 		{0F6D533D-5CA0-4DCD-A83C-D2303AF96698} = {0769F612-7ECF-40CA-9E9C-FD5E3C6B1760}
+		{E7B67ADF-F02E-4FF9-A1D1-DE25844B906B} = {0769F612-7ECF-40CA-9E9C-FD5E3C6B1760}
 	EndGlobalSection
 EndGlobal
