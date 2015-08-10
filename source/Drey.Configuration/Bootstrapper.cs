@@ -1,5 +1,6 @@
 ﻿using Nancy;
 using Nancy.Bootstrapper;
+using Nancy.Embedded.Conventions;
 using Nancy.ViewEngines;
 using System.Reflection;
 
@@ -24,10 +25,13 @@ namespace Drey.Configuration
             x.ViewLocationProvider = typeof(ResourceViewLocationProvider);
         }
 
-        protected override void ConfigureConventions(Nancy.Conventions.NancyConventions nancyConventions)
+        protected override void ConfigureConventions(Nancy.Conventions.NancyConventions conventions)
         {
             ResourceViewLocationProvider.RootNamespaces.Add(ThisAssembly, this.GetType().Namespace + ".Views");
-            base.ConfigureConventions(nancyConventions);
+            base.ConfigureConventions(conventions);
+            conventions.StaticContentsConventions.Add(EmbeddedStaticContentConventionBuilder.AddDirectory("/Content", ThisAssembly));
+            conventions.StaticContentsConventions.Add(EmbeddedStaticContentConventionBuilder.AddDirectory("/fonts", ThisAssembly));
+            conventions.StaticContentsConventions.Add(EmbeddedStaticContentConventionBuilder.AddDirectory("/Scripts", ThisAssembly));
         }
     }
 }

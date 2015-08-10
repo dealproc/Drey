@@ -5,8 +5,6 @@ VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Drey", "source\Drey\Drey.csproj", "{6403704C-14D9-4069-AD3D-8EEEF95F499C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Drey.Nut", "source\Drey.Nut\Drey.Nut.csproj", "{C47EC8A2-F67D-46A7-80DE-8C3E48D0B80B}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Drey.Configuration", "source\Drey.Configuration\Drey.Configuration.csproj", "{6E0E54A6-C065-491D-BEDE-E841D05D4E25}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Drey.Server", "source\Drey.Server\Drey.Server.csproj", "{2E3619DB-2B50-46E7-A8B2-22B89FC6E1BD}"
@@ -15,11 +13,21 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{0769
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Drey.DebugRunner", "source\Drey.DebugRunner\Drey.DebugRunner.csproj", "{4EAC3258-A641-48F7-9E80-0C99D6DD2729}"
 	ProjectSection(ProjectDependencies) = postProject
-		{C47EC8A2-F67D-46A7-80DE-8C3E48D0B80B} = {C47EC8A2-F67D-46A7-80DE-8C3E48D0B80B}
 		{6E0E54A6-C065-491D-BEDE-E841D05D4E25} = {6E0E54A6-C065-491D-BEDE-E841D05D4E25}
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Executors", "Executors", "{F478FEE7-BD56-4D53-BA03-D8372C84EA09}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Drey.Client", "source\Drey.Client\Drey.Client.csproj", "{D2315531-5AD8-41CB-A835-C4781DDC06B2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{ACA1AB35-DDED-42AE-86C7-9A08DE06E16A}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\NuGet.Config = .nuget\NuGet.Config
+		.nuget\NuGet.exe = .nuget\NuGet.exe
+		.nuget\NuGet.targets = .nuget\NuGet.targets
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Drey.Configuration.DomainModel", "source\Drey.Configuration.DomainModel\Drey.Configuration.DomainModel.csproj", "{09A35155-2F39-4ECE-9813-7E8AA8DF36E8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -31,10 +39,6 @@ Global
 		{6403704C-14D9-4069-AD3D-8EEEF95F499C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6403704C-14D9-4069-AD3D-8EEEF95F499C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6403704C-14D9-4069-AD3D-8EEEF95F499C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C47EC8A2-F67D-46A7-80DE-8C3E48D0B80B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C47EC8A2-F67D-46A7-80DE-8C3E48D0B80B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C47EC8A2-F67D-46A7-80DE-8C3E48D0B80B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C47EC8A2-F67D-46A7-80DE-8C3E48D0B80B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6E0E54A6-C065-491D-BEDE-E841D05D4E25}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6E0E54A6-C065-491D-BEDE-E841D05D4E25}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6E0E54A6-C065-491D-BEDE-E841D05D4E25}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -47,6 +51,14 @@ Global
 		{4EAC3258-A641-48F7-9E80-0C99D6DD2729}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4EAC3258-A641-48F7-9E80-0C99D6DD2729}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4EAC3258-A641-48F7-9E80-0C99D6DD2729}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D2315531-5AD8-41CB-A835-C4781DDC06B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D2315531-5AD8-41CB-A835-C4781DDC06B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D2315531-5AD8-41CB-A835-C4781DDC06B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D2315531-5AD8-41CB-A835-C4781DDC06B2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{09A35155-2F39-4ECE-9813-7E8AA8DF36E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{09A35155-2F39-4ECE-9813-7E8AA8DF36E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{09A35155-2F39-4ECE-9813-7E8AA8DF36E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{09A35155-2F39-4ECE-9813-7E8AA8DF36E8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,9 +1,11 @@
 ﻿using Drey.Nut;
+
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+
 using Topshelf;
 
 namespace Drey
@@ -44,7 +46,7 @@ namespace Drey
         private void DiscoverConfigurationPackage()
         {
             // discover the main horde folder
-            var configurationPath = Path.Combine(_nutConfiguration.HordeBaseDirectory + "drey.configuration");
+            var configurationPath = Path.Combine(_nutConfiguration.HordeBaseDirectory, "drey.configuration");
 
             if (configurationPath.StartsWith("~/"))
             {
