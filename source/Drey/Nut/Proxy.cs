@@ -14,6 +14,7 @@ namespace Drey.Nut
             var hasAttribute = Attribute.GetCustomAttributes(asm).Any(attr => attr.GetType().FullName == typeof(CrackingAttribute).FullName);
             return hasAttribute;
         }
+        
         public ShellStartOptions BuildOptions(string path)
         {
             var asm = Assembly.LoadFrom(path);
@@ -34,6 +35,7 @@ namespace Drey.Nut
                 StartupClass = ((Type)startupClassProperty.GetValue(attrib)).FullName
             };
         }
+
         public Assembly Load(string fileNameAndPath)
         {
             var asm = Assembly.LoadFile(fileNameAndPath);

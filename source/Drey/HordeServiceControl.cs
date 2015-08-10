@@ -6,60 +6,58 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 
-using Topshelf;
-
 namespace Drey
 {
-    public class HordeServiceControl : ServiceControl
+    public class HordeServiceControl
     {
         INutConfiguration _nutConfiguration = new ApplicationHostNutConfiguration();
         List<IShell> _shells = new List<IShell>();
         string _dreyConfigurationPackagePath;
 
-        public bool Start(HostControl hostControl)
+        public bool Start()
         {
             DiscoverConfigurationPackage();
 
             var shell = ShellFactory.Create(_dreyConfigurationPackagePath, _nutConfiguration);
-            shell.ShellCallback += shell_ShellCallback;
             _shells.Add(shell);
+
+            foreach (var package in DiscoverPackages())
+            {
+                _shells.Add(ShellFactory.Create(package, _nutConfiguration));
+            }
 
             return true;
         }
 
-        public bool Stop(HostControl hostControl)
+        public bool Stop()
         {
             foreach (var shell in _shells)
             {
-                shell.ShellCallback -= shell_ShellCallback;
                 shell.Dispose();
             }
-            
+
             return true;
         }
 
-        void shell_ShellCallback(object sender, ShellEventArgs e)
+        private IEnumerable<string> DiscoverPackages()
         {
+            var hoarde = Utilities.PathUtilities.ResolvePath(_nutConfiguration.HordeBaseDirectory);
+            return Directory.GetDirectories(hoarde)
+                .Where(dir => !dir.EndsWith(DreyConstants.ConfigurationPackageName))
+                .Select(pkgdir =>
+                {
+                    var versionFolders = Directory.GetDirectories(pkgdir).Select(dir => (new DirectoryInfo(dir)).Name);
+                    var versions = versionFolders.Select(ver => new Version(ver));
+                    var latestVersion = versionFolders.OrderByDescending(x => x).First();
 
+                    return Path.Combine(pkgdir, latestVersion.ToString());
+                });
         }
 
         private void DiscoverConfigurationPackage()
         {
             // discover the main horde folder
-            var configurationPath = Path.Combine(_nutConfiguration.HordeBaseDirectory, "drey.configuration");
-
-            if (configurationPath.StartsWith("~/"))
-            {
-                var dir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase.Remove(0, 8)) + "\\";
-                configurationPath = configurationPath.Replace("~/", dir);
-            }
-
-            if (!configurationPath.EndsWith("\\"))
-            {
-                configurationPath += "\\";
-            }
-
-            configurationPath = configurationPath.Replace("/", "\\");
+            var configurationPath = Utilities.PathUtilities.ResolvePath(Path.Combine(_nutConfiguration.HordeBaseDirectory, DreyConstants.ConfigurationPackageName));
 
             // discover the latest version
             var versionFolders = Directory.GetDirectories(configurationPath).Select(dir => (new DirectoryInfo(dir)).Name);

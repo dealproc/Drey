@@ -13,7 +13,7 @@ namespace Drey.DebugRunner
                 f.SetDisplayName("Horde Debug Runner");
                 f.SetServiceName("DebugRunner");
 
-                f.Service<HordeServiceControl>();
+                f.Service<HordeServiceWrapper>();
 
                 f.EnableShutdown();
 
@@ -22,6 +22,25 @@ namespace Drey.DebugRunner
                     rc.RestartService(1);
                 });
             });
+        }
+    }
+
+    class HordeServiceWrapper : ServiceControl
+    {
+        HordeServiceControl _Control;
+
+        public HordeServiceWrapper()
+        {
+            _Control = new HordeServiceControl();
+        }
+        public bool Start(HostControl hostControl)
+        {
+            return _Control.Start();
+        }
+
+        public bool Stop(HostControl hostControl)
+        {
+            return _Control.Stop();
         }
     }
 }

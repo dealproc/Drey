@@ -20,8 +20,6 @@ namespace Drey.Nut
 
         private static ShellStartOptions DiscoverEntryDLL(string assemblyPath)
         {
-            ShellStartOptions startupDllOptions = null;
-
             var path = assemblyPath;
             if (path.StartsWith("~/"))
             {
