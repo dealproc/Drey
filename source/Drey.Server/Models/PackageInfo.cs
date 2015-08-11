@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Drey.Server.Models
 {
-    public class NutInfoPmo
+    public class PackageInfo
     {
         public string PackageId { get; set; }
         public string Name { get; set; }
