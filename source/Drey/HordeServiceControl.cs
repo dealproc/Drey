@@ -4,11 +4,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 
 namespace Drey
 {
-    public class HordeServiceControl
+    public class HordeServiceControl : IHandle<PackageEvents.Load>, IHandle<PackageEvents.Shutdown>
     {
         INutConfiguration _nutConfiguration = new ApplicationHostNutConfiguration();
         List<IShell> _shells = new List<IShell>();
@@ -16,15 +15,12 @@ namespace Drey
 
         public bool Start()
         {
+            _nutConfiguration.EventBus.Subscribe(this);
+
             DiscoverConfigurationPackage();
 
             var shell = ShellFactory.Create(_dreyConfigurationPackagePath, _nutConfiguration);
             _shells.Add(shell);
-
-            foreach (var package in DiscoverPackages())
-            {
-                _shells.Add(ShellFactory.Create(package, _nutConfiguration));
-            }
 
             return true;
         }
@@ -36,22 +32,9 @@ namespace Drey
                 shell.Dispose();
             }
 
+            _nutConfiguration.EventBus.Unsubscribe(this);
+
             return true;
-        }
-
-        private IEnumerable<string> DiscoverPackages()
-        {
-            var hoarde = Utilities.PathUtilities.ResolvePath(_nutConfiguration.HordeBaseDirectory);
-            return Directory.GetDirectories(hoarde)
-                .Where(dir => !dir.EndsWith(DreyConstants.ConfigurationPackageName))
-                .Select(pkgdir =>
-                {
-                    var versionFolders = Directory.GetDirectories(pkgdir).Select(dir => (new DirectoryInfo(dir)).Name);
-                    var versions = versionFolders.Select(ver => new Version(ver));
-                    var latestVersion = versionFolders.OrderByDescending(x => x).First();
-
-                    return Path.Combine(pkgdir, latestVersion.ToString());
-                });
         }
 
         private void DiscoverConfigurationPackage()
@@ -65,6 +48,16 @@ namespace Drey
             var latestVersion = versionFolders.OrderByDescending(x => x).First();
 
             _dreyConfigurationPackagePath = Path.Combine(configurationPath, latestVersion.ToString());
+        }
+
+        public void Handle(PackageEvents.Load message)
+        {
+            Console.WriteLine("Load called.");
+        }
+
+        public void Handle(PackageEvents.Shutdown message)
+        {
+            Console.WriteLine("Shutdown called.");
         }
     }
 }

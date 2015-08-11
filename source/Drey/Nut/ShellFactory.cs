@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Reflection;
 using System.Security.Policy;
 
@@ -43,7 +39,6 @@ namespace Drey.Nut
 
             try
             {
-                Console.WriteLine(domain.BaseDirectory);
                 foreach (var file in Directory.GetFiles(path, "*.dll"))
                 {
                     var type = typeof(Proxy);

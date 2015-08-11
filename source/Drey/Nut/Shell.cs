@@ -10,12 +10,14 @@ namespace Drey.Nut
         AppDomain _hostedApplication;
         IDisposable _Startup;
         public event EventHandler<ShellEventArgs> ShellCallback;
+        private ShellStartOptions startupOptions;
+        private INutConfiguration config;
+        private IPackageEventBus eventBus;
 
         public Shell(ShellStartOptions options, Drey.Nut.INutConfiguration config)
         {
             var domainSetup = new AppDomainSetup();
             domainSetup.ApplicationBase = Path.GetDirectoryName(options.DllPath);
-            //domainSetup.PrivateBinPath = Path.GetDirectoryName(options.DllPath);
             Evidence adEvidence = AppDomain.CurrentDomain.Evidence;
 
             _hostedApplication = AppDomain.CreateDomain(options.ApplicationDomainName, adEvidence, domainSetup);
