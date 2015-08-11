@@ -1,4 +1,5 @@
-﻿namespace Drey
+﻿using System.Threading.Tasks;
+namespace Drey
 {
     /// <summary>
     /// Locator interface for finding IHandle{T} instances.

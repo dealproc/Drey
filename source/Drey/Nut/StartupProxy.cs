@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using System.Threading.Tasks;
 
 namespace Drey.Nut
 {
@@ -27,6 +28,18 @@ namespace Drey.Nut
             {
                 (_object as IDisposable).Dispose();
             }
+        }
+
+        public bool Shutdown()
+        {
+            var shutdownMethod = _type.GetMethod("Shutdown");
+
+            if (shutdownMethod != null)
+            {
+                return (bool)shutdownMethod.Invoke(_object, null);
+            }
+
+            return true;
         }
     }
 }

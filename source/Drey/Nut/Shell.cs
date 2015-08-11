@@ -1,39 +1,47 @@
 ﻿using System;
 using System.IO;
-using System.Reflection;
 using System.Security.Policy;
+using System.Threading.Tasks;
 
 namespace Drey.Nut
 {
     public class Shell : MarshalByRefObject, Drey.Nut.IShell
     {
         AppDomain _hostedApplication;
-        IDisposable _Startup;
-        public event EventHandler<ShellEventArgs> ShellCallback;
-        private ShellStartOptions startupOptions;
-        private INutConfiguration config;
-        private IPackageEventBus eventBus;
+        StartupProxy _Startup;
+        string _instanceId = string.Empty;
+
+        public string InstanceId
+        {
+            get { return _instanceId; }
+        }
 
         public Shell(ShellStartOptions options, Drey.Nut.INutConfiguration config)
         {
+            _instanceId = Guid.NewGuid().ToString();
+
             var domainSetup = new AppDomainSetup();
             domainSetup.ApplicationBase = Path.GetDirectoryName(options.DllPath);
             Evidence adEvidence = AppDomain.CurrentDomain.Evidence;
 
             _hostedApplication = AppDomain.CreateDomain(options.ApplicationDomainName, adEvidence, domainSetup);
-                        
-            var startup = (StartupProxy)_hostedApplication.CreateInstanceFromAndUnwrap(typeof(StartupProxy).Assembly.Location, typeof(StartupProxy).FullName);
-            startup.Instantiate(options.DllPath, options.StartupClass);
+
+            _Startup = (StartupProxy)_hostedApplication.CreateInstanceFromAndUnwrap(typeof(StartupProxy).Assembly.Location, typeof(StartupProxy).FullName);
+            _Startup.Instantiate(options.DllPath, options.StartupClass);
             if (options.ProvideConfigurationOptions)
             {
-                startup.Invoke("Configuration", config);
+                _Startup.Invoke("Configuration", config);
             }
             else
             {
-                startup.Invoke("Configuration");
+                _Startup.Invoke("Configuration");
             }
+        }
 
-            _Startup = startup as IDisposable;
+        public Task Shutdown()
+        {
+            return Task.Factory.StartNew(() => _Startup.Shutdown());
+            //return CrossDomainTaskMarshaler.Marshal<bool>(_hostedApplication, () => Task.Factory.StartNew(() => _Startup.Shutdown()));
         }
 
         public void Dispose()
@@ -43,6 +51,7 @@ namespace Drey.Nut
                 if (_Startup != null)
                 {
                     _Startup.Dispose();
+                    _Startup = null;
                 }
                 AppDomain.Unload(_hostedApplication);
             }

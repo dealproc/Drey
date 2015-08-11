@@ -41,9 +41,9 @@ namespace Drey.Nut
             {
                 foreach (var file in Directory.GetFiles(path, "*.dll"))
                 {
-                    var type = typeof(Proxy);
+                    var type = typeof(DiscoverStartupDllProxy);
                     var thisAssemblyPath = Path.Combine(path, type.Assembly.GetName().CodeBase.Remove(0, 8));
-                    var loader = (Proxy)domain.CreateInstanceFromAndUnwrap(thisAssemblyPath, type.FullName);
+                    var loader = (DiscoverStartupDllProxy)domain.CreateInstanceFromAndUnwrap(thisAssemblyPath, type.FullName);
 
                     if (loader.IsStartupDll(file))
                     {

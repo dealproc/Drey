@@ -3,8 +3,8 @@
 namespace Drey.PackageEvents
 {
     [Serializable]
-    public class Load
+    public class Disposed
     {
-        public string PackageId { get; set; }
+        public string InstanceId { get; set; }
     }
 }

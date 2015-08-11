@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace Drey.Nut
 {
-    class Proxy : MarshalByRefObject
+    class DiscoverStartupDllProxy : MarshalByRefObject
     {
         public bool IsStartupDll(string path)
         {

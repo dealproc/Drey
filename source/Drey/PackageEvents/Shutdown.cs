@@ -9,5 +9,6 @@ namespace Drey.PackageEvents
     [Serializable]
     public class Shutdown
     {
+        public string InstanceId { get; set; }
     }
 }

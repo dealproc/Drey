@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Threading.Tasks;
 namespace Drey.Nut
 {
     public interface IShell : IDisposable
     {
-        event EventHandler<ShellEventArgs> ShellCallback;
+        string InstanceId { get; }
+        Task Shutdown();
     }
 }
