@@ -35,6 +35,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
@@ -60,6 +64,7 @@
     <Compile Include="Commands\BaseCommand.cs" />
     <Compile Include="Commands\DeleteCommand.cs" />
     <Compile Include="Commands\ICommand.cs" />
+    <Compile Include="Commands\ListPackagesCommand.cs" />
     <Compile Include="Commands\PackageCommand.cs" />
     <Compile Include="Commands\PushCommand.cs" />
     <Compile Include="Mono.Options\Options.cs" />

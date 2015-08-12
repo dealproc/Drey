@@ -9,10 +9,11 @@ namespace Drey.Server.Modules.well_known
     {
         readonly IPackageService _packageService;
 
-        public ReleasesModule(IPackageService packageService)
-            : base("/.well-known/releases")
+        public ReleasesModule(IPackageService packageService) : base("/.well-known/releases")
         {
             _packageService = packageService;
+
+            Get["/"] = _ => _packageService.ListPackages();
 
             Get["/{packageId}"] = GetReleases;
             Post["/{packageId}"] = StoreRelease;

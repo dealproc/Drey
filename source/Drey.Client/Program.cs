@@ -8,7 +8,13 @@ namespace Drey.Client
 {
     class Program
     {
-        static Commands.ICommand[] _commands = { (Commands.ICommand)new Commands.DeleteCommand(), (Commands.ICommand)new Commands.PushCommand(), (Commands.ICommand)new Commands.PackageCommand() };
+        static Commands.ICommand[] _commands = 
+        { 
+            (Commands.ICommand)new Commands.DeleteCommand(), 
+            (Commands.ICommand)new Commands.PushCommand(), 
+            (Commands.ICommand)new Commands.PackageCommand(),
+            (Commands.ICommand)new Commands.ListPackagesCommand()
+        };
         static int Main(string[] args)
         {
             if (args.Length >= 1)

@@ -12,7 +12,7 @@ namespace Drey.Server.Tests.Services
         List<Models.Package> _packages;
         public InMemoryPackageService()
         {
-            _packages = new List<Models.Package>
+            _packages = new List<Models.Package>()
             {
                 new Models.Package
                 { 
@@ -23,6 +23,11 @@ namespace Drey.Server.Tests.Services
                     }
                 }
             };
+        }
+
+        public IEnumerable<Models.Package> ListPackages()
+        {
+            return _packages;
         }
 
         public IEnumerable<Models.Release> GetReleases(string packageId)

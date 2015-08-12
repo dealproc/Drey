@@ -66,6 +66,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="NancyTestingBase.cs" />
+    <Compile Include="PackagesModuleTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReleasesModuleTests.cs" />
   </ItemGroup>
