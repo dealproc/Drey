@@ -1,4 +1,5 @@
-﻿using Nancy.Hosting.Self;
+﻿using System.IO;
+using Nancy.Hosting.Self;
 using System;
 
 namespace Samples.Server
@@ -7,6 +8,11 @@ namespace Samples.Server
     {
         static void Main(string[] args)
         {
+            if (Directory.Exists(@"c:\packages_test"))
+            {
+                Directory.Delete(@"c:\packages_test", true);
+            }
+
             try
             {
                 using (var server = new NancyHost(new Uri("http://localhost:81")))

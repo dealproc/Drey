@@ -10,6 +10,7 @@ namespace Drey.Server.Tests.Services
     class InMemoryPackageService : IPackageService
     {
         List<Models.Package> _packages;
+        IFileService _fileService;
         public InMemoryPackageService()
         {
             _packages = new List<Models.Package>()
@@ -23,6 +24,8 @@ namespace Drey.Server.Tests.Services
                     }
                 }
             };
+            _fileService = new FilesytemFileService(@"c:\packages_test");
+            var filename = _fileService.StoreAsync("package-1.0.0.0.zip", new MemoryStream(Samples.Server.Services.InMemory.Resources.Files.validzipfile)).Result;
         }
 
         public IEnumerable<Models.Package> ListPackages()
@@ -50,6 +53,8 @@ namespace Drey.Server.Tests.Services
             if (string.IsNullOrEmpty(packageId)) { return false; }
             if (stream == null || stream.Length == 0) { return false; }
 
+            var storedFileReference = _fileService.StoreAsync(fileName, stream).Result;
+
             Models.Package package;
             if ((package = _packages.SingleOrDefault(p => p.PackageId == packageId)) == null)
             {
@@ -58,8 +63,7 @@ namespace Drey.Server.Tests.Services
             }
 
             string checksum = CalculateChecksum(stream);
-
-            package.Releases.Add(new Models.Release { Filename = fileName, Filesize = stream.Length, SHA1 = checksum });
+            package.Releases.Add(new Models.Release { Filename = storedFileReference, Filesize = stream.Length, SHA1 = checksum });
 
             return true;
         }
@@ -70,6 +74,23 @@ namespace Drey.Server.Tests.Services
             byte[] checksum = sha.ComputeHash(stream);
             string checksumStr = BitConverter.ToString(checksum).Replace("-", string.Empty).ToUpper();
             return checksumStr;
+        }
+
+        public Models.FileDownload GetPackage(string sha)
+        {
+            var releaseInfo = _packages.Select(p => p.Releases.FirstOrDefault(r => r.SHA1 == sha)).FirstOrDefault();
+            if (releaseInfo == null)
+            {
+                throw new KeyNotFoundException("SHA does not exist.");
+            }
+
+            var fileContents = _fileService.DownloadBlobAsync(releaseInfo.Filename).Result;
+            return new Models.FileDownload
+            {
+                FileContents = fileContents,
+                Filename = releaseInfo.Filename,
+                MimeType = "octet/stream"
+            };
         }
     }
 }

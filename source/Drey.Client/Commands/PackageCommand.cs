@@ -38,6 +38,12 @@ namespace Drey.Client.Commands
                 fInfo.Delete();
             }
 
+            if (!Directory.Exists(_inputFolder))
+            {
+                Console.WriteLine("Input folder does not exist.");
+                return -1;
+            }
+
             System.IO.Compression.ZipFile.CreateFromDirectory(_inputFolder, _outputFile, System.IO.Compression.CompressionLevel.Optimal, false);
             return 0;
         }

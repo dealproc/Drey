@@ -19,6 +19,14 @@ namespace Drey.Client
         };
         static int Main(string[] args)
         {
+#if DEBUG
+            if (args.Contains("--debug"))
+            {
+                args = args.Skip(1).ToArray();
+                System.Diagnostics.Debugger.Launch();
+            }
+#endif
+
             if (args.Length >= 1)
             {
                 var command = args.First();
