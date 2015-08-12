@@ -41,7 +41,6 @@ namespace Drey.Nut
         public Task Shutdown()
         {
             return Task.Factory.StartNew(() => _Startup.Shutdown());
-            //return CrossDomainTaskMarshaler.Marshal<bool>(_hostedApplication, () => Task.Factory.StartNew(() => _Startup.Shutdown()));
         }
 
         public void Dispose()
@@ -55,7 +54,7 @@ namespace Drey.Nut
                 }
                 AppDomain.Unload(_hostedApplication);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // squelch.. should we log?
             }

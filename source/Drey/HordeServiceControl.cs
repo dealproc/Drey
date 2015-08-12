@@ -12,7 +12,6 @@ namespace Drey
     {
         INutConfiguration _nutConfiguration = new ApplicationHostNutConfiguration();
         List<IShell> _shells = new List<IShell>();
-        string _dreyConfigurationPackagePath;
 
         public bool Start()
         {
