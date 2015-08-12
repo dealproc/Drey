@@ -38,7 +38,7 @@ namespace Drey.Server.Tests
                 return new[]
                 {
                     new object[] {"empty.package", "empty-program.1.0.0.0.zip", "octet/stream", new byte[0], HttpStatusCode.BadRequest },
-                    new object[] {"good.package", "good-program.1.0.0.0.zip", "octet/stream", Resources.Files.validzipfile, HttpStatusCode.Created },
+                    new object[] {"good.package", "good-program.1.0.0.0.zip", "octet/stream", Samples.Server.Services.InMemory.Resources.Files.validzipfile, HttpStatusCode.Created },
                 };
             }
         }

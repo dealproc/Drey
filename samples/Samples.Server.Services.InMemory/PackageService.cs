@@ -19,7 +19,7 @@ namespace Drey.Server.Tests.Services
                     PackageId = "test.package", 
                     Releases = new List<Models.Release>
                     {
-                        new Models.Release{ Filename = "package-1.0.0.0.zip", Filesize = Resources.Files.validzipfile.Length, SHA1 = CalculateChecksum(new MemoryStream(Resources.Files.validzipfile)) }
+                        new Models.Release{ Filename = "package-1.0.0.0.zip", Filesize = Samples.Server.Services.InMemory.Resources.Files.validzipfile.Length, SHA1 = CalculateChecksum(new MemoryStream(Samples.Server.Services.InMemory.Resources.Files.validzipfile)) }
                     }
                 }
             };
