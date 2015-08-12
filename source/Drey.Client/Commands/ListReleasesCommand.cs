@@ -29,19 +29,45 @@ namespace Drey.Client.Commands
 
         public override int Execute()
         {
-            var client = new HttpClient { BaseAddress = new Uri(_url) };
-            client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
-            var releases = client.GetAsync(".well-known/releases/" + _packageId).Result.Content.ReadAsAsync<IEnumerable<Release>>().Result;
-
-            Console.WriteLine("Found the following packages:");
-            Console.WriteLine();
-
-            foreach (var release in releases)
+            try
             {
-                Console.WriteLine("{0}\t{1}\t{2} b", release.SHA1, release.Filename, release.Filesize);
-            }
+                var client = new HttpClient { BaseAddress = new Uri(_url) };
+                client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+                var queryHttpEndpoint = client.GetAsync(".well-known/releases/" + _packageId).Result;
 
-            return 0;
+                if (queryHttpEndpoint.IsSuccessStatusCode)
+                {
+                    var releases = queryHttpEndpoint.Content.ReadAsAsync<IEnumerable<Release>>().Result;
+
+                    Console.WriteLine("Found the following packages:");
+                    Console.WriteLine();
+
+                    foreach (var release in releases)
+                    {
+                        Console.WriteLine("{0}\t{1}\t{2} b", release.SHA1, release.Filename, release.Filesize);
+                    }
+
+                    return 0;
+                }
+                else if (queryHttpEndpoint.StatusCode == System.Net.HttpStatusCode.NotFound)
+                {
+                    Console.WriteLine("Package does not exist on server.");
+                    return 0;
+                }
+
+                Console.WriteLine("Unhandled." + queryHttpEndpoint.ReasonPhrase);
+                return -1;
+            }
+            catch (AggregateException ex)
+            {
+                Exception exc = ex.InnerException;
+                do
+                {
+                    Console.WriteLine(exc.Message);
+                    exc = exc.InnerException;
+                } while (exc != null);
+                return -99;
+            }
         }
 
         class Release

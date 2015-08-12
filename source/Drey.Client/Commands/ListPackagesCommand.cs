@@ -36,9 +36,16 @@ namespace Drey.Client.Commands
             Console.WriteLine("Found the following packages:");
             Console.WriteLine();
 
-            foreach (var package in packages)
+            if (packages.Any())
             {
-                Console.WriteLine("\t" + package.PackageId);
+                foreach (var package in packages)
+                {
+                    Console.WriteLine("\t" + package.PackageId);
+                }
+            }
+            else
+            {
+                Console.WriteLine("No packages exist in repository.");
             }
 
             return 0;
