@@ -24,7 +24,7 @@ namespace Drey.Client.Commands
         }
         public override bool IsValid()
         {
-            return !(string.IsNullOrWhiteSpace(_url) && string.IsNullOrWhiteSpace(_packageId));
+            return !(string.IsNullOrWhiteSpace(_url) || string.IsNullOrWhiteSpace(_packageId));
         }
 
         public override int Execute()

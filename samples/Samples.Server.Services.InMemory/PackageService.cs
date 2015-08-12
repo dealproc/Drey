@@ -30,6 +30,11 @@ namespace Drey.Server.Tests.Services
             return _packages;
         }
 
+        public void DeletePackage(string packageId)
+        {
+            _packages.RemoveAll(p => p.PackageId.Equals(packageId));
+        }
+
         public IEnumerable<Models.Release> GetReleases(string packageId)
         {
             if (!_packages.Any(x => x.PackageId == packageId))

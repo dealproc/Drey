@@ -12,6 +12,13 @@ namespace Drey.Server.Modules.well_known
             _packageService = packageService;
 
             Get["/"] = _ => _packageService.ListPackages();
+            Delete["/{packageId}"] = DeletePackage;
+        }
+
+        private dynamic DeletePackage(dynamic arg)
+        {
+            _packageService.DeletePackage((string)arg.packageId);
+            return HttpStatusCode.OK;
         }
     }
 }

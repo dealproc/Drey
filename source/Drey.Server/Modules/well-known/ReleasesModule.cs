@@ -13,10 +13,9 @@ namespace Drey.Server.Modules.well_known
         {
             _packageService = packageService;
 
-            Get["/"] = _ => _packageService.ListPackages();
-
             Get["/{packageId}"] = GetReleases;
             Post["/{packageId}"] = StoreRelease;
+            Delete["/{packageId}"] = DeleteRelease;
         }
 
         private dynamic StoreRelease(dynamic arg)
@@ -46,6 +45,11 @@ namespace Drey.Server.Modules.well_known
             {
                 return ((Response)ex.Message).StatusCode = HttpStatusCode.NotFound;
             }
+        }
+
+        private dynamic DeleteRelease(dynamic arg)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

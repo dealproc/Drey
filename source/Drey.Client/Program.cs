@@ -10,7 +10,8 @@ namespace Drey.Client
     {
         static Commands.ICommand[] _commands = 
         { 
-            (Commands.ICommand)new Commands.DeleteCommand(), 
+            (Commands.ICommand)new Commands.DeletePackageCommand(), 
+            (Commands.ICommand)new Commands.DeleteReleaseCommand(),
             (Commands.ICommand)new Commands.PushCommand(), 
             (Commands.ICommand)new Commands.PackageCommand(),
             (Commands.ICommand)new Commands.ListPackagesCommand(),

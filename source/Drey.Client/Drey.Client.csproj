@@ -62,7 +62,8 @@
     <Compile Include="App_Packages\LibLog.4.2\LibLog.cs" />
     <Compile Include="ClientConstants.cs" />
     <Compile Include="Commands\BaseCommand.cs" />
-    <Compile Include="Commands\DeleteCommand.cs" />
+    <Compile Include="Commands\DeleteReleaseCommand.cs" />
+    <Compile Include="Commands\DeletePackageCommand.cs" />
     <Compile Include="Commands\ICommand.cs" />
     <Compile Include="Commands\ListPackagesCommand.cs" />
     <Compile Include="Commands\PackageCommand.cs" />
