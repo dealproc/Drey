@@ -14,6 +14,7 @@ namespace Drey.Server.Modules.well_known
             _packageService = packageService;
 
             Get["/{packageId}"] = GetReleases;
+            Get["/download/{sha}"] = GetRelease;
             Post["/{packageId}"] = StoreRelease;
             Delete["/{packageId}"] = DeleteRelease;
         }
@@ -45,6 +46,14 @@ namespace Drey.Server.Modules.well_known
             {
                 return ((Response)ex.Message).StatusCode = HttpStatusCode.NotFound;
             }
+        }
+
+        private dynamic GetRelease(dynamic arg)
+        {
+            var file = _packageService.GetRelease((string)arg.sha);
+            var response = Response.FromStream(file.FileContents, file.MimeType);
+            response.Headers.Add("Content-Disposition", "attachment; filename=\"" + file.Filename + "\"");
+            return response;
         }
 
         private dynamic DeleteRelease(dynamic arg)

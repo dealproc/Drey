@@ -76,9 +76,9 @@ namespace Drey.Server.Tests.Services
             return checksumStr;
         }
 
-        public Models.FileDownload GetPackage(string sha)
+        public Models.FileDownload GetRelease(string sha)
         {
-            var releaseInfo = _packages.Select(p => p.Releases.FirstOrDefault(r => r.SHA1 == sha)).FirstOrDefault();
+            var releaseInfo = _packages.SelectMany(p => p.Releases.Where(r => r.SHA1 == sha)).FirstOrDefault();
             if (releaseInfo == null)
             {
                 throw new KeyNotFoundException("SHA does not exist.");
@@ -91,6 +91,11 @@ namespace Drey.Server.Tests.Services
                 Filename = releaseInfo.Filename,
                 MimeType = "octet/stream"
             };
+        }
+
+        public bool Exists(string packageId)
+        {
+            return _packages.Any(p => p.PackageId.Equals(packageId));
         }
     }
 }

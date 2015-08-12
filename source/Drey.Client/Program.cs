@@ -15,7 +15,8 @@ namespace Drey.Client
             (Commands.ICommand)new Commands.PushCommand(), 
             (Commands.ICommand)new Commands.PackageCommand(),
             (Commands.ICommand)new Commands.ListPackagesCommand(),
-            (Commands.ICommand)new Commands.ListReleasesCommand()
+            (Commands.ICommand)new Commands.ListReleasesCommand(),
+            (Commands.ICommand)new Commands.GetReleaseCommand()
         };
         static int Main(string[] args)
         {

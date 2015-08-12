@@ -64,6 +64,7 @@
     <Compile Include="Commands\BaseCommand.cs" />
     <Compile Include="Commands\DeleteReleaseCommand.cs" />
     <Compile Include="Commands\DeletePackageCommand.cs" />
+    <Compile Include="Commands\GetReleaseCommand.cs" />
     <Compile Include="Commands\ICommand.cs" />
     <Compile Include="Commands\ListPackagesCommand.cs" />
     <Compile Include="Commands\PackageCommand.cs" />

@@ -17,7 +17,7 @@ namespace Drey.Client.Commands
         public PushCommand()
         {
             Command = "push";
-            Description = "Pushes a package to the repository.";
+            Description = "Pushes a release to the repository.";
             Parser = new OptionSet
             {
                 { "url=", "the repository's url.", v => _url = v },
