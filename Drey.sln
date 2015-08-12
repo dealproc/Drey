@@ -29,10 +29,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{ACA1AB
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Drey.Configuration.DomainModel", "source\Drey.Configuration.DomainModel\Drey.Configuration.DomainModel.csproj", "{09A35155-2F39-4ECE-9813-7E8AA8DF36E8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Samples.AppOne", "source\Samples.AppOne\Samples.AppOne.csproj", "{0F6D533D-5CA0-4DCD-A83C-D2303AF96698}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Samples.AppTwo", "source\Samples.AppTwo\Samples.AppTwo.csproj", "{E7B67ADF-F02E-4FF9-A1D1-DE25844B906B}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Server", "Server", "{F84CF622-05EE-423A-A65B-618EC1997ECC}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "!Solution", "!Solution", "{2AB82EBD-B7A8-4DD4-8C9A-E346B781076E}"
@@ -41,6 +37,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "!Solution", "!Solution", "{
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Drey.Server.Tests", "tests\Drey.Server.Tests\Drey.Server.Tests.csproj", "{008D7681-F5ED-4E5F-B4A3-AE02BFC57A56}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Samples.AppOne", "samples\Samples.AppOne\Samples.AppOne.csproj", "{0F6D533D-5CA0-4DCD-A83C-D2303AF96698}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Samples.AppTwo", "samples\Samples.AppTwo\Samples.AppTwo.csproj", "{E7B67ADF-F02E-4FF9-A1D1-DE25844B906B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -72,6 +72,10 @@ Global
 		{09A35155-2F39-4ECE-9813-7E8AA8DF36E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{09A35155-2F39-4ECE-9813-7E8AA8DF36E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{09A35155-2F39-4ECE-9813-7E8AA8DF36E8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{008D7681-F5ED-4E5F-B4A3-AE02BFC57A56}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{008D7681-F5ED-4E5F-B4A3-AE02BFC57A56}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{008D7681-F5ED-4E5F-B4A3-AE02BFC57A56}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{008D7681-F5ED-4E5F-B4A3-AE02BFC57A56}.Release|Any CPU.Build.0 = Release|Any CPU
 		{0F6D533D-5CA0-4DCD-A83C-D2303AF96698}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{0F6D533D-5CA0-4DCD-A83C-D2303AF96698}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0F6D533D-5CA0-4DCD-A83C-D2303AF96698}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -80,10 +84,6 @@ Global
 		{E7B67ADF-F02E-4FF9-A1D1-DE25844B906B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E7B67ADF-F02E-4FF9-A1D1-DE25844B906B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E7B67ADF-F02E-4FF9-A1D1-DE25844B906B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{008D7681-F5ED-4E5F-B4A3-AE02BFC57A56}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{008D7681-F5ED-4E5F-B4A3-AE02BFC57A56}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{008D7681-F5ED-4E5F-B4A3-AE02BFC57A56}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{008D7681-F5ED-4E5F-B4A3-AE02BFC57A56}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
