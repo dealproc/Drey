@@ -67,6 +67,7 @@
     <Compile Include="Commands\ListPackagesCommand.cs" />
     <Compile Include="Commands\PackageCommand.cs" />
     <Compile Include="Commands\PushCommand.cs" />
+    <Compile Include="Commands\ListReleasesCommand.cs" />
     <Compile Include="Mono.Options\Options.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
