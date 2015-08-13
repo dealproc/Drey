@@ -70,7 +70,6 @@ namespace Drey.Server.Tests.Services.PackageService
         public void AReleaseShouldBeAddedToAnExistingPackage()
         {
             string testFilename = "test.zip";
-            string testPackage = "new.test.package";
 
             A.CallTo(() => _fileService.StoreAsync(A<string>.That.IsEqualTo(testFilename), A<Stream>.Ignored)).Returns(Task.FromResult(testFilename));
             A.CallTo(() => _packageStore.Store(A<Models.Package>.Ignored)).DoesNothing();

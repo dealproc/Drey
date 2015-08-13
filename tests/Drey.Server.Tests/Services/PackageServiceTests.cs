@@ -3,9 +3,11 @@ using FakeItEasy;
 using System;
 using System.Collections.Generic;
 using System.Security.Cryptography;
+using Xunit;
 
 namespace Drey.Server.Tests.Services
 {
+    [Collection("Package Service")]
     public class PackageServiceTests
     {
         protected IPackageStore _packageStore;
