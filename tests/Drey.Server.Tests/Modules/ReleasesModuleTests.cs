@@ -1,11 +1,13 @@
 ﻿using Nancy;
 using Nancy.Testing;
+
+using Shouldly;
+
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+
 using Xunit;
-using Shouldly;
-using System.Collections.Generic;
-using System;
 
 namespace Drey.Server.Tests
 {

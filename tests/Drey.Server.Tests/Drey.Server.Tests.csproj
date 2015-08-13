@@ -74,6 +74,12 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Modules\ReleasesModuleTests.cs" />
     <Compile Include="Services\PackageServiceTests.cs" />
+    <Compile Include="Services\PackageService\CreateReleaseTests.cs" />
+    <Compile Include="Services\PackageService\DeletePackageTests.cs" />
+    <Compile Include="Services\PackageService\DeleteReleasesTests.cs" />
+    <Compile Include="Services\PackageService\GetReleasesTests.cs" />
+    <Compile Include="Services\PackageService\GetReleaseTests.cs" />
+    <Compile Include="Services\PackageService\ListPackagesTests.cs" />
     <Compile Include="TestNancyBootstrapper.cs" />
   </ItemGroup>
   <ItemGroup>
