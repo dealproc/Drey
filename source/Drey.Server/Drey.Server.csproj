@@ -57,6 +57,7 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <None Include="Drey.Server.nuspec" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
