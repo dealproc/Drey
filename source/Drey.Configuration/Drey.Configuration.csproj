@@ -27,6 +27,8 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <RegisterForComInterop>false</RegisterForComInterop>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -125,7 +127,7 @@
     <ItemGroup>
       <BinDirectoryFiles Include="$(OutputPath)**\*.*" />
     </ItemGroup>
-    <Zip Files="@(BinDirectoryFiles)" WorkingDirectory="$(PackagePath)" ZipFileName="$(PackagePath)drey.configuration-$(Version).zip" />
+    <Zip Files="@(BinDirectoryFiles)" WorkingDirectory="$(OutputPath)" ZipFileName="$(PackagePath)drey.configuration-$(Version).zip" />
   </Target>
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <Target Name="BeforeBuild">
