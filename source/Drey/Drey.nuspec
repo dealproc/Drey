@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>$title$</title>
+    <authors>$author$</authors>
+    <owners>$author$</owners>
+    <licenseUrl>https://github.com/dealproc/Drey/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/dealproc/Drey</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>$description$</description>
+    <releaseNotes></releaseNotes>
+    <copyright>Copyright 2015 - Richard Bennett</copyright>
+  </metadata>
+  <files>
+    <file src="..\..\package\drey.configuration-$version$.zip" target="build\" />
+    
+    <file src="..\Drey.Client\bin\$configuration$\**\*.exe" exclude="..\Drey.Client\bin\$configuration$\**\*.vshost.exe" target="tools\" />
+    <file src="..\Drey.Client\bin\$configuration$\**\*.exe.config" exclude="..\Drey.Client\bin\$configuration$\**\*.vshost.exe.config" target="tools\" />
+    <file src="..\Drey.Client\bin\$configuration$\**\*.dll" target="tools\" />
+  </files>
+</package>

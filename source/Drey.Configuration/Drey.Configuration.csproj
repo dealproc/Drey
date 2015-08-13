@@ -1,11 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props"
-          Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <Version Condition=" '$(BuildNumber)' == '' ">0.9.0.0</Version>
+    <Version Condition=" '$(BuildNumber)' == '' ">1.0.0.0</Version>
     <Version Condition=" '$(BuildNumber)' != '' ">$(BuildNumber)</Version>
     <PackagePath>$(SolutionDir)\package\</PackagePath>
     <ProjectGuid>{6E0E54A6-C065-491D-BEDE-E841D05D4E25}</ProjectGuid>
@@ -82,7 +81,6 @@
     <EmbeddedResource Include="fonts\glyphicons-halflings-regular.woff" />
     <EmbeddedResource Include="fonts\glyphicons-halflings-regular.woff2" />
     <None Include="app.config" />
-    <None Include="Drey.Configuration.nuspec" />
     <None Include="packages.config" />
     <EmbeddedResource Include="Views\Home\index.sshtml" />
     <EmbeddedResource Include="Scripts\jquery-2.1.4.min.map" />
@@ -114,8 +112,7 @@
     <Folder Include="Infrastructure\IoC\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="..\..\packages\System.Data.SQLite.Core.1.0.97.0\build\net451\System.Data.SQLite.Core.targets" 
-          Condition="Exists('..\..\packages\System.Data.SQLite.Core.1.0.97.0\build\net451\System.Data.SQLite.Core.targets')" />
+  <Import Project="..\..\packages\System.Data.SQLite.Core.1.0.97.0\build\net451\System.Data.SQLite.Core.targets" Condition="Exists('..\..\packages\System.Data.SQLite.Core.1.0.97.0\build\net451\System.Data.SQLite.Core.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
@@ -123,21 +120,17 @@
     <Error Condition="!Exists('..\..\packages\System.Data.SQLite.Core.1.0.97.0\build\net451\System.Data.SQLite.Core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\System.Data.SQLite.Core.1.0.97.0\build\net451\System.Data.SQLite.Core.targets'))" />
     <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
   </Target>
-  <Import Project="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.targets"/>
+  <Import Project="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.targets" />
   <Target Name="Zip-Binaries">
     <ItemGroup>
       <BinDirectoryFiles Include="$(OutputPath)**\*.*" />
     </ItemGroup>
-    <Zip Files="@(BinDirectoryFiles)"
-         WorkingDirectory="$(PackagePath)"
-         ZipFileName="$(PackagePath)drey.configuration-$(Version).zip" />
+    <Zip Files="@(BinDirectoryFiles)" WorkingDirectory="$(PackagePath)" ZipFileName="$(PackagePath)drey.configuration-$(Version).zip" />
   </Target>
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
-
   <Target Name="BeforeBuild">
     <RemoveDir Directories="$(OutputPath)" />
   </Target>
-  
   <Target Name="AfterBuild" DependsOnTargets="CopySQLiteInteropFiles">
     <CallTarget Targets="Zip-Binaries" />
   </Target>
