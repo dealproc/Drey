@@ -39,6 +39,9 @@
     <Reference Include="CsQuery">
       <HintPath>..\..\packages\CsQuery.1.3.3\lib\net40\CsQuery.dll</HintPath>
     </Reference>
+    <Reference Include="FakeItEasy">
+      <HintPath>..\..\packages\FakeItEasy.1.25.3\lib\net40\FakeItEasy.dll</HintPath>
+    </Reference>
     <Reference Include="Nancy">
       <HintPath>..\..\packages\Nancy.1.2.0\lib\net40\Nancy.dll</HintPath>
     </Reference>
@@ -67,9 +70,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="NancyTestingBase.cs" />
-    <Compile Include="PackagesModuleTests.cs" />
+    <Compile Include="Modules\PackagesModuleTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ReleasesModuleTests.cs" />
+    <Compile Include="Modules\ReleasesModuleTests.cs" />
+    <Compile Include="Services\PackageServiceTests.cs" />
     <Compile Include="TestNancyBootstrapper.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Drey.Server.Services
@@ -35,8 +36,10 @@ namespace Drey.Server.Services
 
         public bool CreateRelease(string packageId, string fileName, System.IO.Stream stream)
         {
-            if (string.IsNullOrEmpty(packageId)) { return false; }
-            if (stream == null || stream.Length == 0) { return false; }
+            if (string.IsNullOrWhiteSpace(packageId)) { throw new ArgumentException("package id was not provided", "packageId"); }
+            if (string.IsNullOrWhiteSpace(fileName)) { throw new ArgumentException("filename was not provided.", "fileName"); }
+            if (stream == null) { throw new ArgumentNullException("stream"); }
+            if (stream.Length == 0) { throw new ArgumentException("package stream is empty.", "stream"); }
 
             var storedFileReference = _fileService.StoreAsync(fileName, stream).Result;
 

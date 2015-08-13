@@ -1,5 +1,6 @@
 ﻿using Drey.Server.Services;
 using Nancy;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -9,7 +10,8 @@ namespace Drey.Server.Modules.well_known
     {
         readonly IPackageService _packageService;
 
-        public ReleasesModule(IPackageService packageService) : base("/.well-known/releases")
+        public ReleasesModule(IPackageService packageService)
+            : base("/.well-known/releases")
         {
             _packageService = packageService;
 
@@ -29,11 +31,22 @@ namespace Drey.Server.Modules.well_known
             var file = Request.Files.First();
             var packageId = (string)arg.packageId;
 
-            if (_packageService.CreateRelease(packageId, file.Name, file.Value))
+            try
             {
-                return HttpStatusCode.Created;
-            };
-            return ((Response)"Your release was not created").StatusCode = HttpStatusCode.BadRequest;
+                if (_packageService.CreateRelease(packageId, file.Name, file.Value))
+                {
+                    return HttpStatusCode.Created;
+                };
+                return ((Response)"Your release was not created").StatusCode = HttpStatusCode.BadRequest;
+            }
+            catch (ArgumentNullException ex)
+            {
+                return ((Response)ex.Message).StatusCode = HttpStatusCode.BadRequest;
+            }
+            catch (ArgumentException ex)
+            {
+                return ((Response)ex.Message).StatusCode = HttpStatusCode.BadRequest;
+            }
         }
 
         private dynamic GetReleases(dynamic args)
