@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Drey.Configuration.Modules
+namespace Drey.Configuration.Services
 {
-    class FeedsModule
+    class GlobalSettingsService
     {
     }
 }

@@ -1,7 +1,10 @@
 ﻿namespace Drey.Configuration.DataModel
 {
-    class RegisteredPackage : DataModelBase
+    public class RegisteredPackage : DataModelBase
     {
+        /// <summary>
+        /// Gets or sets the package identifier.
+        /// </summary>
         public string PackageId { get; set; }
     }
 }

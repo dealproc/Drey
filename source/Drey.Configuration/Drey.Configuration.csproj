@@ -48,11 +48,21 @@
     <Reference Include="Nancy.Hosting.Self">
       <HintPath>..\..\packages\Nancy.Hosting.Self.1.2.0\lib\net40\Nancy.Hosting.Self.dll</HintPath>
     </Reference>
+    <Reference Include="Nancy.Validation.DataAnnotations">
+      <HintPath>..\..\packages\Nancy.Validation.DataAnnotations.1.2.0\lib\net40\Nancy.Validation.DataAnnotations.dll</HintPath>
+    </Reference>
+    <Reference Include="Nancy.ViewEngines.Razor">
+      <HintPath>..\..\packages\Nancy.Viewengines.Razor.1.2.0\lib\net40\Nancy.ViewEngines.Razor.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.SQLite">
       <HintPath>..\..\packages\System.Data.SQLite.Core.1.0.97.0\lib\net451\System.Data.SQLite.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\Microsoft.AspNet.Razor.3.2.3\lib\net45\System.Web.Razor.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -62,18 +72,22 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Bootstrapper.cs" />
+    <Compile Include="RazorConfig.cs" />
     <Compile Include="Conventions\EmbeddedStaticContentConventionBuilder.cs" />
     <Compile Include="DataModel\DataModelBase.cs" />
+    <Compile Include="DataModel\GlobalSetting.cs" />
     <Compile Include="DataModel\IEntity.cs" />
     <Compile Include="DataModel\PackageConnectionString.cs" />
     <Compile Include="DataModel\RegisteredPackage.cs" />
     <Compile Include="DataModel\PackageSetting.cs" />
-    <Compile Include="Modules\FeedsModule.cs" />
+    <Compile Include="Infrastructure\Schema\0100\201508132117_Create_BaseTables.cs" />
     <Compile Include="Modules\HomeModule.cs" />
-    <Compile Include="Modules\ServerAuthenticationModule.cs" />
-    <Compile Include="Modules\ServicesModule.cs" />
+    <Compile Include="Infrastructure\ConfigurationManagement\DbConfigurationSettings.cs" />
+    <Compile Include="Modules\SetupModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Nut.cs" />
+    <Compile Include="Services\GlobalSettingsService.cs" />
+    <Compile Include="Services\ViewModels\GlobalSettingsPmo.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Content\bootstrap-theme.css.map" />
@@ -84,8 +98,13 @@
     <EmbeddedResource Include="fonts\glyphicons-halflings-regular.woff2" />
     <None Include="app.config" />
     <None Include="packages.config" />
-    <EmbeddedResource Include="Views\Home\index.sshtml" />
+    <EmbeddedResource Include="Views\Home\index.cshtml" />
     <EmbeddedResource Include="Scripts\jquery-2.1.4.min.map" />
+    <EmbeddedResource Include="Views\Setup\index.cshtml" />
+    <EmbeddedResource Include="Views\Shared\shell.cshtml" />
+    <EmbeddedResource Include="Views\Shared\ValidationSummary.cshtml" />
+    <EmbeddedResource Include="Views\_ViewStart.cshtml" />
+    <None Include="Views\Web.config" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Content\bootstrap-theme.css" />
@@ -110,7 +129,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Infrastructure\ConfigurationManagement\" />
     <Folder Include="Infrastructure\IoC\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -4,7 +4,7 @@ using System.Configuration;
 
 namespace Drey
 {
-    public class AppConfigApplicationSettings : MarshalByRefObject, IApplicationSettings
+    public class AppConfigApplicationSettings : MarshalByRefObject, IApplicationSettings, IGlobalSettings
     {
         public string this[string key]
         {

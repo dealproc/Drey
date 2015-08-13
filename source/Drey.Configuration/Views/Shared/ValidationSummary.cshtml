@@ -1,0 +1,13 @@
+﻿@inherits NancyRazorViewBase<dynamic>
+@*IfNot.RenderContext.Context.ModelValidationResult.IsValid
+    errors = Html.RenderContext.Context.ModelValidationResult.Errors.SelectMany(x => x.Value.Select(v => v.ErrorMessage));
+    <div class="alert alert-danger" role="alert">
+        <strong class="clearfix">One or more errors occurred</strong>
+        <ul>
+            @foreach (string error in errors)
+            {
+            <li>@error</li>
+            }
+        </ul>
+    </div>
+    }*@

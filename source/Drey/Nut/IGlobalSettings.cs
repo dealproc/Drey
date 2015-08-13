@@ -1,6 +1,6 @@
 ﻿namespace Drey.Nut
 {
-    public interface IApplicationSettings
+    public interface IGlobalSettings
     {
         string this[string key] { get; }
     }

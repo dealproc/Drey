@@ -51,6 +51,7 @@
     <Compile Include="Nut\CrackingAttribute.cs" />
     <Compile Include="Nut\IApplicationSettings.cs" />
     <Compile Include="Nut\IConnectionStrings.cs" />
+    <Compile Include="Nut\IGlobalSettings.cs" />
     <Compile Include="Nut\INutConfiguration.cs" />
     <Compile Include="Nut\IShell.cs" />
     <Compile Include="Nut\ISupportShutdown.cs" />

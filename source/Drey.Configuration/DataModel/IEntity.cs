@@ -12,7 +12,7 @@ namespace Drey.Configuration.DataModel
         /// Gets or sets the identifier.
         /// </summary>
         [Key]
-        long Id { get; set; }
+        int Id { get; set; }
 
         /// <summary>
         /// Gets or sets the created on UTC.

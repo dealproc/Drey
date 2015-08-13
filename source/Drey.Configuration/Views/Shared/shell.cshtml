@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@inherits NancyRazorViewBase<dynamic>
+<!DOCTYPE html>
 
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -8,8 +9,11 @@
     <link rel="stylesheet" href="~/Content/bootstrap-theme.css" />
 </head>
 <body>
-    <h1>Service Panel</h1>
+    <div class="container-fluid">
+        @RenderBody()
+    </div>
     <script type="text/javascript" src="~/Scripts/jquery-2.1.4.min.js"></script>
     <script type="text/javascript" src="~/Scripts/bootstrap.js"></script>
+    @RenderSection("Scripts", false)
 </body>
 </html>

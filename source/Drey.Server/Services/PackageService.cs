@@ -52,7 +52,8 @@ namespace Drey.Server.Services
             }
 
             string checksum = Utilities.CalculateChecksum(stream);
-            package.Releases.Add(new Models.Release { Filename = storedFileReference, Filesize = stream.Length, SHA1 = checksum });
+            var ordinal = package.Releases.Any() ? 1 : package.Releases.Max(r => r.Ordinal) + 1;
+            package.Releases.Add(new Models.Release { Filename = storedFileReference, Filesize = stream.Length, SHA1 = checksum, Ordinal = ordinal });
             _packageStore.Store(package);
 
             return true;
