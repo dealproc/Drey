@@ -74,14 +74,14 @@ namespace Drey
         private string DiscoverPackage(string packageId)
         {
             // discover the main horde folder
-            var configurationPath = Utilities.PathUtilities.ResolvePath(Path.Combine(_nutConfiguration.HordeBaseDirectory, packageId));
+            var configurationPath = Utilities.PathUtilities.ResolvePath(_nutConfiguration.HordeBaseDirectory);
 
             // discover the latest version
-            var versionFolders = Directory.GetDirectories(configurationPath).Select(dir => (new DirectoryInfo(dir)).Name);
-            var versions = versionFolders.Select(ver => new Version(ver));
-            var latestVersion = versionFolders.OrderByDescending(x => x).First();
+            var versionFolders = Directory.GetDirectories(configurationPath, packageId + "*").Select(dir => (new DirectoryInfo(dir)).Name);
+            var versions = versionFolders.Select(ver => new Version(ver.Replace(packageId + "-", string.Empty)));
+            var latestVersion = versions.OrderByDescending(x => x).First();
 
-            return Path.Combine(configurationPath, latestVersion.ToString());
+            return Path.Combine(configurationPath, string.Format("{0}-{1}", packageId, latestVersion.ToString()));
         }
     }
 }

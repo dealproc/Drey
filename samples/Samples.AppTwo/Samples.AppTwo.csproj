@@ -4,6 +4,8 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <Version Condition=" '$(BuildNumber)' == '' ">1.0.0.0</Version>
+    <Version Condition=" '$(BuildNumber)' != '' ">$(BuildNumber)</Version>
     <ProjectGuid>{E7B67ADF-F02E-4FF9-A1D1-DE25844B906B}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
@@ -11,7 +13,7 @@
     <AssemblyName>Samples.AppTwo</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <OutputPath>..\..\horde\Samples.AppTwo\0.0.0.0\</OutputPath>
+    <OutputPath>..\..\horde\Samples.AppTwo-$(Version)\</OutputPath>
     <WarningLevel>4</WarningLevel>
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
