@@ -10,7 +10,7 @@ namespace Drey.Server.Services
         void DeletePackage(string p);
         IEnumerable<Models.Release> GetReleases(string packageId);
         bool CreateRelease(string packageId, string fileName, Stream stream);
+        bool DeleteRelease(string sha);
         Models.FileDownload GetRelease(string sha);
-
     }
 }

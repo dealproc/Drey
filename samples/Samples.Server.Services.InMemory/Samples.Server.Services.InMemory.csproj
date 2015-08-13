@@ -45,7 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="PackageService.cs" />
+    <Compile Include="PackageStore.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resources\Files.Designer.cs">
       <DependentUpon>Files.resx</DependentUpon>

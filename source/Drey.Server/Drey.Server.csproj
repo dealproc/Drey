@@ -54,6 +54,9 @@
     <Compile Include="Services\FilesytemFileService.cs" />
     <Compile Include="Services\IFileService.cs" />
     <Compile Include="Services\IPackageService.cs" />
+    <Compile Include="Services\IPackageStore.cs" />
+    <Compile Include="Services\PackageService.cs" />
+    <Compile Include="Utilities.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

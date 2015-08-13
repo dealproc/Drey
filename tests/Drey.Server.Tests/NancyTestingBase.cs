@@ -14,7 +14,7 @@ namespace Drey.Server.Tests
 
         public NancyTestingBase()
         {
-            _bootstrapper = new DefaultNancyBootstrapper();
+            _bootstrapper = new TestNancyBootstrapper();
             _browser = new Browser(_bootstrapper, defaults: to => to.Accept("application/json"));
         }
     }
