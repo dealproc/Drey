@@ -22,8 +22,8 @@ namespace Drey.Configuration
 
             Process.Start(startupUri);
 
-            _eventBus.Publish(new PackageEvents.Load { PackageId = "Samples.AppOne" });
-            _eventBus.Publish(new PackageEvents.Load { PackageId = "Samples.AppTwo" });
+            _eventBus.Publish(new PackageEvents.Load { PackageId = "Samples.AppOne", ConfigurationManager = configurationManager });
+            _eventBus.Publish(new PackageEvents.Load { PackageId = "Samples.AppTwo", ConfigurationManager = configurationManager });
         }
 
         public void Dispose()

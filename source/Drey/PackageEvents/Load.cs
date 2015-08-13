@@ -6,5 +6,6 @@ namespace Drey.PackageEvents
     public class Load
     {
         public string PackageId { get; set; }
+        public Drey.Nut.INutConfiguration ConfigurationManager { get; set; }
     }
 }

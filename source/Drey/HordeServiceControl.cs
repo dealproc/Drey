@@ -50,7 +50,7 @@ namespace Drey
             var package = DiscoverPackage(message.PackageId);
             if (!string.IsNullOrEmpty(package))
             {
-                var shell = ShellFactory.Create(package, _nutConfiguration);
+                var shell = ShellFactory.Create(package, message.ConfigurationManager);
                 _shells.Add(shell);
                 _nutConfiguration.EventBus.Publish(new PackageEvents.Loaded { PackageId = message.PackageId, InstanceId = shell.InstanceId });
             }
