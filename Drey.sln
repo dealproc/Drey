@@ -34,6 +34,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "!Solution", "!Solution", "{2AB82EBD-B7A8-4DD4-8C9A-E346B781076E}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
+		SetVersion.proj = SetVersion.proj
+		xUnit.proj = xUnit.proj
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Drey.Server.Tests", "tests\Drey.Server.Tests\Drey.Server.Tests.csproj", "{008D7681-F5ED-4E5F-B4A3-AE02BFC57A56}"

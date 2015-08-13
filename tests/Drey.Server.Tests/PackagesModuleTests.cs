@@ -6,6 +6,7 @@ using Xunit;
 
 namespace Drey.Server.Tests
 {
+    [Collection("Package Management")]
     public class PackagesModuleTests : NancyTestingBase
     {
         [Fact]

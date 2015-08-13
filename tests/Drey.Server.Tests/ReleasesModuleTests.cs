@@ -9,6 +9,7 @@ using System;
 
 namespace Drey.Server.Tests
 {
+    [Collection("Package Management")]
     public class ReleasesModuleTests : NancyTestingBase
     {
         [Theory]

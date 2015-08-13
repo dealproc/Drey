@@ -1,0 +1,69 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildCommunityTasksPath>$(MSBuildProjectDirectory)\tools\MSBuild.CommunityTasks</MSBuildCommunityTasksPath>
+  </PropertyGroup>
+
+  <Import Project="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.targets"/>
+
+  <!-- Version Number -->
+  <PropertyGroup>
+    <Version Condition=" '$(Version)' == ''">99.99.99.99</Version>
+    <BuildSeries Condition=" '$(BuildSeries)' == ''">99.0.0.0</BuildSeries>
+    <BuildInfo Condition=" '$(BuildInfo)' == ''">99.99.99.99-Undecided</BuildInfo>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <AssemblyInfoFiles Include="$(MSBuildProjectDirectory)\source\**\AssemblyInfo.cs" />
+  </ItemGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)' == '' ">
+    <Configuration>Release</Configuration>
+  </PropertyGroup>
+
+  <Target Name="Clean">
+    <DeleteTree Directories="**\obj\**;**\bin\**" />
+  </Target>
+
+  <Target Name="Version">
+    <Time>
+      <Output TaskParameter="Year" PropertyName="Year" />
+    </Time>
+
+    <Message Text="Version Number: '$(Version)'" />
+    <Message Text="Version 'Informational' Number: '$(BuildInfo)'" />
+    <Message Text="Assembly Series: '$(BuildSeries)'" />
+
+    <FileUpdate Files="@(AssemblyInfoFiles)"
+                Regex="Version\(&quot;(\d+)\.(\d+)(\.(\d+)\.(\d+)|\.*)&quot;\)"
+                ReplacementText="Version(&quot;$(BuildSeries)&quot;)">
+    </FileUpdate>
+
+    <FileUpdate Files="@(AssemblyInfoFiles)"
+                Regex="AssemblyFileVersion\(&quot;(\d+)\.(\d+)(\.(\d+)\.(\d+)|\.*)&quot;\)"
+                ReplacementText="AssemblyFileVersion(&quot;$(Version)&quot;)">
+    </FileUpdate>
+
+    <FileUpdate Files="@(AssemblyInfoFiles)"
+                Regex="AssemblyInformationalVersion\(&quot;(\d+)\.(\d+)(\.(\d+)\.(\d+)|\.*)&quot;\)"
+                ReplacementText="AssemblyInformationalVersion(&quot;$(BuildInfo)&quot;)">
+    </FileUpdate>
+  </Target>
+
+  <!-- Projects to Build -->
+  <ItemGroup>
+    <ProjectFiles Include="$(MSBuildProjectDirectory)\**\*.sln">
+      <Properties>Configuration=$(Configuration)</Properties>
+    </ProjectFiles>
+  </ItemGroup>
+
+  <Target Name="Compile" DependsOnTargets="Clean;Version" />
+
+  <Target Name="Build">
+    <CallTarget Targets="Compile" />
+  </Target>
+
+  <Target Name="Rebuild">
+    <CallTarget Targets="Compile" />
+  </Target>
+</Project>
