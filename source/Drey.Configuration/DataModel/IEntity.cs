@@ -15,13 +15,13 @@ namespace Drey.Configuration.DataModel
         int Id { get; set; }
 
         /// <summary>
-        /// Gets or sets the created on UTC.
+        /// Gets or sets the date and time that this record was created.
         /// </summary>
-        DateTimeOffset CreatedOnUTC { get; set; }
+        DateTime CreatedOn { get; set; }
         
         /// <summary>
-        /// Gets or sets the updated on UTC.
+        /// Gets or sets the last time this record has beeen updated.
         /// </summary>
-        DateTimeOffset UpdatedOnUTC { get; set; }
+        DateTime UpdatedOn { get; set; }
     }
 }

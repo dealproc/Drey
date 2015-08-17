@@ -42,6 +42,9 @@
     <Reference Include="FluentMigrator">
       <HintPath>..\..\packages\FluentMigrator.1.6.0\lib\40\FluentMigrator.dll</HintPath>
     </Reference>
+    <Reference Include="FluentMigrator.Runner">
+      <HintPath>..\..\packages\FluentMigrator.1.6.0\tools\FluentMigrator.Runner.dll</HintPath>
+    </Reference>
     <Reference Include="Nancy">
       <HintPath>..\..\packages\Nancy.1.2.0\lib\net40\Nancy.dll</HintPath>
     </Reference>
@@ -72,6 +75,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Bootstrapper.cs" />
+    <Compile Include="Infrastructure\Schema\MigrationManager.cs" />
+    <Compile Include="Modules\BaseModule.cs" />
     <Compile Include="RazorConfig.cs" />
     <Compile Include="Conventions\EmbeddedStaticContentConventionBuilder.cs" />
     <Compile Include="DataModel\DataModelBase.cs" />
@@ -86,7 +91,11 @@
     <Compile Include="Modules\SetupModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Nut.cs" />
+    <Compile Include="Repositories\IGlobalSettingsRepository.cs" />
+    <Compile Include="Repositories\SQLiteRepositories\GlobalSettingsRepository.cs" />
+    <Compile Include="Repositories\SQLiteRepositories\SqlRepository.cs" />
     <Compile Include="Services\GlobalSettingsService.cs" />
+    <Compile Include="Services\IGlobalSettingsService.cs" />
     <Compile Include="Services\ViewModels\GlobalSettingsPmo.cs" />
   </ItemGroup>
   <ItemGroup>

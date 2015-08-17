@@ -48,6 +48,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Samples.Server", "samples\S
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Samples.Server.Services.InMemory", "samples\Samples.Server.Services.InMemory\Samples.Server.Services.InMemory.csproj", "{0FA34D3B-98C9-4DAC-A977-6C40C1B6E152}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Drey.Configuration.Tests", "tests\Drey.Configuration.Tests\Drey.Configuration.Tests.csproj", "{5897F27B-5020-4CAF-9460-8298E0818A52}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -98,6 +100,10 @@ Global
 		{0FA34D3B-98C9-4DAC-A977-6C40C1B6E152}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0FA34D3B-98C9-4DAC-A977-6C40C1B6E152}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0FA34D3B-98C9-4DAC-A977-6C40C1B6E152}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5897F27B-5020-4CAF-9460-8298E0818A52}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5897F27B-5020-4CAF-9460-8298E0818A52}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5897F27B-5020-4CAF-9460-8298E0818A52}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5897F27B-5020-4CAF-9460-8298E0818A52}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

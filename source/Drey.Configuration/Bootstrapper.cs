@@ -2,6 +2,8 @@
 using Nancy.Bootstrapper;
 using Nancy.Conventions;
 using Nancy.Embedded.Conventions;
+using Nancy.Extensions;
+using Nancy.TinyIoc;
 using Nancy.ViewEngines;
 using Nancy.ViewEngines.Razor;
 
@@ -13,11 +15,26 @@ namespace Drey.Configuration
 {
     public class Bootstrapper : DefaultNancyBootstrapper
     {
+        readonly Drey.Nut.INutConfiguration _configurationManager;
         readonly Assembly ThisAssembly;
 
-        public Bootstrapper() : base()
+        public Bootstrapper(Drey.Nut.INutConfiguration configurationManager)
+            : base()
         {
+            _configurationManager = configurationManager;
+            
             ThisAssembly = this.GetType().Assembly;
+        }
+
+        protected override void ConfigureRequestContainer(TinyIoCContainer container, NancyContext context)
+        {
+            base.ConfigureRequestContainer(container, context);
+
+            container.Register<Drey.Nut.INutConfiguration>(_configurationManager);
+            
+            container.Register<Repositories.IGlobalSettingsRepository, Repositories.SQLiteRepositories.GlobalSettingsRepository>();
+
+            container.Register<Services.IGlobalSettingsService, Services.GlobalSettingsService>();
         }
 
         protected override Nancy.Bootstrapper.NancyInternalConfiguration InternalConfiguration

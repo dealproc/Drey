@@ -2,9 +2,9 @@
 
 namespace Drey.Configuration.Modules
 {
-    public class HomeModule : NancyModule
+    public class HomeModule : BaseModule
     {
-        public HomeModule()
+        public HomeModule(Services.IGlobalSettingsService globalSettingsService) : base(globalSettingsService)
         {
             Get["/"] = _ => Negotiate.WithView("index").WithModel(new { });
         }

@@ -1,5 +1,8 @@
-﻿using Drey.Nut;
+﻿using Drey.Configuration.Infrastructure.Schema;
+using Drey.Nut;
+
 using Nancy.Hosting.Self;
+
 using System;
 using System.Diagnostics;
 
@@ -12,10 +15,12 @@ namespace Drey.Configuration
 
         public void Configuration(INutConfiguration configurationManager)
         {
+            MigrationManager.Migrate(configurationManager);
+
             _eventBus = configurationManager.EventBus;
 
             var startupUri = string.Format("http://localhost:{0}/", configurationManager.ApplicationSettings["drey.configuration.consoleport"]);
-            var host = new NancyHost(new Uri(startupUri));
+            var host = new NancyHost(new Bootstrapper(configurationManager), new[] { new Uri(startupUri) });
             host.Start();
 
             _webApp = host;
