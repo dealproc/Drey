@@ -25,7 +25,9 @@ namespace Drey.Configuration.Modules
         {
             this.Before.AddItemToEndOfPipeline(context =>
             {
-                if (!context.Request.Path.Equals("/Setup") && !_globalSettingsService.HasValidSettings())
+                var isNotSetupPath = !context.Request.Path.Equals("/Setup") ;
+                var globalSettingsAreNotValid = !_globalSettingsService.HasValidSettings();
+                if (isNotSetupPath && globalSettingsAreNotValid)
                 {
                     return context.GetRedirect("~/Setup");
                 }

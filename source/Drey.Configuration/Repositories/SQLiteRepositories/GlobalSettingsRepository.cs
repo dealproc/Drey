@@ -12,15 +12,25 @@ namespace Drey.Configuration.Repositories.SQLiteRepositories
         {
             ExecuteWithTransaction((cn) =>
             {
-                cn.Execute("DELETE FROM GlobalSetting WHERE [Key] = @key", new { key = key });
-                cn.Execute("INSERT INTO GlobalSetting ([Key], [Value], [CreatedOn], [UpdatedOn]) VALUES (@key, @value, @createdon, @updatedon)",
+                cn.Execute("DELETE FROM GlobalSettings WHERE [Key] = @key", new { key = key });
+                cn.Execute("INSERT INTO GlobalSettings ([Key], [Value], [CreatedOn], [UpdatedOn]) VALUES (@key, @value, @createdon, @updatedon)",
                     new { key = key, value = value, createdon = DateTime.Now, updatedon = DateTime.Now });
             });
         }
 
         public string GetSetting(string key)
         {
-            return Execute((cn) => cn.ExecuteScalar("SELECT [Value] FROM GlobalSetting WHERE [Key] = @key", new { key = key }).ToString());
+            return Execute((cn) =>
+            {
+                try
+                {
+                    return cn.ExecuteScalar("SELECT [Value] FROM GlobalSettings WHERE [Key] = @key", new { key = key }).ToString();
+                }
+                catch (NullReferenceException)
+                {
+                    return string.Empty;
+                }
+            });
         }
     }
 }

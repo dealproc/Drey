@@ -59,7 +59,9 @@ namespace Drey.Configuration.Services
 
         public bool HasValidSettings()
         {
-            return !string.IsNullOrWhiteSpace(GetServerHostname()) && (GetCertificate() != null);
+            bool hasHostname = !string.IsNullOrWhiteSpace(GetServerHostname());
+            bool hasCertificate = GetCertificate() != null;
+            return hasHostname && hasCertificate;
         }
     }
 }

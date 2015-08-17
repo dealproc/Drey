@@ -8,8 +8,12 @@ namespace Drey.Configuration.Modules
 {
     public class SetupModule : NancyModule
     {
-        public SetupModule() : base("/Setup")
+        readonly Services.IGlobalSettingsService _globalSettingsService;
+
+        public SetupModule(Services.IGlobalSettingsService globalSettingsService) : base("/Setup")
         {
+            _globalSettingsService = globalSettingsService;
+
             Get["/"] = GetIndex;
             Post["/"] = CommitSettings;
         }
@@ -37,6 +41,7 @@ namespace Drey.Configuration.Modules
 
             if (ModelValidationResult.IsValid)
             {
+                _globalSettingsService.StoreSettings(settingsPmo);
                 return Response.AsRedirect("~/", Nancy.Responses.RedirectResponse.RedirectType.Permanent);
             }
 
