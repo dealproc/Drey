@@ -52,7 +52,7 @@ namespace Drey.Server.Tests.Services.PackageService
         }
 
         [Fact]
-        public void APackgaeShouldBeCreatedWhenProvidedAnUnknownId()
+        public void APackageShouldBeCreatedWhenProvidedAnUnknownId()
         {
             string testFilename = "test.zip";
             string testPackage = "new.test.package";
