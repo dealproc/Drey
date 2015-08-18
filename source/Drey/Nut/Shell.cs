@@ -1,12 +1,14 @@
 ﻿using System;
 using System.IO;
-using System.Security.Policy;
+using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace Drey.Nut
 {
     public class Shell : MarshalByRefObject, Drey.Nut.IShell
     {
+        ShellStartOptions _options;
         AppDomain _hostedApplication;
         StartupProxy _Startup;
         string _packageId = string.Empty;
@@ -18,16 +20,17 @@ namespace Drey.Nut
 
         public Shell(ShellStartOptions options, Drey.Nut.INutConfiguration config)
         {
+            _options = options;
             _packageId = options.PackageId;
 
-            var domainSetup = new AppDomainSetup();
-            domainSetup.ApplicationBase = Path.GetDirectoryName(options.DllPath);
-            Evidence adEvidence = AppDomain.CurrentDomain.Evidence;
-
-            _hostedApplication = AppDomain.CreateDomain(options.ApplicationDomainName, adEvidence, domainSetup);
+            _hostedApplication = Utilities.AppDomainUtils.CreateDomain(options.ApplicationDomainName);
 
             _Startup = (StartupProxy)_hostedApplication.CreateInstanceFromAndUnwrap(typeof(StartupProxy).Assembly.Location, typeof(StartupProxy).FullName);
+
+            _Startup.SetStartOptions(_options);
+            _hostedApplication.AssemblyResolve += _Startup.ResolveAssemblyInDomain;
             _Startup.Instantiate(options.DllPath, options.StartupClass);
+
             if (options.ProvideConfigurationOptions)
             {
                 _Startup.Invoke("Configuration", config);
@@ -37,6 +40,8 @@ namespace Drey.Nut
                 _Startup.Invoke("Configuration");
             }
         }
+
+
 
         public Task Shutdown()
         {

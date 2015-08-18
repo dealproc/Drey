@@ -153,12 +153,12 @@
     <ProjectReference Include="..\Drey.Configuration.DomainModel\Drey.Configuration.DomainModel.csproj">
       <Project>{09a35155-2f39-4ece-9813-7e8aa8df36e8}</Project>
       <Name>Drey.Configuration.DomainModel</Name>
-      <Private>True</Private>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\Drey\Drey.csproj">
       <Project>{6403704c-14d9-4069-ad3d-8eeef95f499c}</Project>
       <Name>Drey</Name>
-      <Private>True</Private>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

@@ -45,6 +45,7 @@
     <Compile Include="AppConfigApplicationSettings.cs" />
     <Compile Include="AppConfigConnectionStrings.cs" />
     <Compile Include="DreyConstants.cs" />
+    <Compile Include="Extensions\EnumExtensions.cs" />
     <Compile Include="HordeServiceControl.cs" />
     <Compile Include="ApplicationHostNutConfiguration.cs" />
     <Compile Include="IHandle.cs" />
@@ -67,6 +68,7 @@
     <Compile Include="PackageEvents\Loaded.cs" />
     <Compile Include="PackageEvents\Shutdown.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utilities\AppDomainUtils.cs" />
     <Compile Include="Utilities\PathUtilities.cs" />
   </ItemGroup>
   <ItemGroup>

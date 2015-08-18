@@ -1,7 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Reflection;
-using System.Security.Policy;
 
 namespace Drey.Nut
 {
@@ -21,19 +19,7 @@ namespace Drey.Nut
             var proxyType = typeof(DiscoverStartupDllProxy);
             var thisAssemblyPath = Utilities.PathUtilities.ResolvePath(proxyType.Assembly.GetName().CodeBase.Remove(0, 8), false);
 
-            var domainSetup = new AppDomainSetup();
-            domainSetup.ApplicationBase = path;
-            domainSetup.PrivateBinPath = path;
-            
-            Evidence adEvidence = AppDomain.CurrentDomain.Evidence;
-
-            var domain = AppDomain.CreateDomain(Guid.NewGuid().ToString(), adEvidence, domainSetup);
-            domain.AssemblyResolve += (s, e) =>
-            {
-                var asmName = e.Name;
-                Console.WriteLine(asmName);
-                return null;
-            };
+            var domain = Utilities.AppDomainUtils.CreateDomain(Guid.NewGuid().ToString());
 
             try
             {

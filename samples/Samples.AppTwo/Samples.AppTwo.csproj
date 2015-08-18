@@ -47,20 +47,17 @@
     <ProjectReference Include="..\..\source\Drey\Drey.csproj">
       <Project>{6403704c-14d9-4069-ad3d-8eeef95f499c}</Project>
       <Name>Drey</Name>
-      <Private>True</Private>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
-
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.targets" />
-
   <Target Name="Zip-Binaries">
     <ItemGroup>
       <BinDirectoryFiles Include="$(OutputPath)**\*.*" />
     </ItemGroup>
     <Zip Files="@(BinDirectoryFiles)" WorkingDirectory="$(OutputPath)" ZipFileName="$(PackagePath)samples.apptwo-$(Version).zip" />
   </Target>
-  
   <Target Name="BeforeBuild">
     <RemoveDir Directories="$(OutputPath)" />
   </Target>
