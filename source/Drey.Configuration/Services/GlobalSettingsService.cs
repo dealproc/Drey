@@ -1,5 +1,7 @@
 ﻿using Drey.Configuration.Repositories;
 using System;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 
@@ -62,6 +64,24 @@ namespace Drey.Configuration.Services
             bool hasHostname = !string.IsNullOrWhiteSpace(GetServerHostname());
             bool hasCertificate = GetCertificate() != null;
             return hasHostname && hasCertificate;
+        }
+
+        public HttpClient GetHttpClient()
+        {
+            var url = new Uri(GetServerHostname());
+            var wrh = new WebRequestHandler();
+
+            var cert = GetCertificate();
+            if (cert != null)
+            {
+                wrh.ClientCertificates.Add(cert);
+            }
+
+            var result = new HttpClient(wrh);
+
+            result.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+            return result;
         }
     }
 }

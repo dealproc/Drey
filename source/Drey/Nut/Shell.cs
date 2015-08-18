@@ -9,8 +9,14 @@ namespace Drey.Nut
     {
         AppDomain _hostedApplication;
         StartupProxy _Startup;
+        string _packageId = string.Empty;
         string _instanceId = string.Empty;
 
+        public string PackageId
+        {
+            get { return _packageId; }
+        }
+        
         public string InstanceId
         {
             get { return _instanceId; }

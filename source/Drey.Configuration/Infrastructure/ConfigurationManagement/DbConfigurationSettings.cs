@@ -13,6 +13,11 @@ namespace Drey.Configuration.Infrastructure.ConfigurationManagement
 
         public IPackageEventBus EventBus { get; private set; }
 
+        public IGlobalSettings GlobalSettings
+        {
+            get { throw new NotImplementedException(); }
+        }
+
         public IApplicationSettings ApplicationSettings
         {
             get { throw new NotImplementedException(); }

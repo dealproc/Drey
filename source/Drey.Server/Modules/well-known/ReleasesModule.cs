@@ -18,7 +18,7 @@ namespace Drey.Server.Modules.well_known
             Get["/{packageId}"] = GetReleases;
             Get["/download/{sha}"] = GetRelease;
             Post["/{packageId}"] = StoreRelease;
-            Delete["/{packageId}"] = DeleteRelease;
+            Delete["/{packageId}/{sha}"] = DeleteRelease;
         }
 
         private dynamic StoreRelease(dynamic arg)

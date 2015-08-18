@@ -26,16 +26,24 @@ namespace Drey.Configuration
             ThisAssembly = this.GetType().Assembly;
         }
 
-        protected override void ConfigureRequestContainer(TinyIoCContainer container, NancyContext context)
+        protected override void ConfigureApplicationContainer(TinyIoCContainer container)
         {
-            base.ConfigureRequestContainer(container, context);
+            base.ConfigureApplicationContainer(container);
+
+            container.Register<ServiceModel.PollingClientCollection>().AsSingleton();
 
             container.Register<Drey.Nut.INutConfiguration>(_configurationManager);
-            
+
             container.Register<Repositories.IGlobalSettingsRepository, Repositories.SQLiteRepositories.GlobalSettingsRepository>();
 
             container.Register<Services.IGlobalSettingsService, Services.GlobalSettingsService>();
         }
+
+        //protected override void ConfigureRequestContainer(TinyIoCContainer container, NancyContext context)
+        //{
+        //    base.ConfigureRequestContainer(container, context);
+        //
+        //}
 
         protected override Nancy.Bootstrapper.NancyInternalConfiguration InternalConfiguration
         {
