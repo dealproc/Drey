@@ -9,6 +9,7 @@ using Nancy.ViewEngines.Razor;
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 
 namespace Drey.Configuration
@@ -43,6 +44,8 @@ namespace Drey.Configuration
         {
             base.ConfigureApplicationContainer(container);
 
+            container.Register(new Nancy.Validation.DataAnnotations.DataAnnotationsRegistrations());
+
             container.Register<ServiceModel.PollingClientCollection>().AsSingleton();
             container.Register<ServiceModel.RegisteredPackagesPollingClient>().AsSingleton();
 
@@ -53,6 +56,7 @@ namespace Drey.Configuration
             container.Register<Services.IGlobalSettingsService, Services.GlobalSettingsService>();
 
             container.Register<IEventBus>(_eventBus);
+
         }
 
         protected override Nancy.Bootstrapper.NancyInternalConfiguration InternalConfiguration
@@ -63,6 +67,11 @@ namespace Drey.Configuration
         private void OnConfigurationBuilder(NancyInternalConfiguration x)
         {
             x.ViewLocationProvider = typeof(ResourceViewLocationProvider);
+        }
+
+        protected override IEnumerable<Type> ModelValidatorFactories
+        {
+            get { yield return typeof(Nancy.Validation.DataAnnotations.DataAnnotationsValidatorFactory); }
         }
 
         protected override void ConfigureConventions(NancyConventions conventions)

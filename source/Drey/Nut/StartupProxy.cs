@@ -62,6 +62,8 @@ namespace Drey.Nut
                     .Where(asm => asm != null)
                     .FirstOrDefault();
 
+            Console.WriteLine("DLL Found? {0}", foundDll != null);
+
             return foundDll;
 
         }
