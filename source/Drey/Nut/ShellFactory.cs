@@ -5,51 +5,51 @@ using System.Security.Policy;
 
 namespace Drey.Nut
 {
-    public static class ShellFactory
+    public class ShellFactory : MarshalByRefObject
     {
-        public static IShell Create(string assemblyPath, INutConfiguration config)
+        public IShell Create(string assemblyPath, INutConfiguration config)
         {
             var startupOptions = DiscoverEntryDLL(assemblyPath);
 
             return startupOptions == null ? null : new Shell(startupOptions, config);
         }
 
-        private static ShellStartOptions DiscoverEntryDLL(string assemblyPath)
+        private ShellStartOptions DiscoverEntryDLL(string assemblyPath)
         {
-            var path = assemblyPath;
-            if (path.StartsWith("~/"))
-            {
-                var dir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase.Remove(0, 8)) + "\\";
-                path = path.Replace("~/", dir);
-            }
+            var path = Utilities.PathUtilities.ResolvePath(assemblyPath);
 
-            if (!path.EndsWith("\\"))
-            {
-                path += "\\";
-            }
-
-            path = path.Replace("/", "\\");
+            var proxyType = typeof(DiscoverStartupDllProxy);
+            var thisAssemblyPath = Utilities.PathUtilities.ResolvePath(proxyType.Assembly.GetName().CodeBase.Remove(0, 8), false);
 
             var domainSetup = new AppDomainSetup();
             domainSetup.ApplicationBase = path;
             domainSetup.PrivateBinPath = path;
+            
             Evidence adEvidence = AppDomain.CurrentDomain.Evidence;
 
             var domain = AppDomain.CreateDomain(Guid.NewGuid().ToString(), adEvidence, domainSetup);
+            domain.AssemblyResolve += (s, e) =>
+            {
+                var asmName = e.Name;
+                Console.WriteLine(asmName);
+                return null;
+            };
 
             try
             {
                 foreach (var file in Directory.GetFiles(path, "*.dll"))
                 {
-                    var type = typeof(DiscoverStartupDllProxy);
-                    var thisAssemblyPath = Path.Combine(path, type.Assembly.GetName().CodeBase.Remove(0, 8));
-                    var loader = (DiscoverStartupDllProxy)domain.CreateInstanceFromAndUnwrap(thisAssemblyPath, type.FullName);
+                    var discoverProxy = (DiscoverStartupDllProxy)domain.CreateInstanceFromAndUnwrap(thisAssemblyPath, proxyType.FullName);
 
-                    if (loader.IsStartupDll(file))
+                    if (discoverProxy.IsStartupDll(file))
                     {
-                        return loader.BuildOptions(file);
+                        return discoverProxy.BuildOptions(file);
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
             }
             finally
             {

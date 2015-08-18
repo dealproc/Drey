@@ -86,6 +86,10 @@
   <ItemGroup>
     <Compile Include="Bootstrapper.cs" />
     <Compile Include="DataModel\Release.cs" />
+    <Compile Include="Extensions\EnumerableExtensions.cs" />
+    <Compile Include="Infrastructure\Events\RecycleApp.cs" />
+    <Compile Include="Infrastructure\IHandle.cs" />
+    <Compile Include="Infrastructure\EventBus.cs" />
     <Compile Include="Infrastructure\Schema\MigrationManager.cs" />
     <Compile Include="Modules\BaseModule.cs" />
     <Compile Include="RazorConfig.cs" />
@@ -149,10 +153,12 @@
     <ProjectReference Include="..\Drey.Configuration.DomainModel\Drey.Configuration.DomainModel.csproj">
       <Project>{09a35155-2f39-4ece-9813-7e8aa8df36e8}</Project>
       <Name>Drey.Configuration.DomainModel</Name>
+      <Private>True</Private>
     </ProjectReference>
     <ProjectReference Include="..\Drey\Drey.csproj">
       <Project>{6403704c-14d9-4069-ad3d-8eeef95f499c}</Project>
       <Name>Drey</Name>
+      <Private>True</Private>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

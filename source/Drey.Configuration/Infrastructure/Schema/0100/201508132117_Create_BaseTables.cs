@@ -17,7 +17,7 @@ namespace Drey.Configuration.Infrastructure.Schema._0100
             Create.Table("Releases")
                 .WithColumn("Id").AsInt32().PrimaryKey().Identity()
                 .WithColumn("RegisteredPackageId").AsString(255).ForeignKey("FK_Releases_RegisteredPackages_Id", "RegisteredPackages", "Id")
-                .WithColumn("SHA").AsString(40)
+                .WithColumn("SHA1").AsString(40)
                 .WithColumn("Filename").AsString(255)
                 .WithColumn("Ordinal").AsInt32()
                 .WithColumn("CreatedOn").AsDateTime().WithDefault(SystemMethods.CurrentDateTime)

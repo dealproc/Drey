@@ -4,11 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Drey.PackageEvents
+namespace Drey.Configuration.Infrastructure.Events
 {
-    [Serializable]
-    public class Shutdown
+    public class RecycleApp
     {
-        public string PackageId { get; set; }
     }
 }

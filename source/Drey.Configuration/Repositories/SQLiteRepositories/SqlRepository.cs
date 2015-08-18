@@ -11,9 +11,6 @@ namespace Drey.Configuration.Repositories.SQLiteRepositories
         const string CONFIG_FILE_NAME = "config.db3";
 
         INutConfiguration _configurationManager;
-        IDbConnection _connection;
-
-        protected IDbConnection Connection { get { return _connection; } }
 
         public SqlRepository(INutConfiguration configurationManager)
         {

@@ -10,29 +10,37 @@ namespace Drey.Configuration
 {
     public class Nut : IDisposable
     {
-        IPackageEventBus _eventBus;
+        INutConfiguration _configurationManager;
+        IEventBus _eventBus;
         IDisposable _webApp;
 
         public void Configuration(INutConfiguration configurationManager)
         {
             MigrationManager.Migrate(configurationManager);
 
-            _eventBus = configurationManager.EventBus;
+            _configurationManager = configurationManager;
+            _eventBus = new EventBus();
 
-            var startupUri = string.Format("http://localhost:{0}/", configurationManager.ApplicationSettings["drey.configuration.consoleport"]);
-            var host = new NancyHost(new Bootstrapper(configurationManager), new[] { new Uri(startupUri) });
+            BuildApp();
+
+            var startupUri = string.Format("http://localhost:{0}/", _configurationManager.ApplicationSettings["drey.configuration.consoleport"]); 
+            Process.Start(startupUri);
+        }
+
+        private void BuildApp()
+        {
+            _eventBus.Subscribe(this);
+
+            var startupUri = string.Format("http://localhost:{0}/", _configurationManager.ApplicationSettings["drey.configuration.consoleport"]);
+            var host = new NancyHost(new Bootstrapper(_configurationManager, _eventBus), new[] { new Uri(startupUri) });
             host.Start();
 
             _webApp = host;
-
-            Process.Start(startupUri);
-
-            _eventBus.Publish(new PackageEvents.Load { PackageId = "Samples.AppOne", ConfigurationManager = configurationManager });
-            _eventBus.Publish(new PackageEvents.Load { PackageId = "Samples.AppTwo", ConfigurationManager = configurationManager });
         }
 
         public void Dispose()
         {
+            _eventBus.Unsubscribe(this);
             _webApp.Dispose();
         }
     }

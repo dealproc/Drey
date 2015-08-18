@@ -5,6 +5,6 @@ namespace Drey.PackageEvents
     [Serializable]
     public class Disposed
     {
-        public string InstanceId { get; set; }
+        public string PackageId { get; set; }
     }
 }

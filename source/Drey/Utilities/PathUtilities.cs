@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+﻿using System.IO;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Drey.Utilities
 {
     static class PathUtilities
     {
-        public static string ResolvePath(string relativePath)
+        public static string ResolvePath(string relativePath, bool includePathSeparator = true)
         {
             var respondWith = relativePath;
 
@@ -20,7 +15,7 @@ namespace Drey.Utilities
                 respondWith = respondWith.Replace("~/", dir);
             }
 
-            if (!respondWith.EndsWith(DreyConstants.PathSeparator))
+            if (!respondWith.EndsWith(DreyConstants.PathSeparator) && includePathSeparator)
             {
                 respondWith += DreyConstants.PathSeparator;
             }

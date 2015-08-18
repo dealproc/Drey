@@ -41,6 +41,11 @@ namespace Drey.Configuration.Services
             return package;
         }
 
+        public DataModel.RegisteredPackage GetPackage(string packageId)
+        {
+            return _packageRepository.GetPackage(packageId);
+        }
+
         /// <summary>
         /// Discovers releases that have not been applied to this client.
         /// </summary>
@@ -49,13 +54,18 @@ namespace Drey.Configuration.Services
         /// <returns>A list of <see cref="DataModel.Release"/> that have not been applied</returns>
         public IEnumerable<DataModel.Release> Diff(string packageId, IEnumerable<DataModel.Release> discoveredReleases)
         {
-            var appliedSHAs = _packageRepository.GetReleases(packageId).Select(x => x.SHA).ToArray();
-            return discoveredReleases.Where(d => !appliedSHAs.Contains(d.SHA));
+            var appliedSHAs = _packageRepository.GetReleases(packageId).Select(x => x.SHA1).ToArray();
+            return discoveredReleases.Where(d => !appliedSHAs.Contains(d.SHA1));
         }
 
         public IEnumerable<DataModel.Release> GetReleases(DataModel.RegisteredPackage package)
         {
             return _packageRepository.GetReleases(package.PackageId);
+        }
+
+        public void RecordReleases(IEnumerable<DataModel.Release> newReleases)
+        {
+            newReleases.Select(r => _packageRepository.Store(r)).ToList();
         }
     }
 }

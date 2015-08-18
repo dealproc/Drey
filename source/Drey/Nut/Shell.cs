@@ -10,21 +10,15 @@ namespace Drey.Nut
         AppDomain _hostedApplication;
         StartupProxy _Startup;
         string _packageId = string.Empty;
-        string _instanceId = string.Empty;
 
         public string PackageId
         {
             get { return _packageId; }
         }
-        
-        public string InstanceId
-        {
-            get { return _instanceId; }
-        }
 
         public Shell(ShellStartOptions options, Drey.Nut.INutConfiguration config)
         {
-            _instanceId = Guid.NewGuid().ToString();
+            _packageId = options.PackageId;
 
             var domainSetup = new AppDomainSetup();
             domainSetup.ApplicationBase = Path.GetDirectoryName(options.DllPath);

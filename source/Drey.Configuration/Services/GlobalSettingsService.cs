@@ -9,10 +9,12 @@ namespace Drey.Configuration.Services
 {
     public class GlobalSettingsService : IGlobalSettingsService
     {
+        readonly IEventBus _eventBus;
         readonly IGlobalSettingsRepository _globalSettingsRepository;
 
-        public GlobalSettingsService(IGlobalSettingsRepository globalSettingsRepository)
+        public GlobalSettingsService(IEventBus eventBus, IGlobalSettingsRepository globalSettingsRepository)
         {
+            _eventBus = eventBus;
             _globalSettingsRepository = globalSettingsRepository;
         }
 
@@ -20,6 +22,9 @@ namespace Drey.Configuration.Services
         {
             UpdateServerHostname(settings.ServerHostname);
             UpdateSSLCertificate(settings.SSLPfx);
+
+            _eventBus.Publish(new Infrastructure.Events.RecycleApp());
+
             return true;
         }
 
@@ -77,7 +82,7 @@ namespace Drey.Configuration.Services
                 wrh.ClientCertificates.Add(cert);
             }
 
-            var result = new HttpClient(wrh);
+            var result = new HttpClient(wrh) { BaseAddress = url };
 
             result.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 

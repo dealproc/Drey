@@ -17,18 +17,7 @@ namespace Samples.Server.Services.InMemory
         {
             _fileService = fileService;
 
-            _packages = new List<Package>
-            {
-                new Package
-                { 
-                    PackageId = "test.package", 
-                    Releases = new List<Release>
-                    {
-                        new Release{ Filename = "package-1.0.0.0.zip", Filesize = Samples.Server.Services.InMemory.Resources.Files.validzipfile.Length, SHA1 = Utilities.CalculateChecksum(new MemoryStream(Samples.Server.Services.InMemory.Resources.Files.validzipfile)) }
-                    }
-                }
-            };
-            var filename = _fileService.StoreAsync("package-1.0.0.0.zip", new MemoryStream(Samples.Server.Services.InMemory.Resources.Files.validzipfile)).Result;
+            _packages = new List<Package>();
         }
 
         public void Store(Package package)

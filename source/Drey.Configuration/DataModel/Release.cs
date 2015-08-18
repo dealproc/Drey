@@ -13,7 +13,7 @@ namespace Drey.Configuration.DataModel
         /// Gets or sets the SHA of the file to be downloaded.
         /// </summary>
         [StringLength(40)]
-        public string SHA { get; set; }
+        public string SHA1 { get; set; }
 
         /// <summary>
         /// Gets or sets the filename for this release.

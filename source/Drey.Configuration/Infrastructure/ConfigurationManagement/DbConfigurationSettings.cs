@@ -8,6 +8,7 @@ namespace Drey.Configuration.Infrastructure.ConfigurationManagement
         readonly IApplicationSettings _runtimeApplicationSettings;
         public DbConfigurationSettings(IPackageEventBus eventBus, IApplicationSettings runtimeApplicationSettings)
         {
+            _runtimeApplicationSettings = runtimeApplicationSettings;
             EventBus = eventBus;
         }
 

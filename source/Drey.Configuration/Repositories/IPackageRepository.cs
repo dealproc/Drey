@@ -9,5 +9,6 @@ namespace Drey.Configuration.Repositories
         void Store(DataModel.RegisteredPackage package);
 
         IEnumerable<DataModel.Release> GetReleases(string packageId);
+        DataModel.Release Store(DataModel.Release r);
     }
 }

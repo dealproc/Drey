@@ -10,6 +10,7 @@ namespace Drey
 {
     public class HordeServiceControl : IHandle<PackageEvents.Load>, IHandle<PackageEvents.Shutdown>
     {
+        ShellFactory _appFactory = new ShellFactory();
         INutConfiguration _nutConfiguration = new ApplicationHostNutConfiguration();
         List<IShell> _shells = new List<IShell>();
 
@@ -21,7 +22,7 @@ namespace Drey
             {
                 var packagePath = DiscoverPackage(DreyConstants.ConfigurationPackageName);
 
-                var shell = ShellFactory.Create(packagePath, _nutConfiguration);
+                var shell = _appFactory.Create(packagePath, _nutConfiguration);
                 _shells.Add(shell);
 
                 return true;
@@ -47,12 +48,19 @@ namespace Drey
 
         public void Handle(PackageEvents.Load message)
         {
+            Console.WriteLine("Loading package: {0}", message.PackageId);
+
             var package = DiscoverPackage(message.PackageId);
             if (!string.IsNullOrEmpty(package))
             {
-                var shell = ShellFactory.Create(package, message.ConfigurationManager);
+                Console.WriteLine("Package found... loading");
+                var shell = _appFactory.Create(package, message.ConfigurationManager);
                 _shells.Add(shell);
-                _nutConfiguration.EventBus.Publish(new PackageEvents.Loaded { PackageId = message.PackageId, InstanceId = shell.InstanceId });
+                _nutConfiguration.EventBus.Publish(new PackageEvents.Loaded { PackageId = message.PackageId });
+            }
+            else
+            {
+                Console.WriteLine("Package was not found.");
             }
         }
 
@@ -60,10 +68,10 @@ namespace Drey
         {
             try
             {
-                var shell = _shells.Where(s => s.InstanceId == message.InstanceId).Single();
+                var shell = _shells.Where(s => s.PackageId == message.PackageId).Single();
                 _shells.Remove(shell);
                 shell.Dispose();
-                _nutConfiguration.EventBus.Publish(new PackageEvents.Disposed { InstanceId = shell.InstanceId });
+                _nutConfiguration.EventBus.Publish(new PackageEvents.Disposed { PackageId = shell.PackageId });
             }
             catch
             {

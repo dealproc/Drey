@@ -10,13 +10,15 @@ namespace Drey.Configuration.Tests.Services
 {
     public class GlobalSettingsServiceTests
     {
+        IEventBus _eventBus;
         IGlobalSettingsRepository _globalSettingsRepository;
         IGlobalSettingsService _SUT;
 
         public GlobalSettingsServiceTests()
         {
+            _eventBus = A.Dummy<IEventBus>();
             _globalSettingsRepository = A.Fake<IGlobalSettingsRepository>((opts) => opts.Strict());
-            _SUT = new GlobalSettingsService(_globalSettingsRepository);
+            _SUT = new GlobalSettingsService(_eventBus, _globalSettingsRepository);
         }
 
         [Fact]

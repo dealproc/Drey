@@ -64,7 +64,15 @@ namespace Drey.Configuration.ServiceModel
                     }
                 }
 
-                await Task.Delay(TimeSpan.FromSeconds(DELAY_TIME_MS), _ct);
+                Console.WriteLine("Waiting {0} seconds before re-checking for new releases.", DELAY_TIME_MS);
+                try
+                {
+                    await Task.Delay(TimeSpan.FromSeconds(DELAY_TIME_MS), _ct);
+                }
+                catch (Exception)
+                {
+
+                }
             }
         }
     }

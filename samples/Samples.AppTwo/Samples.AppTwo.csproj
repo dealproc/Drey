@@ -6,6 +6,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <Version Condition=" '$(BuildNumber)' == '' ">1.0.0.0</Version>
     <Version Condition=" '$(BuildNumber)' != '' ">$(BuildNumber)</Version>
+    <PackagePath>$(SolutionDir)\package\</PackagePath>
     <ProjectGuid>{E7B67ADF-F02E-4FF9-A1D1-DE25844B906B}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
@@ -13,9 +14,10 @@
     <AssemblyName>Samples.AppTwo</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <OutputPath>..\..\horde\Samples.AppTwo-$(Version)\</OutputPath>
     <WarningLevel>4</WarningLevel>
     <ErrorReport>prompt</ErrorReport>
+    <MSBuildCommunityTasksPath>$(SolutionDir)\tools\MSBuild.CommunityTasks</MSBuildCommunityTasksPath>
+    <OutputPath>bin\$(Configuration)\</OutputPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -45,14 +47,24 @@
     <ProjectReference Include="..\..\source\Drey\Drey.csproj">
       <Project>{6403704c-14d9-4069-ad3d-8eeef95f499c}</Project>
       <Name>Drey</Name>
+      <Private>True</Private>
     </ProjectReference>
   </ItemGroup>
+
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
+  <Import Project="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.targets" />
+
+  <Target Name="Zip-Binaries">
+    <ItemGroup>
+      <BinDirectoryFiles Include="$(OutputPath)**\*.*" />
+    </ItemGroup>
+    <Zip Files="@(BinDirectoryFiles)" WorkingDirectory="$(OutputPath)" ZipFileName="$(PackagePath)samples.apptwo-$(Version).zip" />
+  </Target>
+  
   <Target Name="BeforeBuild">
+    <RemoveDir Directories="$(OutputPath)" />
   </Target>
   <Target Name="AfterBuild">
+    <CallTarget Targets="Zip-Binaries" />
   </Target>
-  -->
 </Project>

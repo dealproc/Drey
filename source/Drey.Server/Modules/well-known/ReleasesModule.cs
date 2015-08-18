@@ -13,10 +13,12 @@ namespace Drey.Server.Modules.well_known
         public ReleasesModule(IPackageService packageService)
             : base("/.well-known/releases")
         {
+            this.Before.AddItemToEndOfPipeline(ctx => { Console.WriteLine(ctx.Request.Url); return (Response)null; });
+
             _packageService = packageService;
 
-            Get["/{packageId}"] = GetReleases;
             Get["/download/{sha}"] = GetRelease;
+            Get["/{packageId}"] = GetReleases;
             Post["/{packageId}"] = StoreRelease;
             Delete["/{packageId}/{sha}"] = DeleteRelease;
         }
