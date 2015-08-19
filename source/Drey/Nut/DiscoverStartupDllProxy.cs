@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 
@@ -14,29 +13,21 @@ namespace Drey.Nut
             var hasAttribute = Attribute.GetCustomAttributes(asm).Any(attr => attr.GetType().FullName == typeof(CrackingAttribute).FullName);
             return hasAttribute;
         }
-        
+
         public ShellStartOptions BuildOptions(string path)
         {
             var asm = Assembly.LoadFrom(path);
-            var attrib = Attribute.GetCustomAttributes(asm)
-                .Where(attr => attr.GetType().FullName == typeof(CrackingAttribute).FullName)
-                .First();
-
-            var domainNameProperty = attrib.GetType().GetProperty("ApplicationDomainName");
-            var requiresConfigStorageProperty = attrib.GetType().GetProperty("RequiresConfigurationStorage");
-            var startupClassProperty = attrib.GetType().GetProperty("StartupClass");
-            var packageIdProperty = attrib.GetType().GetProperty("PackageId");
-            var displayAsProperty = attrib.GetType().GetProperty("DisplayAs");
+            var attrib = Attribute.GetCustomAttribute(asm, typeof(CrackingAttribute)) as CrackingAttribute;
 
             return new ShellStartOptions
             {
                 DllPath = path,
-                DisplayAs = (string)displayAsProperty.GetValue(attrib),
-                ApplicationDomainName = (string)domainNameProperty.GetValue(attrib),
-                PackageId = (string)packageIdProperty.GetValue(attrib),
-                ProvideConfigurationOptions = (bool)requiresConfigStorageProperty.GetValue(attrib),
+                DisplayAs = attrib.DisplayAs,
+                ApplicationDomainName = attrib.ApplicationDomainName,
                 AssemblyName = asm.FullName,
-                StartupClass = ((Type)startupClassProperty.GetValue(attrib)).FullName,
+                PackageId = attrib.PackageId,
+                StartupClass = attrib.StartupClass.FullName,
+                ProvideConfigurationOptions = attrib.RequiresConfigurationStorage
             };
         }
 
