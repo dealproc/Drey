@@ -45,7 +45,7 @@ namespace Drey.Server.Tests
         {
             get
             {
-                return new[] { new object[] { "good.package", "good-program.1.0.0.0.zip", "octet/stream", Samples.Server.Services.InMemory.Resources.Files.validzipfile, HttpStatusCode.Created }, };
+                return new[] { new object[] { "good.package", "good-program.1.0.0.0.zip", "octet/stream", Resources.Files.validzipfile, HttpStatusCode.Created }, };
             }
         }
         [Theory]

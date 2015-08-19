@@ -1,12 +1,9 @@
-﻿using Drey.Server;
-using Drey.Server.Models;
+﻿using Drey.Server.Models;
 using Drey.Server.Services;
-
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 
-namespace Samples.Server.Services.InMemory
+namespace Samples.Server.Stores
 {
     public class PackageStore : IPackageStore
     {

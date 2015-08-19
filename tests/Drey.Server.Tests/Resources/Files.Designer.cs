@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Samples.Server.Services.InMemory.Resources {
+namespace Drey.Server.Tests.Resources {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace Samples.Server.Services.InMemory.Resources {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Samples.Server.Services.InMemory.Resources.Files", typeof(Files).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Drey.Server.Tests.Resources.Files", typeof(Files).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

@@ -9,7 +9,7 @@ namespace Drey.Server.Tests
         {
             var filesvc = new Drey.Server.Services.FilesytemFileService(@"c:\packages_test");
             container.Register<Drey.Server.Services.IFileService>(filesvc);
-            container.Register<Drey.Server.Services.IPackageStore, Samples.Server.Services.InMemory.PackageStore>();
+            container.Register<Drey.Server.Services.IPackageStore, Fixtures.PackageStore>();
             container.Register<Drey.Server.Services.IPackageService, Drey.Server.Services.PackageService>();
             //base.ConfigureApplicationContainer(container);
         }
