@@ -9,9 +9,8 @@ namespace Drey.Nut
         public bool IsStartupDll(string path)
         {
             var asm = Assembly.LoadFrom(path);
-            // there has to be a better way than this.
-            var hasAttribute = Attribute.GetCustomAttributes(asm).Any(attr => attr.GetType().FullName == typeof(CrackingAttribute).FullName);
-            return hasAttribute;
+            var attrib = asm.GetCustomAttribute<CrackingAttribute>();
+            return attrib != null;
         }
 
         public ShellStartOptions BuildOptions(string path)

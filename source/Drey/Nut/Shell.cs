@@ -18,6 +18,7 @@ namespace Drey.Nut
         {
             get { return _packageId; }
         }
+
         public string Description
         {
             get { throw new NotImplementedException(); }
@@ -26,8 +27,9 @@ namespace Drey.Nut
         public Shell(ShellStartOptions options, Drey.Nut.INutConfiguration config)
         {
             _options = options;
+
+            _description = options.DisplayAs;
             _packageId = options.PackageId;
-            
 
             _hostedApplication = Utilities.AppDomainUtils.CreateDomain(options.ApplicationDomainName);
 
@@ -46,8 +48,6 @@ namespace Drey.Nut
                 _Startup.Invoke("Configuration");
             }
         }
-
-
 
         public Task Shutdown()
         {
