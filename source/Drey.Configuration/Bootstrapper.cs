@@ -1,26 +1,28 @@
-﻿using Nancy;
+﻿using Drey.Configuration.Repositories.SQLiteRepositories;
+using Drey.Nut;
+
+using Nancy;
 using Nancy.Bootstrapper;
 using Nancy.Conventions;
 using Nancy.Embedded.Conventions;
-using Nancy.Extensions;
 using Nancy.TinyIoc;
+using Nancy.Validation.DataAnnotations;
 using Nancy.ViewEngines;
 using Nancy.ViewEngines.Razor;
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 
 namespace Drey.Configuration
 {
     public class Bootstrapper : DefaultNancyBootstrapper, IHandle<Infrastructure.Events.RecycleApp>
     {
-        readonly Drey.Nut.INutConfiguration _configurationManager;
+        readonly INutConfiguration _configurationManager;
         readonly Assembly ThisAssembly;
         readonly IEventBus _eventBus;
 
-        public Bootstrapper(Drey.Nut.INutConfiguration configurationManager, IEventBus eventBus)
+        public Bootstrapper(INutConfiguration configurationManager, IEventBus eventBus)
             : base()
         {
             _configurationManager = configurationManager;
@@ -44,14 +46,16 @@ namespace Drey.Configuration
         {
             base.ConfigureApplicationContainer(container);
 
-            container.Register(new Nancy.Validation.DataAnnotations.DataAnnotationsRegistrations());
+            // we need to manually register the data annotations registrations because we are
+            // loading the *.dlls in a dedicated app domain.
+            container.Register(new DataAnnotationsRegistrations());
 
             container.Register<ServiceModel.PollingClientCollection>().AsSingleton();
             container.Register<ServiceModel.RegisteredPackagesPollingClient>().AsSingleton();
 
-            container.Register<Drey.Nut.INutConfiguration>(_configurationManager);
+            container.Register<INutConfiguration>(_configurationManager);
 
-            container.Register<Repositories.IGlobalSettingsRepository, Repositories.SQLiteRepositories.GlobalSettingsRepository>();
+            container.Register<Repositories.IGlobalSettingsRepository, GlobalSettingsRepository>();
 
             container.Register<Services.IGlobalSettingsService, Services.GlobalSettingsService>();
 
@@ -59,7 +63,7 @@ namespace Drey.Configuration
 
         }
 
-        protected override Nancy.Bootstrapper.NancyInternalConfiguration InternalConfiguration
+        protected override NancyInternalConfiguration InternalConfiguration
         {
             get { return NancyInternalConfiguration.WithOverrides(OnConfigurationBuilder); }
         }
@@ -71,7 +75,7 @@ namespace Drey.Configuration
 
         protected override IEnumerable<Type> ModelValidatorFactories
         {
-            get { yield return typeof(Nancy.Validation.DataAnnotations.DataAnnotationsValidatorFactory); }
+            get { yield return typeof(DataAnnotationsValidatorFactory); }
         }
 
         protected override void ConfigureConventions(NancyConventions conventions)
