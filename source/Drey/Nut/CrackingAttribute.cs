@@ -29,6 +29,11 @@ namespace Drey.Nut
         public string PackageId { get; private set; }
 
         /// <summary>
+        /// Human readable name of this package.
+        /// </summary>
+        public string DisplayAs { get; private set; }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="CrackingAttribute" /> class.
         /// </summary>
         /// <param name="startupClass">The startup class.</param>
@@ -37,12 +42,13 @@ namespace Drey.Nut
         /// <para>if set to <c>false</c> we will call the Configure() method, passing no parameters to the method.</para>
         /// </param>
         /// <param name="applicationDomainName">The application domain's name</param>
-        public CrackingAttribute(Type startupClass, bool requiresConfigurationStorage, string applicationDomainName, string packageId)
+        public CrackingAttribute(Type startupClass, bool requiresConfigurationStorage, string applicationDomainName, string packageId, string displayAs)
         {
             StartupClass = startupClass;
             RequiresConfigurationStorage = requiresConfigurationStorage;
             ApplicationDomainName = applicationDomainName;
             PackageId = packageId;
+            DisplayAs = displayAs;
         }
     }
 }

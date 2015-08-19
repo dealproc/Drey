@@ -118,6 +118,7 @@
     <Compile Include="Services\GlobalSettingsService.cs" />
     <Compile Include="Services\IGlobalSettingsService.cs" />
     <Compile Include="Services\PackageService.cs" />
+    <Compile Include="Services\ShellService.cs" />
     <Compile Include="Services\ViewModels\GlobalSettingsPmo.cs" />
   </ItemGroup>
   <ItemGroup>

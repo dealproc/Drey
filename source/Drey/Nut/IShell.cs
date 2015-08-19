@@ -4,6 +4,7 @@ namespace Drey.Nut
 {
     public interface IShell : IDisposable
     {
+        string Description { get; }
         string PackageId { get; }
         Task Shutdown();
     }

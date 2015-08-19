@@ -5,25 +5,17 @@ namespace Drey
 {
     public class ApplicationHostNutConfiguration : MarshalByRefObject, INutConfiguration
     {
-        IPackageEventBus _eventBus;
         IApplicationSettings _applicationSettings;
         IGlobalSettings _globalSettings;
         IConnectionStrings _connectionStrings;
 
         public ApplicationHostNutConfiguration()
         {
-            _eventBus = new PackageEventBus();
-            
             var appSettings = new AppConfigApplicationSettings();
             _applicationSettings = appSettings;
             _globalSettings = appSettings;
 
             _connectionStrings = new AppConfigConnectionStrings();
-        }
-
-        public IPackageEventBus EventBus
-        {
-            get { return _eventBus; }
         }
 
         public IGlobalSettings GlobalSettings

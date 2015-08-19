@@ -2,7 +2,7 @@
 using System;
 using System.Threading;
 
-[assembly: Drey.Nut.Cracking(typeof(Samples.AppOne.Nut), true, "Samples - App One", "samples.appone")]
+[assembly: Drey.Nut.Cracking(typeof(Samples.AppOne.Nut), true, "Samples - App One", "samples.appone", "Samples - Application One")]
 namespace Samples.AppOne
 {
     public class Nut : IDisposable

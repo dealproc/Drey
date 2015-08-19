@@ -20,18 +20,16 @@ namespace Drey.Configuration.ServiceModel
         readonly Services.IGlobalSettingsService _globalSettingsService;
         readonly Services.PackageService _packageService;
         readonly DataModel.RegisteredPackage _package;
-        readonly Drey.IPackageEventBus _packageEventBus;
 
         Task _pollingClientTask;
         CancellationToken _ct;
 
         public ReleasesPollingClient(Drey.Nut.INutConfiguration configurationManager, Services.IGlobalSettingsService globalSettingsService,
-            Services.PackageService packageService, Drey.IPackageEventBus packageEventBus, DataModel.RegisteredPackage package)
+            Services.PackageService packageService, DataModel.RegisteredPackage package)
         {
             _configurationManager = configurationManager;
             _globalSettingsService = globalSettingsService;
             _packageService = packageService;
-            _packageEventBus = packageEventBus;
             _package = package;
         }
 
@@ -98,12 +96,6 @@ namespace Drey.Configuration.ServiceModel
                         var zipFolderName = zipFileInfo.Name;
                         zipFolderName = zipFolderName.Substring(0, zipFolderName.Length - zipFileInfo.Extension.Length);
                         ZipFile.ExtractToDirectory(destinationFileNameAndPath, Path.Combine(_configurationManager.HordeBaseDirectory, zipFolderName));
-
-                        // signal shutdown of current version
-                        _packageEventBus.Publish(new PackageEvents.Shutdown { PackageId = _package.PackageId });
-
-                        // signal startup of new version.
-                        _packageEventBus.Publish(new PackageEvents.Load { ConfigurationManager = new Infrastructure.ConfigurationManagement.DbConfigurationSettings(_packageEventBus, _configurationManager.ApplicationSettings), PackageId = _package.PackageId });
 
                         _packageService.RecordReleases(newReleases);
                     }

@@ -36,4 +36,4 @@ using Drey.Nut;
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
 [assembly: AssemblyInformationalVersion("1.0.0.0")]
-[assembly: Cracking(typeof(Drey.Configuration.Nut), true, "Drey Configuration", "drey.configuration")]
+[assembly: Cracking(typeof(Drey.Configuration.Nut), true, "Drey Configuration", "drey.configuration", "Drey - Configuration Console")]

@@ -1,7 +1,7 @@
 ﻿using Drey.Nut;
 using System;
 
-[assembly: Drey.Nut.Cracking(typeof(Samples.AppTwo.Nut), true, "Samples - App Two", "samples.apptwo")]
+[assembly: Drey.Nut.Cracking(typeof(Samples.AppTwo.Nut), true, "Samples - App Two", "samples.apptwo", "Samples - Second Application")]
 namespace Samples.AppTwo
 {
     public class Nut : IDisposable

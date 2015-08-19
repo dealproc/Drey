@@ -12,10 +12,15 @@ namespace Drey.Nut
         AppDomain _hostedApplication;
         StartupProxy _Startup;
         string _packageId = string.Empty;
+        string _description = string.Empty;
 
         public string PackageId
         {
             get { return _packageId; }
+        }
+        public string Description
+        {
+            get { throw new NotImplementedException(); }
         }
 
         public Shell(ShellStartOptions options, Drey.Nut.INutConfiguration config)

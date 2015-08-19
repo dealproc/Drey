@@ -65,7 +65,6 @@ namespace Drey.Nut
             Console.WriteLine("DLL Found? {0}", foundDll != null);
 
             return foundDll;
-
         }
     }
 }

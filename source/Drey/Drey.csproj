@@ -48,7 +48,6 @@
     <Compile Include="Extensions\EnumExtensions.cs" />
     <Compile Include="HordeServiceControl.cs" />
     <Compile Include="ApplicationHostNutConfiguration.cs" />
-    <Compile Include="IHandle.cs" />
     <Compile Include="Nut\CrackingAttribute.cs" />
     <Compile Include="Nut\IApplicationSettings.cs" />
     <Compile Include="Nut\IConnectionStrings.cs" />
@@ -62,13 +61,13 @@
     <Compile Include="Nut\ShellFactory.cs" />
     <Compile Include="Nut\ShellStartOptions.cs" />
     <Compile Include="Nut\StartupProxy.cs" />
-    <Compile Include="PackageEventBus.cs" />
     <Compile Include="PackageEvents\Disposed.cs" />
     <Compile Include="PackageEvents\Load.cs" />
     <Compile Include="PackageEvents\Loaded.cs" />
     <Compile Include="PackageEvents\Shutdown.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utilities\AppDomainUtils.cs" />
+    <Compile Include="Utilities\PackageUtils.cs" />
     <Compile Include="Utilities\PathUtilities.cs" />
   </ItemGroup>
   <ItemGroup>

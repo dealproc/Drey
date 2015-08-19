@@ -6,13 +6,10 @@ namespace Drey.Configuration.Infrastructure.ConfigurationManagement
     public class DbConfigurationSettings : MarshalByRefObject, Drey.Nut.INutConfiguration
     {
         readonly IApplicationSettings _runtimeApplicationSettings;
-        public DbConfigurationSettings(IPackageEventBus eventBus, IApplicationSettings runtimeApplicationSettings)
+        public DbConfigurationSettings(IApplicationSettings runtimeApplicationSettings)
         {
             _runtimeApplicationSettings = runtimeApplicationSettings;
-            EventBus = eventBus;
         }
-
-        public IPackageEventBus EventBus { get; private set; }
 
         public IGlobalSettings GlobalSettings
         {
