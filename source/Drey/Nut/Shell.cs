@@ -27,6 +27,7 @@ namespace Drey.Nut
         {
             _options = options;
             _packageId = options.PackageId;
+            
 
             _hostedApplication = Utilities.AppDomainUtils.CreateDomain(options.ApplicationDomainName);
 

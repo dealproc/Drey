@@ -106,7 +106,14 @@ namespace Drey.Configuration.ServiceModel
                 }
 
                 Console.WriteLine("Waiting {0} seconds before checking for new releases.", DELAY_TIME_SEC);
-                await Task.Delay(TimeSpan.FromSeconds(DELAY_TIME_SEC), _ct);
+                try
+                {
+                    await Task.Delay(TimeSpan.FromSeconds(DELAY_TIME_SEC), _ct);
+                }
+                catch (Exception ex)
+                {
+                    // squelch.
+                }
             }
         }
     }

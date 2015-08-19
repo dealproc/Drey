@@ -5,6 +5,7 @@ namespace Drey.Nut
     public class ShellStartOptions
     {
         public string PackageId { get; set; }
+        public string DisplayAs { get; set; }
         public string DllPath { get; set; }
         public string AssemblyName { get; set; }
         public string StartupClass { get; set; }

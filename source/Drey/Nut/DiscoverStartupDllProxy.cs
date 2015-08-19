@@ -26,10 +26,12 @@ namespace Drey.Nut
             var requiresConfigStorageProperty = attrib.GetType().GetProperty("RequiresConfigurationStorage");
             var startupClassProperty = attrib.GetType().GetProperty("StartupClass");
             var packageIdProperty = attrib.GetType().GetProperty("PackageId");
+            var displayAsProperty = attrib.GetType().GetProperty("DisplayAs");
 
             return new ShellStartOptions
             {
                 DllPath = path,
+                DisplayAs = (string)displayAsProperty.GetValue(attrib),
                 ApplicationDomainName = (string)domainNameProperty.GetValue(attrib),
                 PackageId = (string)packageIdProperty.GetValue(attrib),
                 ProvideConfigurationOptions = (bool)requiresConfigStorageProperty.GetValue(attrib),
