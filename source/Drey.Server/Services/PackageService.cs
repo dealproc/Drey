@@ -74,7 +74,7 @@ namespace Drey.Server.Services
                 // update store.
                 await _fileService.DeleteAsync(storageFilename);
 
-                release.RelativeUri = await _fileService.StoreAsync(storageFilename, stream);
+                release.RelativeUri = await _fileService.StoreAsync(storageFilename, package.GetStream());
             }
 
             return await _releaseStore.StoreAsync(release);

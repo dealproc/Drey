@@ -24,12 +24,27 @@ namespace Drey.Configuration.Repositories.SQLiteRepositories
         {
             return Execute(cn =>
             {
-                var sqlParams = new { registeredPackageId = release.Id, sha1 = release.SHA1, fileName = release.Filename, createdOn = DateTime.Now, updatedOn = DateTime.Now };
+                var sqlParams = new
+                {
+                    id = release.Id,
+                    version = release.Version,
+                    description = release.Description,
+                    iconUrl = release.IconUrl,
+                    listed = release.Listed,
+                    published = release.Published,
+                    releaseNotes = release.ReleaseNotes,
+                    summary = release.Summary,
+                    tags = release.Tags,
+                    title = release.Title,
+                    sha1 = release.SHA1,
+                    createdOn = DateTime.Now,
+                    updatedOn = DateTime.Now
+                };
 
                 if (0 == cn.ExecuteScalar<int>("SELECT count(*) from Releases WHERE Id = @id AND Version = @version", sqlParams))
                 {
-                    cn.Execute(@"INSERT INTO Releases (Id, Version, Description, IconUrl, Listed, Published, ReleaseNotes, Summary, Tags, Title, SHA1, Filename, CreatedOn, UpdatedOn) 
-VALUES (@id, @version, @description, @iconUrl, @listed, @published, @releaseNotes, @summary, @tags, @title, @sha1, @filename, @createdOn, @updatedOn);", sqlParams);
+                    cn.Execute(@"INSERT INTO Releases (Id, Version, Description, IconUrl, Listed, Published, ReleaseNotes, Summary, Tags, Title, SHA1, CreatedOn, UpdatedOn) 
+VALUES (@id, @version, @description, @iconUrl, @listed, @published, @releaseNotes, @summary, @tags, @title, @sha1, @createdOn, @updatedOn);", sqlParams);
                 }
                 else
                 {
@@ -44,7 +59,6 @@ VALUES (@id, @version, @description, @iconUrl, @listed, @published, @releaseNote
     Tags = @tags,
     Title = @title,
     SHA1 = @sha1,
-    Filename = @filename,
     UpdatedOn = @updatedOn
 WHERE Id = @id AND Version = @version;
 ", sqlParams);

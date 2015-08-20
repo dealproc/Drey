@@ -8,7 +8,7 @@ namespace Drey.Configuration.DataModel
         public string Id { get; set; }
         public string Version { get; set; }
         public string Description { get; set; }
-        public Uri IconUrl { get; set; }
+        public string IconUrl { get; set; }
         public bool Listed { get; set; }
         public DateTime Published { get; set; }
         public string ReleaseNotes { get; set; }
@@ -21,11 +21,5 @@ namespace Drey.Configuration.DataModel
         /// </summary>
         [StringLength(40)]
         public string SHA1 { get; set; }
-
-        /// <summary>
-        /// Gets or sets the filename for this release.
-        /// </summary>
-        [StringLength(255)]
-        public string Filename { get; set; }
     }
 }
