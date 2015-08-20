@@ -54,6 +54,11 @@ namespace Drey.Server.Services
             {
                 // assume we need to publish a new release.
                 release = _releaseStore.Create();
+            }
+
+            var streamSHA = Utilities.CalculateChecksum(stream);
+            if (!streamSHA.Equals(release.SHA1))
+            {
                 release.Description = package.Description;
                 release.IconUrl = package.IconUrl;
                 release.Id = package.Id;
@@ -64,16 +69,12 @@ namespace Drey.Server.Services
                 release.Tags = package.Tags;
                 release.Title = package.Title;
                 release.Version = package.Version.ToString();
-            }
+                release.SHA1 = streamSHA;
 
-            var streamSHA = Utilities.CalculateChecksum(stream);
-            if (!streamSHA.Equals(release.SHA1))
-            {
                 // update store.
                 await _fileService.DeleteAsync(storageFilename);
 
                 release.RelativeUri = await _fileService.StoreAsync(storageFilename, stream);
-                release.SHA1 = streamSHA;
             }
 
             return await _releaseStore.StoreAsync(release);
