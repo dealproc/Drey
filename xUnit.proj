@@ -8,6 +8,10 @@
   </ItemGroup>
 
   <Target Name="Test">
-    <xunit Assemblies="@(TestAssemblies)" TeamCity="true" />
+    <xunit Assemblies="@(TestAssemblies)" TeamCity="true" ParallelizeTestCollections="false" />
+  </Target>
+  
+  <Target Name="Console">
+    <xunit Assemblies="@(TestAssemblies)" ParallelizeTestCollections="false" />
   </Target>
 </Project>

@@ -19,7 +19,10 @@ namespace Drey.Configuration.Tests.Services
 
         public PackageServiceTests()
         {
-            _packageRepository = A.Fake<IPackageRepository>(config => config.Strict());
+            _packageRepository = A.Fake<IPackageRepository>(opts =>
+            {
+                opts.Strict();
+            });
             A.CallTo(() => _packageRepository.GetPackages()).Returns(new[] 
             {
                 new DataModel.Package { Id = _packageId, Title = "Some Package" },

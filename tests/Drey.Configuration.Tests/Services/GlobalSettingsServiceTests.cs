@@ -17,7 +17,10 @@ namespace Drey.Configuration.Tests.Services
         public GlobalSettingsServiceTests()
         {
             _eventBus = A.Dummy<IEventBus>();
-            _globalSettingsRepository = A.Fake<IGlobalSettingsRepository>((opts) => opts.Strict());
+            _globalSettingsRepository = A.Fake<IGlobalSettingsRepository>(opts =>
+            {
+                opts.Strict();
+            });
             _SUT = new GlobalSettingsService(_eventBus, _globalSettingsRepository);
         }
 
@@ -27,8 +30,6 @@ namespace Drey.Configuration.Tests.Services
             A.CallTo(() => _globalSettingsRepository.SaveSetting(A<string>.Ignored, A<string>.Ignored)).DoesNothing();
 
             _SUT.StoreSettings(new Configuration.Services.ViewModels.GlobalSettingsPmo { ServerHostname = "http://test.is/", SSLPfx = new byte[10] });
-
-            A.CallTo(() => _globalSettingsRepository.SaveSetting(A<string>.Ignored, A<string>.Ignored)).MustHaveHappened(Repeated.Exactly.Twice);
         }
 
         [Fact]
@@ -37,8 +38,6 @@ namespace Drey.Configuration.Tests.Services
             A.CallTo(() => _globalSettingsRepository.SaveSetting(A<string>.That.IsEqualTo("SSLPfx"), A<string>.Ignored)).DoesNothing();
 
             _SUT.UpdateSSLCertificate(new byte[10]);
-
-            A.CallTo(() => _globalSettingsRepository.SaveSetting(A<string>.That.IsEqualTo("SSLPfx"), A<string>.Ignored)).MustHaveHappened();
         }
 
         [Fact]
@@ -47,8 +46,6 @@ namespace Drey.Configuration.Tests.Services
             A.CallTo(() => _globalSettingsRepository.SaveSetting(A<string>.That.IsEqualTo("ServerHostname"), A<string>.Ignored)).DoesNothing();
 
             _SUT.UpdateServerHostname("http://time.is/utc");
-
-            A.CallTo(() => _globalSettingsRepository.SaveSetting(A<string>.That.IsEqualTo("ServerHostname"), A<string>.Ignored)).MustHaveHappened();
         }
 
         [Fact]
@@ -60,8 +57,6 @@ namespace Drey.Configuration.Tests.Services
             cert.ShouldNotBe(null);
             cert.SubjectName.Name.ShouldContain("CN=testssl");
             cert.PrivateKey.ShouldNotBe(null);
-
-            A.CallTo(() => _globalSettingsRepository.GetSetting(A<string>.That.IsEqualTo("SSLPfx"))).MustHaveHappened();
         }
 
         [Fact]
@@ -70,8 +65,6 @@ namespace Drey.Configuration.Tests.Services
             A.CallTo(() => _globalSettingsRepository.GetSetting(A<string>.That.IsEqualTo("SSLPfx"))).Returns(null);
 
             _SUT.GetCertificate().ShouldBe(null);
-
-            A.CallTo(() => _globalSettingsRepository.GetSetting(A<string>.That.IsEqualTo("SSLPfx"))).MustHaveHappened();
         }
 
         public static IEnumerable<object[]> InvalidCertificate
@@ -96,7 +89,7 @@ namespace Drey.Configuration.Tests.Services
             A.CallTo(() => _globalSettingsRepository.GetSetting(A<string>.That.IsEqualTo("SSLPfx"))).Returns(sslCert);
 
             var isValid = _SUT.HasValidSettings();
-            
+
             isValid.ShouldBe(isConfigured);
         }
     }
