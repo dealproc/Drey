@@ -35,10 +35,10 @@ namespace Drey.Configuration.ServiceModel
             _pollingClientTask = new Task(executeLoop, _ct);
             _pollingClientTask.Start();
 
-            var packages = _packageService.GetRegisteredPackages();
+            var packages = _packageService.GetPackages();
             foreach (var pkg in packages)
             {
-                _pollingClients.Add(new ReleasesPollingClient(_configurationManager, _globalSettingsService, _packageService, pkg));
+                _pollingClients.Add(new ReleasesPollingClient(_configurationManager, _globalSettingsService, _packageService, pkg.Id));
             }
         }
 
@@ -48,13 +48,15 @@ namespace Drey.Configuration.ServiceModel
             {
                 var webClient = _globalSettingsService.GetHttpClient();
 
-                var packages = webClient.GetAsync("/.well-known/packages").Result.Content.ReadAsAsync<IEnumerable<DataModel.RegisteredPackage>>().Result;
+                var packages = webClient.GetAsync("/.well-known/packages").Result.Content.ReadAsAsync<IEnumerable<DataModel.Package>>().Result;
 
-                var newPackages = _packageService.RegisterNewPackages(packages);
+                var knownPackages = _packageService.GetPackages().Select(pkg=>pkg.Id).ToArray();
+                var newPackages = packages.Where(p => !knownPackages.Contains(p.Id)).ToList();
+
 
                 if (newPackages.Any())
                 {
-                    var clients = newPackages.Select(p => new ReleasesPollingClient(_configurationManager, _globalSettingsService, _packageService, p));
+                    var clients = newPackages.Select(p => new ReleasesPollingClient(_configurationManager, _globalSettingsService, _packageService, p.Id));
                     foreach (var client in clients)
                     {
                         _pollingClients.Add(client);

@@ -1,13 +1,20 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace Drey.Configuration.DataModel
 {
     public class Release : DataModelBase
     {
-        /// <summary>
-        /// Gets or sets the reference package.
-        /// </summary>
-        public RegisteredPackage Package { get; set; }
+        public string Id { get; set; }
+        public string Version { get; set; }
+        public string Description { get; set; }
+        public Uri IconUrl { get; set; }
+        public bool Listed { get; set; }
+        public DateTime Published { get; set; }
+        public string ReleaseNotes { get; set; }
+        public string Summary { get; set; }
+        public string Tags { get; set; }
+        public string Title { get; set; }
 
         /// <summary>
         /// Gets or sets the SHA of the file to be downloaded.
@@ -18,12 +25,7 @@ namespace Drey.Configuration.DataModel
         /// <summary>
         /// Gets or sets the filename for this release.
         /// </summary>
-        [StringLength(256)]
+        [StringLength(255)]
         public string Filename { get; set; }
-
-        /// <summary>
-        /// Gets or sets the ordinal of the release (controls in which order the release is applied).
-        /// </summary>
-        public int Ordinal { get; set; }
     }
 }

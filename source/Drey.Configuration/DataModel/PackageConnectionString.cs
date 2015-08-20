@@ -3,10 +3,10 @@
     public class PackageConnectionString : DataModelBase
     {
         /// <summary>
-        /// Gets or sets the package this connection string is associated with.
+        /// Gets or sets the package identifier.
         /// </summary>
-        public RegisteredPackage Package { get; set; }
-        
+        public string PackageId { get; set; }
+
         /// <summary>
         /// Gets or sets the name.
         /// </summary>

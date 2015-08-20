@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Drey.Server.Models
+﻿namespace Drey.Configuration.DataModel
 {
     public class Package
     {

@@ -29,7 +29,7 @@ namespace Samples.Server.Stores
                 .Select(rGrp => new Package
                 {
                     Id = rGrp.Key,
-                    Description = rGrp.OrderByDescending(item => item.Version).First().Description
+                    Title = rGrp.OrderByDescending(item => item.Version).First().Title
                 }
             ));
         }

@@ -45,6 +45,9 @@
     <Reference Include="FluentMigrator.Runner">
       <HintPath>..\..\packages\FluentMigrator.1.6.0\tools\FluentMigrator.Runner.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Web.XmlTransform">
+      <HintPath>..\..\packages\Microsoft.Web.Xdt.2.1.1\lib\net40\Microsoft.Web.XmlTransform.dll</HintPath>
+    </Reference>
     <Reference Include="Nancy">
       <HintPath>..\..\packages\Nancy.1.2.0\lib\net40\Nancy.dll</HintPath>
     </Reference>
@@ -56,6 +59,10 @@
     </Reference>
     <Reference Include="Nancy.ViewEngines.Razor">
       <HintPath>..\..\packages\Nancy.Viewengines.Razor.1.2.0\lib\net40\Nancy.ViewEngines.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="NuGet.Core, Version=2.8.60717.93, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\NuGet.Core.2.8.6\lib\net40-Client\NuGet.Core.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -86,6 +93,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Bootstrapper.cs" />
+    <Compile Include="DataModel\Package.cs" />
     <Compile Include="DataModel\Release.cs" />
     <Compile Include="Extensions\EnumerableExtensions.cs" />
     <Compile Include="Infrastructure\Events\RecycleApp.cs" />
@@ -99,7 +107,6 @@
     <Compile Include="DataModel\GlobalSetting.cs" />
     <Compile Include="DataModel\IEntity.cs" />
     <Compile Include="DataModel\PackageConnectionString.cs" />
-    <Compile Include="DataModel\RegisteredPackage.cs" />
     <Compile Include="DataModel\PackageSetting.cs" />
     <Compile Include="Infrastructure\Schema\0100\201508132117_Create_BaseTables.cs" />
     <Compile Include="Modules\HomeModule.cs" />
@@ -118,8 +125,8 @@
     <Compile Include="ServiceModel\PollingClientCollection.cs" />
     <Compile Include="Services\GlobalSettingsService.cs" />
     <Compile Include="Services\IGlobalSettingsService.cs" />
+    <Compile Include="Services\IPackageService.cs" />
     <Compile Include="Services\PackageService.cs" />
-    <Compile Include="Services\ShellService.cs" />
     <Compile Include="Services\ViewModels\GlobalSettingsPmo.cs" />
   </ItemGroup>
   <ItemGroup>

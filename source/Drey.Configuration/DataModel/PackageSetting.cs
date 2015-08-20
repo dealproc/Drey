@@ -3,10 +3,10 @@
     public class PackageSetting : DataModelBase
     {
         /// <summary>
-        /// Gets or sets the package this setting is associated with.
+        /// Gets or sets the package identifier.
         /// </summary>
-        public RegisteredPackage Package { get; set; }
-        
+        public string PackageId { get; set; }
+
         /// <summary>
         /// Gets or sets the lookup key for this setting.
         /// </summary>

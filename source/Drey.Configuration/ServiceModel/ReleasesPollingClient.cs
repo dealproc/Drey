@@ -19,18 +19,18 @@ namespace Drey.Configuration.ServiceModel
         readonly Drey.Nut.INutConfiguration _configurationManager;
         readonly Services.IGlobalSettingsService _globalSettingsService;
         readonly Services.PackageService _packageService;
-        readonly DataModel.RegisteredPackage _package;
+        readonly string _packageId;
 
         Task _pollingClientTask;
         CancellationToken _ct;
 
         public ReleasesPollingClient(Drey.Nut.INutConfiguration configurationManager, Services.IGlobalSettingsService globalSettingsService,
-            Services.PackageService packageService, DataModel.RegisteredPackage package)
+            Services.PackageService packageService, string packageId)
         {
             _configurationManager = configurationManager;
             _globalSettingsService = globalSettingsService;
             _packageService = packageService;
-            _package = package;
+            _packageId = packageId;
         }
 
         public void Start(CancellationToken ct)
@@ -48,19 +48,23 @@ namespace Drey.Configuration.ServiceModel
                 {
                     // poll the releases endpoint
                     var webClient = _globalSettingsService.GetHttpClient();
-                    var queryForReleases = await webClient.GetAsync("/.well-known/releases/" + _package.PackageId);
+                    var queryForReleases = await webClient.GetAsync("/.well-known/releases/" + _packageId);
                     var discoveredReleases = await queryForReleases.Content.ReadAsAsync<IEnumerable<DataModel.Release>>();
 
                     // diff the response with the known releases.
-                    var newReleases = _packageService.Diff(_package.PackageId, discoveredReleases);
+                    var newReleases = _packageService.Diff(_packageId, discoveredReleases);
 
                     // if the response has new:
                     if (newReleases.Any())
                     {
-                        newReleases.Apply(x => x.Package = _package);
-
                         // determine latest
-                        var releaseToDownload = _packageService.GetReleases(_package).Concat(newReleases).OrderByDescending(pkg => pkg.Ordinal).SingleOrDefault();
+                        var releaseToDownload = _packageService
+                            .GetReleases(_packageId)
+                            .Concat(newReleases)
+                            .Select(dbRel => new { release = dbRel, Version = new NuGet.SemanticVersion(dbRel.Version) })
+                            .OrderByDescending(x=>x.Version)
+                            .First()
+                            .release;
 
                         // download latest, based on SHA (storage in {hordebasedir}\packages
                         var fileResult = await webClient.GetAsync("/.well-known/releases/download/" + releaseToDownload.SHA1);

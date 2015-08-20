@@ -10,50 +10,45 @@ namespace Drey.Configuration.Repositories.SQLiteRepositories
     {
         public PackageRepository(INutConfiguration configurationManager) : base(configurationManager) { }
 
-        public IEnumerable<DataModel.RegisteredPackage> GetRegisteredPackages()
+        public IEnumerable<DataModel.Package> GetPackages()
         {
-            return Execute(cn => cn.Query<DataModel.RegisteredPackage>("SELECT * FROM RegisteredPackages"));
-        }
-
-        public DataModel.RegisteredPackage GetPackage(string packageId)
-        {
-            return Execute(cn => cn.Query<DataModel.RegisteredPackage>("SELECT * FROM RegisteredPackages WHERE PackageId = @packageId", new { packageId = packageId }).SingleOrDefault());
-        }
-
-        public void Store(DataModel.RegisteredPackage package)
-        {
-            if (GetPackage(package.PackageId) == null)
-            {
-                Execute(cn =>
-                {
-                    var id = cn.ExecuteScalar<int>(@"INSERT INTO RegisteredPackages (PackageId, CreatedOn, UpdatedOn) 
-VALUES(@packageId, @createdOn, @updatedOn); 
-select last_insert_rowid();",
-                        new { packageId = package.PackageId, createdOn = DateTime.Now, updatedOn = DateTime.Now });
-                    package.Id = id;
-                    return package;
-                });
-            }
+            return Execute(cn => cn.Query<DataModel.Package>("SELECT Id, First(Title) as Title FROM Releases GROUP BY Id"));
         }
 
         public IEnumerable<DataModel.Release> GetReleases(string packageId)
         {
-            return Execute(cn =>
-                cn.Query<DataModel.Release>(@"SELECT Releases.* FROM RELEASES JOIN RegisteredPackages ON Releases.RegisteredPackageId = RegisteredPackages.Id WHERE RegisteredPackages.PackageId = @packageId", new { packageId = packageId })
-            );
+            return Execute(cn => cn.Query<DataModel.Release>(@"SELECT * FROM RELEASES WHERE Id = @packageId", new { packageId = packageId }));
         }
 
         public DataModel.Release Store(DataModel.Release release)
         {
-            if (release.Package == null) { throw new NullReferenceException("Package has not been assigned to this release."); }
-
             return Execute(cn =>
             {
-                var id = cn.ExecuteScalar<int>(@"INSERT INTO Releases (RegisteredPackageId, SHA1, Filename, Ordinal, CreatedOn, UpdatedOn) 
-VALUES (@registeredPackageId, @sha1, @fileName, @ordinal, @createdOn, @updatedOn);
-select last_insert_rowid();",
-                    new { registeredPackageId = release.Package.Id, sha1 = release.SHA1, fileName = release.Filename, ordinal = release.Ordinal, createdOn = DateTime.Now, updatedOn = DateTime.Now });
-                release.Id = id;
+                var sqlParams = new { registeredPackageId = release.Id, sha1 = release.SHA1, fileName = release.Filename, createdOn = DateTime.Now, updatedOn = DateTime.Now };
+
+                if (0 == cn.ExecuteScalar<int>("SELECT count(*) from Releases WHERE Id = @id AND Version = @version", sqlParams))
+                {
+                    cn.Execute(@"INSERT INTO Releases (Id, Version, Description, IconUrl, Listed, Published, ReleaseNotes, Summary, Tags, Title, SHA1, Filename, CreatedOn, UpdatedOn) 
+VALUES (@id, @version, @description, @iconUrl, @listed, @published, @releaseNotes, @summary, @tags, @title, @sha1, @filename, @createdOn, @updatedOn);", sqlParams);
+                }
+                else
+                {
+                    cn.Execute(
+@"UPDATE Releases SET 
+    Description = @description,
+    IconUrl = @iconUrl,
+    Listed = @listed,
+    Published = @published,
+    ReleaseNotes = @releaseNotes,
+    Summary = @summary,
+    Tags = @tags,
+    Title = @title,
+    SHA1 = @sha1,
+    Filename = @filename,
+    UpdatedOn = @updatedOn
+WHERE Id = @id AND Version = @version;
+", sqlParams);
+                }
                 return release;
             });
         }

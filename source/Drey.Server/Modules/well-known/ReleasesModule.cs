@@ -22,10 +22,16 @@ namespace Drey.Server.Modules.well_known
         {
             _packageService = packageService;
 
+            Get["/packages", runAsync: true] = GetSubscribedPackages;
             Get["/{id}/{version}", runAsync: true] = DownloadReleaseAsync;
             Get["/{id}", runAsync: true] = GetPackageReleasesAsync;
 
             this.Before.AddItemToEndOfPipeline(ctx => { _Log.Trace(ctx.Request.Url); return (Response)null; });
+        }
+
+        private async Task<dynamic> GetSubscribedPackages(dynamic args, CancellationToken ct)
+        {
+            return await _packageService.GetPackagesAsync();
         }
 
         private async Task<dynamic> GetPackageReleasesAsync(dynamic args, CancellationToken ct)
@@ -35,9 +41,9 @@ namespace Drey.Server.Modules.well_known
                 _Log.Trace("Attempting to list releases for package id: " + (string)args.id);
                 var releases = await _packageService.GetReleasesAsync((string)args.id);
 
-                if (releases.Any()) 
-                { 
-                    return releases; 
+                if (releases.Any())
+                {
+                    return releases;
                 }
 
                 return ((Response)"No packages have been found.").StatusCode = HttpStatusCode.NotFound;
@@ -68,7 +74,7 @@ namespace Drey.Server.Modules.well_known
             }
             catch (InvalidDataException ex)
             {
-                _Log.InfoFormat("Could not retrieve package: {0} {1}", id,version);
+                _Log.InfoFormat("Could not retrieve package: {0} {1}", id, version);
                 return ((Response)ex.Message).StatusCode = HttpStatusCode.NotFound;
             }
             catch (Exception ex)

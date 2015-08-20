@@ -37,6 +37,13 @@
     <Reference Include="FakeItEasy">
       <HintPath>..\..\packages\FakeItEasy.1.25.3\lib\net40\FakeItEasy.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Web.XmlTransform">
+      <HintPath>..\..\packages\Microsoft.Web.Xdt.2.1.1\lib\net40\Microsoft.Web.XmlTransform.dll</HintPath>
+    </Reference>
+    <Reference Include="NuGet.Core, Version=2.8.60717.93, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\NuGet.Core.2.8.6\lib\net40-Client\NuGet.Core.dll</HintPath>
+    </Reference>
     <Reference Include="Shouldly">
       <HintPath>..\..\packages\Shouldly.2.5.0\lib\net40\Shouldly.dll</HintPath>
     </Reference>
@@ -73,6 +80,7 @@
       <DependentUpon>SampleFiles.resx</DependentUpon>
     </Compile>
     <Compile Include="Services\GlobalSettingsServiceTests.cs" />
+    <Compile Include="Services\PackageServiceTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\source\Drey.Configuration\Drey.Configuration.csproj">

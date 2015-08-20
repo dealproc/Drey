@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Drey.Configuration.Services
 {
-    public class PackageService
+    public class PackageService : IPackageService
     {
         IPackageRepository _packageRepository;
 
@@ -16,34 +16,14 @@ namespace Drey.Configuration.Services
             _packageRepository = packageRepository;
         }
 
-        public IEnumerable<DataModel.RegisteredPackage> GetRegisteredPackages()
+        public IEnumerable<DataModel.Release> GetReleases(string packageId)
         {
-            return _packageRepository.GetRegisteredPackages();
+            return _packageRepository.GetReleases(packageId);
         }
 
-        public IEnumerable<DataModel.RegisteredPackage> RegisterNewPackages(IEnumerable<DataModel.RegisteredPackage> packages)
+        public IEnumerable<DataModel.Package> GetPackages()
         {
-            var knownPackages = GetRegisteredPackages().Select(p => p.PackageId).ToArray();
-            var toRegister = packages.Where(p => !knownPackages.Contains(p.PackageId)).ToArray();
-            return toRegister.Select(r => Register(r.PackageId));
-        }
-
-        public DataModel.RegisteredPackage Register(string packageId)
-        {
-            DataModel.RegisteredPackage package = null;
-
-            if ((package = _packageRepository.GetPackage(packageId)) == null)
-            {
-                package = new DataModel.RegisteredPackage { PackageId = packageId };
-                _packageRepository.Store(package);
-            }
-
-            return package;
-        }
-
-        public DataModel.RegisteredPackage GetPackage(string packageId)
-        {
-            return _packageRepository.GetPackage(packageId);
+            return _packageRepository.GetPackages();
         }
 
         /// <summary>
@@ -56,11 +36,6 @@ namespace Drey.Configuration.Services
         {
             var appliedSHAs = _packageRepository.GetReleases(packageId).Select(x => x.SHA1).ToArray();
             return discoveredReleases.Where(d => !appliedSHAs.Contains(d.SHA1));
-        }
-
-        public IEnumerable<DataModel.Release> GetReleases(DataModel.RegisteredPackage package)
-        {
-            return _packageRepository.GetReleases(package.PackageId);
         }
 
         public void RecordReleases(IEnumerable<DataModel.Release> newReleases)
