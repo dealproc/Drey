@@ -18,13 +18,13 @@ namespace Drey.Server.Modules.well_known
         readonly IPackageService _packageService;
 
         public ReleasesModule(IPackageService packageService)
-            : base("/.well-known/releases")
+            : base("/.well-known")
         {
             _packageService = packageService;
 
             Get["/packages", runAsync: true] = GetSubscribedPackages;
-            Get["/{id}/{version}", runAsync: true] = DownloadReleaseAsync;
-            Get["/{id}", runAsync: true] = GetPackageReleasesAsync;
+            Get["/releases/{id}/{version}", runAsync: true] = DownloadReleaseAsync;
+            Get["/releases/{id}", runAsync: true] = GetPackageReleasesAsync;
 
             this.Before.AddItemToEndOfPipeline(ctx => { _Log.Trace(ctx.Request.Url); return (Response)null; });
         }

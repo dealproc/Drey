@@ -1,16 +1,23 @@
 <?xml version="1.0"?>
 <package >
   <metadata>
-    <id>$id$</id>
+    <id>Drey.Server</id>
     <version>$version$</version>
-    <title>$title$</title>
-    <authors>$author$</authors>
-    <owners>$author$</owners>
+    <title>Drey - Nuget Package Server</title>
+    <authors>Richard Bennett</authors>
+    <owners>Richard Bennett</owners>
     <licenseUrl>https://github.com/dealproc/Drey/blob/master/LICENSE</licenseUrl>
     <projectUrl>https://github.com/dealproc/Drey</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>$description$</description>
+    <description>Drey - Nuget Package Server</description>
     <releaseNotes></releaseNotes>
     <copyright>Copyright 2015 - Richard Bennett</copyright>
+    <dependencies>
+      <dependency id="Nancy" version="1.2.0" />
+      <dependency id="Nuget.Core" version="2.8.6" />
+    </dependencies>
   </metadata>
+  <files>
+    <file src="bin\$configuration$\Drey.Server.dll" target="lib\net451" />
+  </files>
 </package>

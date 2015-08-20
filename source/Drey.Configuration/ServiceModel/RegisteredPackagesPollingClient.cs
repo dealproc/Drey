@@ -1,5 +1,5 @@
-﻿using Drey.Nut;
-
+﻿using Drey.Logging;
+using Drey.Nut;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +11,8 @@ namespace Drey.Configuration.ServiceModel
 {
     class RegisteredPackagesPollingClient : IPollingClient
     {
+        static readonly ILog _Log = LogProvider.For<RegisteredPackagesPollingClient>();
+
         const int DELAY_TIME_MS = 60;
 
         readonly INutConfiguration _configurationManager;
@@ -46,21 +48,39 @@ namespace Drey.Configuration.ServiceModel
         {
             while (!_ct.IsCancellationRequested)
             {
-                var webClient = _globalSettingsService.GetHttpClient();
+                List<DataModel.Package> newPackages;
 
-                var packages = webClient.GetAsync("/.well-known/packages").Result.Content.ReadAsAsync<IEnumerable<DataModel.Package>>().Result;
-
-                var knownPackages = _packageService.GetPackages().Select(pkg=>pkg.Id).ToArray();
-                var newPackages = packages.Where(p => !knownPackages.Contains(p.Id)).ToList();
-
-
-                if (newPackages.Any())
+                try
                 {
-                    var clients = newPackages.Select(p => new ReleasesPollingClient(_configurationManager, _globalSettingsService, _packageService, p.Id));
-                    foreach (var client in clients)
+                    var webClient = _globalSettingsService.GetHttpClient();
+
+                    var webClientResponse = await webClient.GetAsync("/.well-known/packages");
+                    webClientResponse.EnsureSuccessStatusCode();
+
+                    var packages = await webClientResponse.Content.ReadAsAsync<IEnumerable<DataModel.Package>>();
+
+                    var knownPackages = _packageService.GetPackages().Select(pkg => pkg.Id).ToArray();
+                    newPackages = packages.Where(p => !knownPackages.Contains(p.Id)).ToList();
+
+
+                    if (newPackages.Any())
                     {
-                        _pollingClients.Add(client);
+                        var clients = newPackages.Select(p => new ReleasesPollingClient(_configurationManager, _globalSettingsService, _packageService, p.Id));
+                        foreach (var client in clients)
+                        {
+                            _pollingClients.Add(client);
+                        }
                     }
+                }
+                catch (HttpRequestException exc)
+                {
+                    _Log.Info("Package server could not be contacted.");
+                    Task.Delay(TimeSpan.FromSeconds(DELAY_TIME_MS), _ct).Wait();
+                }
+                catch (Exception exc)
+                {
+                    _Log.ErrorException("While discovering new packages", exc);
+                    Task.Delay(TimeSpan.FromSeconds(DELAY_TIME_MS), _ct).Wait();
                 }
 
                 Console.WriteLine("Waiting {0} seconds before re-checking for new releases.", DELAY_TIME_MS);
@@ -70,7 +90,7 @@ namespace Drey.Configuration.ServiceModel
                 }
                 catch (Exception)
                 {
-
+                    // squashing.
                 }
             }
         }

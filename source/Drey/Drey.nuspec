@@ -1,19 +1,20 @@
 <?xml version="1.0"?>
 <package >
   <metadata>
-    <id>$id$</id>
+    <id>Drey</id>
     <version>$version$</version>
-    <title>$title$</title>
-    <authors>$author$</authors>
-    <owners>$author$</owners>
+    <title>Drey</title>
+    <authors>Richard Bennett</authors>
+    <owners>Richard Bennett</owners>
     <licenseUrl>https://github.com/dealproc/Drey/blob/master/LICENSE</licenseUrl>
     <projectUrl>https://github.com/dealproc/Drey</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>$description$</description>
+    <description>Drey - Automated System Update(s)</description>
     <releaseNotes></releaseNotes>
     <copyright>Copyright 2015 - Richard Bennett</copyright>
   </metadata>
   <files>
-    <file src="..\..\package\drey.configuration-$version$.zip" target="build\" />
+    <file src="bin\$configuration$\**\*.*" target="lib\net451\" />
+    <file src=".\..\..\package\drey.configuration.$version$.nupkg" target="build\" />
   </files>
 </package>

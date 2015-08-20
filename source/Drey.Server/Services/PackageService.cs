@@ -39,14 +39,14 @@ namespace Drey.Server.Services
             {
                 FileContents = fileContent,
                 MimeType = "application/zip",
-                Filename = string.Format("{0}-{1}.nupkg", releaseInfo.Id, releaseInfo.Version)
+                Filename = string.Format("{0}.{1}.nupkg", releaseInfo.Id, releaseInfo.Version)
             };
         }
 
         public async Task<Models.Release> SyndicateAsync(Stream stream)
         {
             ZipPackage package = new ZipPackage(stream);
-            var storageFilename = string.Format("{0}-{1}.nupkg", package.Id, package.Version);
+            var storageFilename = string.Format("{0}.{1}.nupkg", package.Id, package.Version);
 
             Models.Release release = await _releaseStore.GetAsync(package.Id, package.Version.ToString());
 

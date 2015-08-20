@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Version Condition=" '$(BuildNumber)' == '' ">1.0.0.0</Version>
+    <Version Condition=" '$(BuildNumber)' != '' ">$(BuildNumber)</Version>
+  </PropertyGroup>
+  
+  <ItemGroup>
+    <NuspecFiles Include="$(SolutionDir)**\*.nuspec" Exclude="Drey.nuspec" />
+  </ItemGroup>
+
+  <Target Name="Build">
+    <Message Text="%(NuspecFiles.Identity)" />
+
+    <Exec WorkingDirectory="$(SolutionDir)"
+          Command=".nuget\nuget.exe pack %(NuspecFiles.Identity) -NoDefaultExcludes -OutputDirectory &quot;$(SolutionDir)Package&quot; -Version $(Version) -Properties &quot;configuration=$(Configuration)&quot;" />
+  </Target>
+</Project>

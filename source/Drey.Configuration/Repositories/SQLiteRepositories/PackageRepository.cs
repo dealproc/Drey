@@ -12,7 +12,7 @@ namespace Drey.Configuration.Repositories.SQLiteRepositories
 
         public IEnumerable<DataModel.Package> GetPackages()
         {
-            return Execute(cn => cn.Query<DataModel.Package>("SELECT Id, First(Title) as Title FROM Releases GROUP BY Id"));
+            return Execute(cn => cn.Query<DataModel.Package>("SELECT Id, Min(Title) as Title FROM Releases GROUP BY Id"));
         }
 
         public IEnumerable<DataModel.Release> GetReleases(string packageId)

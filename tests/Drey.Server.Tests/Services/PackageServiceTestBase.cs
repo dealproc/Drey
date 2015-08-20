@@ -65,7 +65,7 @@ namespace Drey.Server.Tests.Services
         {
             string packageId = "test.package";
             string version = "1.0.0.0";
-            string relative_url = string.Format("{0}-{1}.nupkg", packageId, version);
+            string relative_url = string.Format("{0}.{1}.nupkg", packageId, version);
 
             A.CallTo(() => _releaseStore.GetAsync(A<string>.Ignored, A<string>.Ignored)).Returns(new Models.Release { Id = packageId, Version = version, RelativeUri = relative_url });
             A.CallTo(() => _fileService.DownloadBlobAsync(A<string>.That.IsEqualTo(relative_url))).Returns(new MemoryStream(Resources.Files.validzipfile));

@@ -14,7 +14,7 @@
     <AssemblyName>Drey.Configuration</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <OutputPath>..\..\horde\drey.configuration-$(Version)\</OutputPath>
+    <OutputPath>build\$(Configuration)</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <NuGetPackageImportStamp>632ee53e</NuGetPackageImportStamp>
@@ -137,6 +137,7 @@
     <EmbeddedResource Include="fonts\glyphicons-halflings-regular.woff" />
     <EmbeddedResource Include="fonts\glyphicons-halflings-regular.woff2" />
     <None Include="app.config" />
+    <None Include="Drey.Configuration.nuspec" />
     <None Include="packages.config" />
     <EmbeddedResource Include="Views\Home\index.cshtml" />
     <EmbeddedResource Include="Scripts\jquery-2.1.4.min.map" />
@@ -162,7 +163,7 @@
     <ProjectReference Include="..\Drey\Drey.csproj">
       <Project>{6403704c-14d9-4069-ad3d-8eeef95f499c}</Project>
       <Name>Drey</Name>
-      <Private>False</Private>
+      <Private>True</Private>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -177,19 +178,18 @@
     <Error Condition="!Exists('..\..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets'))" />
     <Error Condition="!Exists('..\..\packages\System.Data.SQLite.Core.1.0.98.0\build\net451\System.Data.SQLite.Core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\System.Data.SQLite.Core.1.0.98.0\build\net451\System.Data.SQLite.Core.targets'))" />
   </Target>
-  <Import Project="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.targets" />
-  <Target Name="Zip-Binaries">
-    <ItemGroup>
-      <BinDirectoryFiles Include="$(OutputPath)**\*.*" />
-    </ItemGroup>
-    <Zip Files="@(BinDirectoryFiles)" WorkingDirectory="$(OutputPath)" ZipFileName="$(PackagePath)drey.configuration-$(Version).zip" />
-  </Target>
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <Target Name="BeforeBuild">
     <RemoveDir Directories="$(OutputPath)" />
+    <RemoveDir Directories="$(SolutionDir)\horde\drey.configuration-$(Version)" />
   </Target>
   <Target Name="AfterBuild" DependsOnTargets="CopySQLiteInteropFiles">
-    <CallTarget Targets="Zip-Binaries" />
+    <MakeDir Directories="$(SolutionDir)\horde\drey.configuration-$(Version)" />
+    <ItemGroup>
+      <BinDirectoryFiles Include="$(OutputPath)**\*.*" Exclude="**\Drey.dll;**\Drey.pdb" />
+    </ItemGroup>
+    <Copy SourceFiles="@(BinDirectoryFiles)" 
+          DestinationFiles="@(BinDirectoryFiles->'$(SolutionDir)\horde\drey.configuration-$(Version)\%(RecursiveDir)%(Filename)%(Extension)')" />    
   </Target>
   <Import Project="..\..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets" Condition="Exists('..\..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" />
   <Import Project="..\..\packages\System.Data.SQLite.Core.1.0.98.0\build\net451\System.Data.SQLite.Core.targets" Condition="Exists('..\..\packages\System.Data.SQLite.Core.1.0.98.0\build\net451\System.Data.SQLite.Core.targets')" />
