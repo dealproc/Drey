@@ -9,6 +9,7 @@ namespace Drey.Server.Tests.Fixtures
 {
     public class ReleasesStorage : IReleaseStore
     {
+        readonly string test_package = "test.package-1.0.0.0.nupkg";
         readonly IFileService _fileService;
         readonly List<Models.Release> _releases;
 
@@ -16,11 +17,13 @@ namespace Drey.Server.Tests.Fixtures
         {
             _fileService = fileService;
 
-            var wasDeleted = _fileService.DeleteAsync("test.package-1.0.0.0.nupkg").Result;
-            var relativeZipUri = _fileService.StoreAsync("test.package-1.0.0.0.nupkg", new MemoryStream(Resources.Files.validzipfile)).Result;
+            if (File.Exists(Path.Combine(TestNancyBootstrapper.TEST_PACKAGE_DIR, test_package)))
+            {
+                File.WriteAllBytes(Path.Combine(TestNancyBootstrapper.TEST_PACKAGE_DIR, test_package), Resources.Files.validzipfile);
+            }
             _releases = new List<Models.Release> 
             {
-                new Models.Release { Id = "test.package", Version = "1.0.0.0", Description = "A package for testing purposes.", Title = "A Test Package", RelativeUri = relativeZipUri }
+                new Models.Release { Id = "test.package", Version = "1.0.0.0", Description = "A package for testing purposes.", Title = "A Test Package", RelativeUri = test_package }
             };
         }
 

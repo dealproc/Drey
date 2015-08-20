@@ -12,6 +12,7 @@ using Xunit;
 
 namespace Drey.Server.Tests.Services
 {
+    [Collection("Package Management")]
     public class PackageServiceTestBase
     {
         IReleaseStore _releaseStore;
@@ -79,11 +80,18 @@ namespace Drey.Server.Tests.Services
         [Theory]
         [InlineData("test.package", "")]
         [InlineData("unknown", "1.0.0.0")]
-        public void ThrowsExceptionOnInvalidIdOrVersion(string id, string version)
+        public async Task ThrowsExceptionOnInvalidIdOrVersion(string id, string version)
         {
             A.CallTo(() => _releaseStore.GetAsync(A<string>.Ignored, A<string>.Ignored)).Returns(default(Models.Release));
 
-            Should.Throw<InvalidDataException>(async () => await _SUT.GetReleaseAsync(id, version));
+            await Assert.ThrowsAsync<InvalidDataException>(() => _SUT.GetReleaseAsync(id, version));
+        }
+
+
+        [Fact(Skip = "Requires a valid nuget package with known values.")]
+        public void SyndicatesAPackage()
+        {
+
         }
 
 
@@ -101,11 +109,11 @@ namespace Drey.Server.Tests.Services
         [Theory]
         [InlineData("bad.package", "0.0.0.0")]
         [InlineData("test.package", "0.0.0.0")]
-        public void ShouldThrow_FileNotFoundException_WithBad(string id, string version)
+        public async Task ShouldThrow_FileNotFoundException_WithBad(string id, string version)
         {
             A.CallTo(() => _releaseStore.GetAsync(A<string>.That.IsEqualTo(id), A<string>.That.IsEqualTo(version))).Returns(default(Models.Release));
 
-            Should.Throw<FileNotFoundException>(async () => await _SUT.DeleteAsync(id, version));
+            await Assert.ThrowsAsync<FileNotFoundException>(() => _SUT.DeleteAsync(id, version));
         }
     }
 }
