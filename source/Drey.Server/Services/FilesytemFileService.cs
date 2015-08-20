@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Drey.Server.Services
@@ -31,7 +29,10 @@ namespace Drey.Server.Services
         public async Task<string> StoreAsync(string fileName, System.IO.Stream stream)
         {
             var fileNameAndPath = Path.Combine(_baseFolder, fileName);
-
+            if (!Directory.Exists(_baseFolder))
+            {
+                Directory.CreateDirectory(_baseFolder);
+            }
             using (var file = System.IO.File.OpenWrite(fileNameAndPath))
             {
                 await stream.CopyToAsync(file);
@@ -50,7 +51,13 @@ namespace Drey.Server.Services
         /// <exception cref="System.NotImplementedException"></exception>
         public Task<System.IO.Stream> DownloadBlobAsync(string filename)
         {
-            return Task.FromResult((System.IO.Stream)File.OpenRead(Path.Combine(_baseFolder, filename)));
+            var fullNameAndPath = Path.Combine(_baseFolder, filename);
+            return Task.FromResult(
+                File.Exists(fullNameAndPath) ?
+                    (Stream)File.OpenRead(fullNameAndPath)
+                    :
+                    default(Stream)
+            );
         }
 
         /// <summary>
@@ -60,6 +67,8 @@ namespace Drey.Server.Services
         /// <exception cref="System.NotImplementedException"></exception>
         public Task<IEnumerable<string>> EnumerateFilesAsync()
         {
+            if (!Directory.Exists(_baseFolder)) { return Task.FromResult(Enumerable.Empty<string>()); }
+
             var files = Directory.GetFiles(_baseFolder)
                 .Select(x =>
                 {
@@ -85,6 +94,8 @@ namespace Drey.Server.Services
         public Task<bool> DeleteAsync(string filename)
         {
             var fullPath = Path.Combine(_baseFolder, filename.Replace('/', '\\'));
+            if (!Directory.Exists(_baseFolder)) return Task.FromResult(true);
+
             var fInfo = new FileInfo(fullPath);
             if (fInfo.Exists)
             {

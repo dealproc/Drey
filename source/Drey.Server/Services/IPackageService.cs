@@ -1,16 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace Drey.Server.Services
 {
     public interface IPackageService
     {
-        bool Exists(string packageId);
-        IEnumerable<Models.Package> ListPackages();
-        void DeletePackage(string p);
-        IEnumerable<Models.Release> GetReleases(string packageId);
-        bool CreateRelease(string packageId, string fileName, Stream stream);
-        bool DeleteRelease(string sha);
-        Models.FileDownload GetRelease(string sha);
+        Task<Models.Release> SyndicateAsync(Stream stream);
+        Task<IEnumerable<Models.Package>> GetPackagesAsync();
+        Task<IEnumerable<Models.Release>> GetReleasesAsync(string id);
+        Task<Models.FileDownload> GetReleaseAsync(string id, string version);
+        Task DeleteAsync(string id, string version);
     }
 }

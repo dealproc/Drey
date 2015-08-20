@@ -43,11 +43,18 @@
     <Reference Include="FakeItEasy">
       <HintPath>..\..\packages\FakeItEasy.1.25.3\lib\net40\FakeItEasy.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Web.XmlTransform">
+      <HintPath>..\..\packages\Microsoft.Web.Xdt.2.1.1\lib\net40\Microsoft.Web.XmlTransform.dll</HintPath>
+    </Reference>
     <Reference Include="Nancy">
       <HintPath>..\..\packages\Nancy.1.2.0\lib\net40\Nancy.dll</HintPath>
     </Reference>
     <Reference Include="Nancy.Testing">
       <HintPath>..\..\packages\Nancy.Testing.1.2.0\lib\net40\Nancy.Testing.dll</HintPath>
+    </Reference>
+    <Reference Include="NuGet.Core, Version=2.8.60717.93, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\NuGet.Core.2.8.6\lib\net40-Client\NuGet.Core.dll</HintPath>
     </Reference>
     <Reference Include="Shouldly">
       <HintPath>..\..\packages\Shouldly.2.5.0\lib\net40\Shouldly.dll</HintPath>
@@ -70,9 +77,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Fixtures\PackageStore.cs" />
+    <Compile Include="Fixtures\ReleasesStorage.cs" />
+    <Compile Include="Modules\NugetUploadModuleTests.cs" />
     <Compile Include="NancyTestingBase.cs" />
-    <Compile Include="Modules\PackagesModuleTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Modules\ReleasesModuleTests.cs" />
     <Compile Include="Resources\Files.Designer.cs">
@@ -80,13 +87,6 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="Services\PackageServiceTests.cs" />
-    <Compile Include="Services\PackageService\CreateReleaseTests.cs" />
-    <Compile Include="Services\PackageService\DeletePackageTests.cs" />
-    <Compile Include="Services\PackageService\DeleteReleasesTests.cs" />
-    <Compile Include="Services\PackageService\GetReleasesTests.cs" />
-    <Compile Include="Services\PackageService\GetReleaseTests.cs" />
-    <Compile Include="Services\PackageService\ListPackagesTests.cs" />
     <Compile Include="TestNancyBootstrapper.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -102,7 +102,9 @@
   <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Services\" />
+  </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\Files.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>

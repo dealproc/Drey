@@ -1,79 +1,81 @@
-﻿using Drey.Server.Services;
+﻿using Drey.Server.Logging;
+using Drey.Server.Services;
+
 using Nancy;
+
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Drey.Server.Modules.well_known
 {
     public class ReleasesModule : NancyModule
     {
+        static readonly ILog _Log = LogProvider.For<ReleasesModule>();
         readonly IPackageService _packageService;
 
         public ReleasesModule(IPackageService packageService)
             : base("/.well-known/releases")
         {
-            this.Before.AddItemToEndOfPipeline(ctx => { Console.WriteLine(ctx.Request.Url); return (Response)null; });
-
             _packageService = packageService;
 
-            Get["/download/{sha}"] = GetRelease;
-            Get["/{packageId}"] = GetReleases;
-            Post["/{packageId}"] = StoreRelease;
-            Delete["/{packageId}/{sha}"] = DeleteRelease;
+            Get["/{id}/{version}", runAsync: true] = DownloadReleaseAsync;
+            Get["/{id}", runAsync: true] = GetPackageReleasesAsync;
+
+            this.Before.AddItemToEndOfPipeline(ctx => { _Log.Trace(ctx.Request.Url); return (Response)null; });
         }
 
-        private dynamic StoreRelease(dynamic arg)
-        {
-            if (!Request.Files.Any())
-            {
-                return ((Response)"Must upload a file.").StatusCode = HttpStatusCode.BadRequest;
-            }
-
-            var file = Request.Files.First();
-            var packageId = (string)arg.packageId;
-
-            try
-            {
-                if (_packageService.CreateRelease(packageId, file.Name, file.Value))
-                {
-                    return HttpStatusCode.Created;
-                };
-                return ((Response)"Your release was not created").StatusCode = HttpStatusCode.BadRequest;
-            }
-            catch (ArgumentNullException ex)
-            {
-                return ((Response)ex.Message).StatusCode = HttpStatusCode.BadRequest;
-            }
-            catch (ArgumentException ex)
-            {
-                return ((Response)ex.Message).StatusCode = HttpStatusCode.BadRequest;
-            }
-        }
-
-        private dynamic GetReleases(dynamic args)
+        private async Task<dynamic> GetPackageReleasesAsync(dynamic args, CancellationToken ct)
         {
             try
             {
-                return _packageService.GetReleases(args.packageId);
+                _Log.Trace("Attempting to list releases for package id: " + (string)args.id);
+                var releases = await _packageService.GetReleasesAsync((string)args.id);
+
+                if (releases.Any()) 
+                { 
+                    return releases; 
+                }
+
+                return ((Response)"No packages have been found.").StatusCode = HttpStatusCode.NotFound;
             }
             catch (KeyNotFoundException ex)
             {
+                _Log.ErrorException("Listing releases for a package id failed.\t Package Id: {0}", ex, (string)args.id);
                 return ((Response)ex.Message).StatusCode = HttpStatusCode.NotFound;
+            }
+            catch (Exception ex)
+            {
+                _Log.FatalException("Unknown error occurred.", ex);
+                return ((Response)"An unknown error occurred.  We will be investigating shortly.").StatusCode = HttpStatusCode.InternalServerError;
             }
         }
 
-        private dynamic GetRelease(dynamic arg)
+        private async Task<dynamic> DownloadReleaseAsync(dynamic args, CancellationToken ct)
         {
-            var file = _packageService.GetRelease((string)arg.sha);
-            var response = Response.FromStream(file.FileContents, file.MimeType);
-            response.Headers.Add("Content-Disposition", "attachment; filename=\"" + file.Filename + "\"");
-            return response;
-        }
+            string id = (string)args.id;
+            string version = (string)args.version;
 
-        private dynamic DeleteRelease(dynamic arg)
-        {
-            throw new System.NotImplementedException();
+            try
+            {
+                var file = await _packageService.GetReleaseAsync(id, version);
+                var response = Response.FromStream(file.FileContents, file.MimeType);
+                response.Headers.Add("Content-Disposition", "attachment; filename=\"" + file.Filename + "\"");
+                return response;
+            }
+            catch (InvalidDataException ex)
+            {
+                _Log.InfoFormat("Could not retrieve package: {0} {1}", id,version);
+                return ((Response)ex.Message).StatusCode = HttpStatusCode.NotFound;
+            }
+            catch (Exception ex)
+            {
+                _Log.ErrorException("Retrieval of a release failed.\nPackage Id: {0} Version: {1}", ex, id, version);
+                return ((Response)ex.Message).StatusCode = HttpStatusCode.InternalServerError;
+            }
         }
     }
 }

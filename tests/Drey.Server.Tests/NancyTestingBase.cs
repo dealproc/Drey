@@ -1,9 +1,10 @@
-﻿using Nancy;
-using Nancy.Bootstrapper;
+﻿using Nancy.Bootstrapper;
 using Nancy.Testing;
+using Xunit;
 
 namespace Drey.Server.Tests
 {
+    [Collection("Package Management")]
     public abstract class NancyTestingBase
     {
         INancyBootstrapper _bootstrapper;

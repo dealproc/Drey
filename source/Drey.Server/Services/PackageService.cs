@@ -1,88 +1,91 @@
-﻿using System;
+﻿using NuGet;
+using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace Drey.Server.Services
 {
     public class PackageService : IPackageService
     {
-        readonly IPackageStore _packageStore;
+        readonly IReleaseStore _releaseStore;
         readonly IFileService _fileService;
 
-        public PackageService(IPackageStore packageStore, IFileService fileService)
+        public PackageService(IReleaseStore releaseStore, IFileService fileService)
         {
-            _packageStore = packageStore;
+            _releaseStore = releaseStore;
             _fileService = fileService;
         }
-        public bool Exists(string packageId)
+
+        public Task<IEnumerable<Models.Package>> GetPackagesAsync()
         {
-            return _packageStore.Packages().Any(p => p.PackageId == packageId);
+            return _releaseStore.ListPackages();
         }
 
-        public IEnumerable<Models.Package> ListPackages()
+        public Task<IEnumerable<Models.Release>> GetReleasesAsync(string id)
         {
-            return _packageStore.Packages();
+            return _releaseStore.ListByIdAsync(id);
         }
 
-        public void DeletePackage(string packageId)
+        public async Task<Models.FileDownload> GetReleaseAsync(string id, string version)
         {
-            _packageStore.DeletePackage(packageId);
-        }
+            var releaseInfo = await _releaseStore.GetAsync(id, version);
 
-        public IEnumerable<Models.Release> GetReleases(string packageId)
-        {
-            return _packageStore.Releases(packageId);
-        }
+            if (releaseInfo == null) { throw new InvalidDataException(string.Format("Package {0} {1} does not exist.", id, version)); }
 
-        public bool CreateRelease(string packageId, string fileName, System.IO.Stream stream)
-        {
-            if (string.IsNullOrWhiteSpace(packageId)) { throw new ArgumentException("package id was not provided", "packageId"); }
-            if (string.IsNullOrWhiteSpace(fileName)) { throw new ArgumentException("filename was not provided.", "fileName"); }
-            if (stream == null) { throw new ArgumentNullException("stream"); }
-            if (stream.Length == 0) { throw new ArgumentException("package stream is empty.", "stream"); }
-
-            var storedFileReference = _fileService.StoreAsync(fileName, stream).Result;
-
-            Models.Package package;
-
-            if ((package = _packageStore.Packages().SingleOrDefault(p => p.PackageId == packageId)) == null)
-            {
-                package = new Models.Package { PackageId = packageId };
-                _packageStore.Store(package);
-            }
-
-            string checksum = Utilities.CalculateChecksum(stream);
-            var ordinal = package.Releases.Any() ? package.Releases.Max(r => r.Ordinal) + 1 : 1;
-            package.Releases.Add(new Models.Release { Filename = storedFileReference, Filesize = stream.Length, SHA1 = checksum, Ordinal = ordinal });
-            _packageStore.Store(package);
-
-            return true;
-        }
-
-        public Models.FileDownload GetRelease(string sha)
-        {
-            var release = _packageStore.Packages().SelectMany(x => x.Releases.Where(r => r.SHA1 == sha)).FirstOrDefault();
-            if (release == null) { throw new KeyNotFoundException("SHA does not exist."); }
-
-            var contents = _fileService.DownloadBlobAsync(release.Filename).Result;
+            var fileContent = await _fileService.DownloadBlobAsync(releaseInfo.RelativeUri);
 
             return new Models.FileDownload
             {
-                FileContents = contents,
-                Filename = release.Filename,
-                MimeType = "octet/stream"
+                FileContents = fileContent,
+                MimeType = "application/zip",
+                Filename = string.Format("{0}-{1}.nupkg", releaseInfo.Id, releaseInfo.Version)
             };
         }
 
-        public bool DeleteRelease(string sha)
+        public async Task<Models.Release> SyndicateAsync(Stream stream)
         {
-            var release = _packageStore.Packages().SelectMany(x => x.Releases.Where(r => r.SHA1 == sha)).FirstOrDefault();
-            if (release == null) { throw new KeyNotFoundException("SHA does not exist."); }
+            ZipPackage package = new ZipPackage(stream);
+            var storageFilename = string.Format("{0}-{1}.nupkg", package.Id, package.Version);
 
-            var wasSuccessful = _fileService.DeleteAsync(release.Filename).Result;
-            _packageStore.DeleteRelease(sha);
+            Models.Release release = await _releaseStore.GetAsync(package.Id, package.Version.ToString());
 
-            return true;
+            if (release == null)
+            {
+                // assume we need to publish a new release.
+                release = _releaseStore.Create();
+                release.Description = package.Description;
+                release.IconUrl = package.IconUrl;
+                release.Id = package.Id;
+                release.Listed = package.Listed;
+                release.Published = DateTimeOffset.Now;
+                release.ReleaseNotes = package.ReleaseNotes;
+                release.Summary = package.Summary;
+                release.Tags = package.Tags;
+                release.Title = package.Title;
+                release.Version = package.Version.ToString();
+            }
+
+            var streamSHA = Utilities.CalculateChecksum(stream);
+            if (!streamSHA.Equals(release.SHA1))
+            {
+                // update store.
+                await _fileService.DeleteAsync(storageFilename);
+
+                release.RelativeUri = await _fileService.StoreAsync(storageFilename, stream);
+                release.SHA1 = streamSHA;
+            }
+
+            return await _releaseStore.StoreAsync(release);
+        }
+
+        public async Task DeleteAsync(string id, string version)
+        {
+            var releaseInfo = await _releaseStore.GetAsync(id, version);
+            if (releaseInfo == null) { throw new FileNotFoundException("Package id/version does not exist."); }
+
+            await _releaseStore.DeleteAsync(id, version);
+            await _fileService.DeleteAsync(releaseInfo.RelativeUri);
         }
     }
 }

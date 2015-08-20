@@ -41,16 +41,16 @@
 // If you copied this file manually, you need to change all "YourRootNameSpace" so not to clash with other libraries
 // that use LibLog
 #if LIBLOG_PROVIDERS_ONLY
-namespace Drey.Configuration.DomainModel.LibLog
+namespace Drey.Server.LibLog
 #else
-namespace Drey.Configuration.DomainModel.Logging
+namespace Drey.Server.Logging
 #endif
 {
     using System.Collections.Generic;
 #if LIBLOG_PROVIDERS_ONLY
-    using Drey.Configuration.DomainModel.LibLog.LogProviders;
+    using Drey.Server.LibLog.LogProviders;
 #else
-    using Drey.Configuration.DomainModel.Logging.LogProviders;
+    using Drey.Server.Logging.LogProviders;
 #endif
     using System;
 #if !LIBLOG_PROVIDERS_ONLY
@@ -420,7 +420,7 @@ namespace Drey.Configuration.DomainModel.Logging
         /// The disable logging environment variable. If the environment variable is set to 'true', then logging
         /// will be disabled.
         /// </summary>
-        public const string DisableLoggingEnvironmentVariable = "Drey.Configuration.DomainModel_LIBLOG_DISABLE";
+        public const string DisableLoggingEnvironmentVariable = "Drey.Server_LIBLOG_DISABLE";
         private const string NullLogProvider = "Current Log Provider is not set. Call SetCurrentLogProvider " +
                                                "with a non-null value first.";
         private static dynamic s_currentLogProvider;
@@ -714,9 +714,9 @@ namespace Drey.Configuration.DomainModel.Logging
 }
 
 #if LIBLOG_PROVIDERS_ONLY
-namespace Drey.Configuration.DomainModel.LibLog.LogProviders
+namespace Drey.Server.LibLog.LogProviders
 #else
-namespace Drey.Configuration.DomainModel.Logging.LogProviders
+namespace Drey.Server.Logging.LogProviders
 #endif
 {
     using System;

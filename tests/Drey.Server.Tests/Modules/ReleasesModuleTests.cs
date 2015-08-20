@@ -11,7 +11,6 @@ using Xunit;
 
 namespace Drey.Server.Tests
 {
-    [Collection("Package Management")]
     public class ReleasesModuleTests : NancyTestingBase
     {
         [Theory]
@@ -33,44 +32,23 @@ namespace Drey.Server.Tests
             }
         }
 
+        [Fact]
+        public void WhenAnUnknownExceptionIsHandled_ServerShouldReturnA_5xx_Response()
+        {
+            var result = TestBrowser.Get(".well-known/releases/exception", with => with.HttpRequest());
+            
+            result.StatusCode.ShouldBe(HttpStatusCode.InternalServerError);
+        }
 
-        public static IEnumerable<object[]> BadPackage
-        {
-            get
-            {
-                return new[] { new object[] { "empty.package", "empty-program.1.0.0.0.zip", "octet/stream", new byte[0], HttpStatusCode.BadRequest }, };
-            }
-        }
-        public static IEnumerable<object[]> GoodPackage
-        {
-            get
-            {
-                return new[] { new object[] { "good.package", "good-program.1.0.0.0.zip", "octet/stream", Resources.Files.validzipfile, HttpStatusCode.Created }, };
-            }
-        }
         [Theory]
-        [MemberData("BadPackage")]
-        //[MemberData("GoodPackage")] RB: Skipping on 8/17/2015 due to known issue - the memorystream is not being emitted on the NancyModule.  Researching root cause and will rectify later.
-        public void Should_Create_A_Package(string packageId, string fileName, string mimeType, byte[] fileStream, HttpStatusCode expectedStatusCode)
+        [InlineData("test.package", "1.0.0.0", HttpStatusCode.OK)]
+        [InlineData("test.package", "1.0.0.1", HttpStatusCode.NotFound)]
+        [InlineData("unknown", "1.0.0.0", HttpStatusCode.NotFound)]
+        [InlineData("exception", "1.0.0.0", HttpStatusCode.InternalServerError)]
+        public void GettingAPackage_Tests(string id, string version, HttpStatusCode response)
         {
-            var ms = new MemoryStream(fileStream);
-            ms.Seek(0, 0);
-            var multiPart = new BrowserContextMultipartFormData(x =>
-            {
-                x.AddFile("file[]", fileName, mimeType, ms);
-            });
-
-            var result = TestBrowser.Post(".well-known/releases/" + packageId, with =>
-            {
-                with.HttpRequest();
-                with.MultiPartFormData(multiPart);
-            });
-
-            result.Context.Request.Files.Count().ShouldBe(1);
-            result.Context.Request.Files.First().Name.ShouldBe(fileName);
-            result.Context.Request.Files.First().ContentType.ShouldBe(mimeType);
-
-            result.StatusCode.ShouldBe(expectedStatusCode);
+            var result = TestBrowser.Get(string.Format(".well-known/releases/{0}/{1}", id, version), with => with.HttpRequest());
+            result.StatusCode.ShouldBe(response);
         }
     }
 }
