@@ -62,12 +62,12 @@ namespace Drey.Configuration.ServiceModel
                             .GetReleases(_packageId)
                             .Concat(newReleases)
                             .Select(dbRel => new { release = dbRel, Version = new NuGet.SemanticVersion(dbRel.Version) })
-                            .OrderByDescending(x=>x.Version)
+                            .OrderByDescending(x => x.Version)
                             .First()
                             .release;
 
                         // download latest, based on SHA (storage in {hordebasedir}\packages
-                        var fileResult = await webClient.GetAsync("/.well-known/releases/download/" + releaseToDownload.SHA1);
+                        var fileResult = await webClient.GetAsync("/.well-known/releases/" + releaseToDownload.Id + "/" + releaseToDownload.Version);
 
                         fileResult.EnsureSuccessStatusCode();
 
@@ -82,11 +82,15 @@ namespace Drey.Configuration.ServiceModel
                         var destinationFileNameAndPath = Path.Combine(_configurationManager.HordeBaseDirectory, "packages", fileName);
                         var destinationFolder = Path.GetDirectoryName(destinationFileNameAndPath);
 
-                        if (Directory.Exists(destinationFolder))
+                        if (!Directory.Exists(destinationFolder))
                         {
-                            Directory.Delete(destinationFolder, true);
+                            Directory.CreateDirectory(destinationFolder);
                         }
-                        Directory.CreateDirectory(destinationFolder);
+
+                        if (File.Exists(destinationFileNameAndPath))
+                        {
+                            File.Delete(destinationFileNameAndPath);
+                        }
 
                         Console.WriteLine("File will be stored at: '{0}'", destinationFileNameAndPath);
 
@@ -95,11 +99,11 @@ namespace Drey.Configuration.ServiceModel
                             await fileResult.Content.CopyToAsync(fStream);
                         }
 
-                        // unzip to {hoardbasedir}\{filename} without the extension
+                        var pkg = new NuGet.ZipPackage(destinationFileNameAndPath);
                         var zipFileInfo = new FileInfo(fileName);
                         var zipFolderName = zipFileInfo.Name;
                         zipFolderName = zipFolderName.Substring(0, zipFolderName.Length - zipFileInfo.Extension.Length);
-                        ZipFile.ExtractToDirectory(destinationFileNameAndPath, Path.Combine(_configurationManager.HordeBaseDirectory, zipFolderName));
+                        pkg.ExtractContents(new NuGet.PhysicalFileSystem(_configurationManager.HordeBaseDirectory), zipFolderName);
 
                         _packageService.RecordReleases(newReleases);
                     }

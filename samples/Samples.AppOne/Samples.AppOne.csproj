@@ -50,19 +50,14 @@
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Samples.AppOne.nuspec" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.targets" />
-  <Target Name="Zip-Binaries">
-    <Message Text="Zipping files to new package" />
-    <ItemGroup>
-      <BinDirectoryFiles Include="$(OutputPath)**\*.*" />
-    </ItemGroup>
-    <Zip Files="@(BinDirectoryFiles)" WorkingDirectory="$(OutputPath)" ZipFileName="$(PackagePath)samples.appone-$(Version).zip" />
-  </Target>
   <Target Name="BeforeBuild">
     <RemoveDir Directories="$(OutputPath)" />
   </Target>
   <Target Name="AfterBuild">
-    <CallTarget Targets="Zip-Binaries" />
   </Target>
 </Project>

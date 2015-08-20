@@ -9,12 +9,19 @@
   
   <ItemGroup>
     <NuspecFiles Include="$(SolutionDir)**\*.nuspec" Exclude="Drey.nuspec" />
+    <Samples Include="$(SolutionDir)package\Sample*.nupkg" />
   </ItemGroup>
 
   <Target Name="Build">
     <Message Text="%(NuspecFiles.Identity)" />
 
     <Exec WorkingDirectory="$(SolutionDir)"
-          Command=".nuget\nuget.exe pack %(NuspecFiles.Identity) -NoDefaultExcludes -OutputDirectory &quot;$(SolutionDir)Package&quot; -Version $(Version) -Properties &quot;configuration=$(Configuration)&quot;" />
+          Command=".nuget\nuget.exe pack %(NuspecFiles.Identity) -NoDefaultExcludes -NoPackageAnalysis -OutputDirectory &quot;$(SolutionDir)Package&quot; -Version $(Version) -Properties &quot;configuration=$(Configuration)&quot;" />
+  </Target>
+
+  <Target Name="Publish">
+    <Message Text="%(Samples.Identity)" />
+    <Exec WorkingDirectory="$(SolutionDir)"
+          Command=".nuget\nuget.exe push %(Samples.Identity) -Source http://localhost:81/ " />
   </Target>
 </Project>
