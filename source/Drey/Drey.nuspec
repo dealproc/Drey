@@ -15,9 +15,5 @@
   </metadata>
   <files>
     <file src="..\..\package\drey.configuration-$version$.zip" target="build\" />
-    
-    <file src="..\Drey.Client\bin\$configuration$\**\*.exe" exclude="..\Drey.Client\bin\$configuration$\**\*.vshost.exe" target="tools\" />
-    <file src="..\Drey.Client\bin\$configuration$\**\*.exe.config" exclude="..\Drey.Client\bin\$configuration$\**\*.vshost.exe.config" target="tools\" />
-    <file src="..\Drey.Client\bin\$configuration$\**\*.dll" target="tools\" />
   </files>
 </package>
