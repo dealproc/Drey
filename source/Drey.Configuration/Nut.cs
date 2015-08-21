@@ -5,16 +5,37 @@ using Nancy.Hosting.Self;
 
 using System;
 using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace Drey.Configuration
 {
-    public class Nut : IDisposable
+    public class Nut : MarshalByRefObject, IShell, IDisposable
     {
         INutConfiguration _configurationManager;
         IEventBus _eventBus;
         IDisposable _webApp;
 
-        public void Configuration(INutConfiguration configurationManager)
+        public string Id
+        {
+            get { return "Drey.Configuration"; }
+        }
+
+        public string NameDomainAs
+        {
+            get { return "Drey.Configuration"; }
+        }
+
+        public string DisplayAs
+        {
+            get { return "Drey Configuration Console"; }
+        }
+
+        public bool RequiresConfigurationStorage
+        {
+            get { return true; }
+        }
+
+        public void Startup(INutConfiguration configurationManager)
         {
             MigrationManager.Migrate(configurationManager);
 
@@ -23,7 +44,7 @@ namespace Drey.Configuration
 
             BuildApp();
 
-            var startupUri = string.Format("http://localhost:{0}/", _configurationManager.ApplicationSettings["drey.configuration.consoleport"]); 
+            var startupUri = string.Format("http://localhost:{0}/", _configurationManager.ApplicationSettings["drey.configuration.consoleport"]);
             Process.Start(startupUri);
         }
 
@@ -36,6 +57,11 @@ namespace Drey.Configuration
             host.Start();
 
             _webApp = host;
+        }
+
+        public Task Shutdown()
+        {
+            return Task.FromResult(0);
         }
 
         public void Dispose()

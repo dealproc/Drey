@@ -12,7 +12,7 @@ namespace Drey
     {
         ShellFactory _appFactory = new ShellFactory();
         INutConfiguration _nutConfiguration = new ApplicationHostNutConfiguration();
-        IShell _configurationShell = null;
+        Tuple<AppDomain, IShell> _configurationShell = null;
 
         public bool Start()
         {
@@ -31,8 +31,11 @@ namespace Drey
 
         public bool Stop()
         {
-            _configurationShell.Shutdown().Wait();
-            _configurationShell.Dispose();
+            _configurationShell.Item2.Shutdown().Wait();
+            _configurationShell.Item2.Dispose();
+            
+            AppDomain.Unload(_configurationShell.Item1);
+
             _configurationShell = null;
 
             return true;

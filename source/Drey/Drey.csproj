@@ -58,8 +58,8 @@
     <Compile Include="Nut\IShell.cs" />
     <Compile Include="Nut\ISupportShutdown.cs" />
     <Compile Include="Nut\DiscoverStartupDllProxy.cs" />
+    <Compile Include="Nut\ProxyBase.cs" />
     <Compile Include="Nut\ServerAuthenticationTypes.cs" />
-    <Compile Include="Nut\Shell.cs" />
     <Compile Include="Nut\ShellFactory.cs" />
     <Compile Include="Nut\ShellStartOptions.cs" />
     <Compile Include="Nut\StartupProxy.cs" />

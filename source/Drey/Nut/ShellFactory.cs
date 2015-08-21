@@ -1,47 +1,62 @@
-﻿using System;
+﻿using Drey.Logging;
+using System;
 using System.IO;
+using System.Linq;
+using System.Reflection;
 
 namespace Drey.Nut
 {
     public class ShellFactory : MarshalByRefObject
     {
-        public IShell Create(string assemblyPath, INutConfiguration config)
+        static readonly ILog _Log = LogProvider.For<ShellFactory>();
+
+        public Tuple<AppDomain, IShell> Create(string assemblyPath, INutConfiguration config)
         {
-            var startupOptions = DiscoverEntryDLL(assemblyPath);
-
-            return startupOptions == null ? null : new Shell(startupOptions, config);
-        }
-
-        private ShellStartOptions DiscoverEntryDLL(string assemblyPath)
-        {
-            var path = Utilities.PathUtilities.ResolvePath(assemblyPath);
-
-            var proxyType = typeof(DiscoverStartupDllProxy);
-            var thisAssemblyPath = Utilities.PathUtilities.ResolvePath(proxyType.Assembly.GetName().CodeBase.Remove(0, 8), false);
-
-            var domain = Utilities.AppDomainUtils.CreateDomain(Guid.NewGuid().ToString());
+            var pathToAssembly = Utilities.PathUtilities.ResolvePath(assemblyPath);
+            var discoverStartupType = typeof(DiscoverStartupDllProxy);
+            var startupProxyType = typeof(StartupProxy);
+            var dreyAssemblyPath = Utilities.PathUtilities.ResolvePath(startupProxyType.Assembly.GetName().CodeBase.Remove(0, 8), false);
+            var discoveryDomain = Utilities.AppDomainUtils.CreateDomain(Guid.NewGuid().ToString());
+            Tuple<string, string> entryDllAndType;
+            DiscoverStartupDllProxy discoverPath = null;
 
             try
             {
-                foreach (var file in Directory.GetFiles(path, "*.dll"))
-                {
-                    var discoverProxy = (DiscoverStartupDllProxy)domain.CreateInstanceFromAndUnwrap(thisAssemblyPath, proxyType.FullName);
+                discoverPath = (DiscoverStartupDllProxy)discoveryDomain.CreateInstanceFromAndUnwrap(discoverStartupType.Assembly.Location, discoverStartupType.FullName, false,
+                    BindingFlags.CreateInstance | BindingFlags.Instance | BindingFlags.Public, null, new[] { assemblyPath }, null, null);
+                discoveryDomain.AssemblyResolve += discoverPath.ResolveAssemblyInDomain;
+                entryDllAndType = discoverPath.DiscoverEntryDll(assemblyPath);
 
-                    if (discoverProxy.IsStartupDll(file))
-                    {
-                        return discoverProxy.BuildOptions(file);
-                    }
+                if (entryDllAndType == null)
+                {
+                    _Log.Fatal("Installed application does not have a dll with a type that implements Drey.Nut.IShell.  Cannot start.");
+                    return null;
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                _Log.FatalException("Could not discover entry dll", ex);
+                return null;
             }
             finally
             {
-                AppDomain.Unload(domain);
+                if (discoverPath != null)
+                {
+                    discoveryDomain.AssemblyResolve -= discoverPath.ResolveAssemblyInDomain;
+                }
+
+                AppDomain.Unload(discoveryDomain);
             }
-            return null;
+
+            var domain = Utilities.AppDomainUtils.CreateDomain(Guid.NewGuid().ToString());
+            var domainProxy = (StartupProxy)domain.CreateInstanceFromAndUnwrap(startupProxyType.Assembly.Location, startupProxyType.FullName, false,
+                BindingFlags.CreateInstance | BindingFlags.Instance | BindingFlags.Public, null, new[] { assemblyPath }, null, null);
+            domain.AssemblyResolve += domainProxy.ResolveAssemblyInDomain;
+            var appShell = (IShell)domainProxy.Build(entryDllAndType.Item1, entryDllAndType.Item2);
+
+            appShell.Startup(config);
+
+            return new Tuple<AppDomain, IShell>(domain, appShell);
         }
     }
 }

@@ -1,39 +1,26 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 
 namespace Drey.Nut
 {
-    class DiscoverStartupDllProxy : MarshalByRefObject
+    class DiscoverStartupDllProxy : ProxyBase
     {
-        public bool IsStartupDll(string path)
-        {
-            var asm = Assembly.LoadFrom(path);
-            var attrib = asm.GetCustomAttribute<CrackingAttribute>();
-            return attrib != null;
-        }
+        public DiscoverStartupDllProxy(string pathToAppPackage) : base(pathToAppPackage) { }
 
-        public ShellStartOptions BuildOptions(string path)
+        public Tuple<string, string> DiscoverEntryDll(string assemblyPath)
         {
-            var asm = Assembly.LoadFrom(path);
-            var attrib = Attribute.GetCustomAttribute(asm, typeof(CrackingAttribute)) as CrackingAttribute;
-
-            return new ShellStartOptions
+            foreach (var file in Directory.GetFiles(assemblyPath, "*.dll"))
             {
-                DllPath = path,
-                DisplayAs = attrib.DisplayAs,
-                ApplicationDomainName = attrib.ApplicationDomainName,
-                AssemblyName = asm.FullName,
-                PackageId = attrib.PackageId,
-                StartupClass = attrib.StartupClass.FullName,
-                ProvideConfigurationOptions = attrib.RequiresConfigurationStorage
-            };
-        }
-
-        public Assembly Load(string fileNameAndPath)
-        {
-            var asm = Assembly.LoadFile(fileNameAndPath);
-            return asm;
+                var asmToReflect = Assembly.LoadFrom(file);
+                Type entryType = asmToReflect.GetTypes().FirstOrDefault(t => t.GetInterfaces().Contains(typeof(IShell)));
+                if (entryType != null)
+                {
+                    return new Tuple<string, string>(file, entryType.FullName);
+                }
+            }
+            return null;
         }
     }
 }
