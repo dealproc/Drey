@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Drey.Nut;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
@@ -19,17 +20,18 @@ namespace Drey.Configuration.ServiceModel
         readonly Drey.Nut.INutConfiguration _configurationManager;
         readonly Services.IGlobalSettingsService _globalSettingsService;
         readonly Services.PackageService _packageService;
+        readonly IEventBus _eventBus;
         readonly string _packageId;
 
         Task _pollingClientTask;
         CancellationToken _ct;
 
-        public ReleasesPollingClient(Drey.Nut.INutConfiguration configurationManager, Services.IGlobalSettingsService globalSettingsService,
-            Services.PackageService packageService, string packageId)
+        public ReleasesPollingClient(Drey.Nut.INutConfiguration configurationManager, Services.IGlobalSettingsService globalSettingsService, Services.PackageService packageService, IEventBus eventBus, string packageId)
         {
             _configurationManager = configurationManager;
             _globalSettingsService = globalSettingsService;
             _packageService = packageService;
+            _eventBus = eventBus;
             _packageId = packageId;
         }
 
@@ -42,6 +44,7 @@ namespace Drey.Configuration.ServiceModel
 
         async void executePollingLoop()
         {
+            _eventBus.Publish(new ShellRequestArgs { ActionToTake = ShellAction.Startup, PackageId = _packageId, Version = string.Empty });
             while (!_ct.IsCancellationRequested)
             {
                 try
@@ -106,6 +109,8 @@ namespace Drey.Configuration.ServiceModel
                         pkg.ExtractContents(new NuGet.PhysicalFileSystem(_configurationManager.HordeBaseDirectory), zipFolderName);
 
                         _packageService.RecordReleases(newReleases);
+
+                        _eventBus.Publish(new ShellRequestArgs { ActionToTake = Drey.Nut.ShellAction.Restart, PackageId = releaseToDownload.Id, Version = releaseToDownload.Version });
                     }
                 }
                 catch (Exception ex)

@@ -19,16 +19,18 @@ namespace Drey.Configuration.ServiceModel
         readonly Services.IGlobalSettingsService _globalSettingsService;
         readonly Services.PackageService _packageService;
         readonly PollingClientCollection _pollingClients;
+        readonly IEventBus _eventBus;
         
         Task _pollingClientTask;
         CancellationToken _ct;
 
-        public RegisteredPackagesPollingClient(INutConfiguration configurationManager, Services.IGlobalSettingsService globalSettingsService, Services.PackageService packageService, PollingClientCollection pollingClients)
+        public RegisteredPackagesPollingClient(INutConfiguration configurationManager, Services.IGlobalSettingsService globalSettingsService, Services.PackageService packageService, IEventBus eventBus, PollingClientCollection pollingClients)
         {
             _configurationManager = configurationManager;
             _globalSettingsService = globalSettingsService;
             _packageService = packageService;
             _pollingClients = pollingClients;
+            _eventBus = eventBus;
         }
 
         public void Start(CancellationToken ct)
@@ -40,7 +42,7 @@ namespace Drey.Configuration.ServiceModel
             var packages = _packageService.GetPackages();
             foreach (var pkg in packages)
             {
-                _pollingClients.Add(new ReleasesPollingClient(_configurationManager, _globalSettingsService, _packageService, pkg.Id));
+                _pollingClients.Add(new ReleasesPollingClient(_configurationManager, _globalSettingsService, _packageService, _eventBus, pkg.Id));
             }
         }
 
@@ -65,7 +67,7 @@ namespace Drey.Configuration.ServiceModel
 
                     if (newPackages.Any())
                     {
-                        var clients = newPackages.Select(p => new ReleasesPollingClient(_configurationManager, _globalSettingsService, _packageService, p.Id));
+                        var clients = newPackages.Select(p => new ReleasesPollingClient(_configurationManager, _globalSettingsService, _packageService, _eventBus, p.Id));
                         foreach (var client in clients)
                         {
                             _pollingClients.Add(client);

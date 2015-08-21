@@ -22,6 +22,8 @@ namespace Drey.Utilities
             if (specificVersion.Equals("Latest"))
             {
                 var versions = versionFolders.Select(ver => new Version(ver.Replace(packageId + ".", string.Empty)));
+                if (!versions.Any()) { return string.Empty; }
+
                 latestVersion = versions.OrderByDescending(x => x).First();
             }
             else

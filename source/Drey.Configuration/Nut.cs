@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Drey.Configuration
 {
-    public class Nut : ShellBase, IDisposable
+    public class Nut : ShellBase, IHandle<ShellRequestArgs>, IDisposable
     {
         INutConfiguration _configurationManager;
         IEventBus _eventBus;
@@ -46,6 +46,11 @@ namespace Drey.Configuration
 
             var startupUri = string.Format("http://localhost:{0}/", _configurationManager.ApplicationSettings["drey.configuration.consoleport"]);
             Process.Start(startupUri);
+        }
+
+        public void Handle(ShellRequestArgs message)
+        {
+            EmitShellRequest(message);
         }
 
         private void BuildApp()

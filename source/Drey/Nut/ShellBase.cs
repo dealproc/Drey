@@ -24,5 +24,14 @@ namespace Drey.Nut
 
         public virtual void Shutdown() { }
         public virtual void Dispose() { }
+
+        protected void EmitShellRequest(ShellRequestArgs args)
+        {
+            var handler = OnShellRequest;
+            if (handler != null)
+            {
+                handler(this, args);
+            }
+        }
     }
 }

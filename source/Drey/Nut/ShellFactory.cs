@@ -12,6 +12,8 @@ namespace Drey.Nut
 
         public Tuple<AppDomain, IShell> Create(string assemblyPath, INutConfiguration config)
         {
+            if (string.IsNullOrWhiteSpace(assemblyPath)) { return null; }
+
             _Log.TraceFormat("Loading app from '{0}'", assemblyPath);
 
             var pathToAssembly = Utilities.PathUtilities.ResolvePath(assemblyPath);
