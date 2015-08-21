@@ -8,7 +8,10 @@ namespace Drey.Nut
         string NameDomainAs { get; }
         string DisplayAs { get; }
         bool RequiresConfigurationStorage { get; }
+
+        event EventHandler<ShellRequestArgs> OnShellRequest;
+
         void Startup(INutConfiguration configurationManager);
-        Task Shutdown();
+        void Shutdown();
     }
 }

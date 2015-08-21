@@ -59,11 +59,6 @@ namespace Drey.Configuration
             _webApp = host;
         }
 
-        public override Task Shutdown()
-        {
-            return Task.FromResult(0);
-        }
-
         public override void Dispose()
         {
             _eventBus.Unsubscribe(this);

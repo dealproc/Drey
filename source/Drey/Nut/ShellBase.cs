@@ -13,15 +13,16 @@ namespace Drey.Nut
         public abstract string NameDomainAs { get; }
         public abstract string DisplayAs { get; }
         public abstract bool RequiresConfigurationStorage { get; }
-
         public INutConfiguration ConfigurationManager { get; protected set; }
+
+        public event EventHandler<ShellRequestArgs> OnShellRequest;
 
         public virtual void Startup(INutConfiguration configurationManager)
         {
             ConfigurationManager = configurationManager;
         }
 
-        public abstract Task Shutdown();
-        public abstract void Dispose();
+        public virtual void Shutdown() { }
+        public virtual void Dispose() { }
     }
 }

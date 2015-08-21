@@ -33,11 +33,6 @@ namespace Samples.AppTwo
             get { return false; }
         }
 
-        public override Task Shutdown()
-        {
-            return Task.FromResult(0);
-        }
-
         public override void Dispose()
         {
             Console.WriteLine("Samples - App Two Torn Down");

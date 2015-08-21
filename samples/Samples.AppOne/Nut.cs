@@ -13,11 +13,10 @@ namespace Samples.AppOne
             Console.WriteLine("Samples - App One Online");
         }
 
-        public override Task Shutdown()
+        public override void Shutdown()
         {
             Console.WriteLine("Shutting down after 2 second delay");
-            Thread.Sleep(5000);
-            return Task.FromResult(0);
+            Thread.Sleep(2000);
         }
 
         public override void Dispose()
