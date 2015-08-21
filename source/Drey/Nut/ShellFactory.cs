@@ -12,6 +12,8 @@ namespace Drey.Nut
 
         public Tuple<AppDomain, IShell> Create(string assemblyPath, INutConfiguration config)
         {
+            _Log.TraceFormat("Loading app from '{0}'", assemblyPath);
+
             var pathToAssembly = Utilities.PathUtilities.ResolvePath(assemblyPath);
             var discoverStartupType = typeof(DiscoverStartupDllProxy);
             var startupProxyType = typeof(StartupProxy);
@@ -40,6 +42,7 @@ namespace Drey.Nut
             }
             finally
             {
+                _Log.Info("Unloading discovery domain.");
                 if (discoverPath != null)
                 {
                     discoveryDomain.AssemblyResolve -= discoverPath.ResolveAssemblyInDomain;
@@ -48,13 +51,16 @@ namespace Drey.Nut
                 AppDomain.Unload(discoveryDomain);
             }
 
+            _Log.Info("Instantiating app.");
             var domain = Utilities.AppDomainUtils.CreateDomain(Guid.NewGuid().ToString());
             var domainProxy = (StartupProxy)domain.CreateInstanceFromAndUnwrap(startupProxyType.Assembly.Location, startupProxyType.FullName, false,
                 BindingFlags.CreateInstance | BindingFlags.Instance | BindingFlags.Public, null, new[] { Path.GetDirectoryName(entryDllAndType.Item1) }, null, null);
             domain.AssemblyResolve += domainProxy.ResolveAssemblyInDomain;
             var appShell = (IShell)domainProxy.Build(entryDllAndType.Item1, entryDllAndType.Item2);
 
+            _Log.Info("Running app startup routine.");
             appShell.Startup(config);
+            _Log.Info("App startup routine finished.");
 
             return new Tuple<AppDomain, IShell>(domain, appShell);
         }

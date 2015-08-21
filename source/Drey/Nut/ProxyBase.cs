@@ -1,15 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Drey.Logging;
+using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Drey.Nut
 {
     class ProxyBase : MarshalByRefObject
     {
+        static readonly ILog _Log = LogProvider.For<ProxyBase>();
+        protected ILog Log { get { return _Log; } }
+
         readonly string _pathToAppPackage;
 
         public ProxyBase(string pathToAppPackage)
@@ -20,7 +21,8 @@ namespace Drey.Nut
         public Assembly ResolveAssemblyInDomain(object sender, ResolveEventArgs args)
         {
             var asmName = args.Name + ".dll";
-            Console.WriteLine(asmName);
+
+            Log.Info(() => "Attempting to resolve " + asmName);
 
             var searchPaths = (new[] 
             { 
@@ -28,15 +30,17 @@ namespace Drey.Nut
                     Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) 
             });
 
-            var foundDll = searchPaths
+            Log.Debug(() => string.Format("Searching the following locations: {0}", searchPaths.Aggregate((s1, s2) => s1 + ";" + s2)));
+
+            var resolvedDll = searchPaths
                 .Select(fullPath => Path.Combine(fullPath, asmName))
                 .Select(fullPath => File.Exists(fullPath) ? Assembly.LoadFrom(fullPath) : null)
                 .Where(asm => asm != null)
                 .FirstOrDefault();
 
-            Console.WriteLine("DLL Found? {0}", foundDll != null);
+            Log.Trace(() => "Has Dll been resolved? " + (resolvedDll != null ? "Yes" : "No"));
 
-            return foundDll;
+            return resolvedDll;
         }
     }
 }

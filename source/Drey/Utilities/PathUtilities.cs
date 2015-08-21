@@ -5,7 +5,14 @@ namespace Drey.Utilities
 {
     static class PathUtilities
     {
-        public static string ResolvePath(string relativePath, bool includePathSeparator = true)
+        /// <summary>
+        /// Resolves the path.
+        /// <remarks>There may be an alternative method to do this, using the inherit .net framework.  to be analyzed and discovered</remarks>
+        /// </summary>
+        /// <param name="relativePath">The relative path.</param>
+        /// <param name="includePathSeparator">if set to <c>true</c> [include path separator].</param>
+        /// <returns></returns>
+         public static string ResolvePath(string relativePath, bool includePathSeparator = true)
         {
             var respondWith = relativePath;
 
