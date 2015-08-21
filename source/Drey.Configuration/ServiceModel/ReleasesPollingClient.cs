@@ -1,8 +1,9 @@
-﻿using Drey.Nut;
+﻿using Drey.Logging;
+using Drey.Nut;
+
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.IO.Compression;
 using System.Linq;
 using System.Net.Http;
 using System.Threading;
@@ -12,6 +13,8 @@ namespace Drey.Configuration.ServiceModel
 {
     class ReleasesPollingClient : IPollingClient
     {
+        static readonly ILog _Log = LogProvider.For<ReleasesPollingClient>();
+
         /// <summary>
         /// The delay, in milliseconds, between queries to the known-packages endpoint to see if updates are available.
         /// </summary>
@@ -95,7 +98,7 @@ namespace Drey.Configuration.ServiceModel
                             File.Delete(destinationFileNameAndPath);
                         }
 
-                        Console.WriteLine("File will be stored at: '{0}'", destinationFileNameAndPath);
+                        _Log.InfoFormat("File will be stored at: '{0}'", destinationFileNameAndPath);
 
                         using (var fStream = File.OpenWrite(destinationFileNameAndPath))
                         {
@@ -115,15 +118,15 @@ namespace Drey.Configuration.ServiceModel
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(ex.Message);
+                    _Log.ErrorException("Unknown issue occurred", ex);
                 }
 
-                Console.WriteLine("Waiting {0} seconds before checking for new releases.", DELAY_TIME_SEC);
+                _Log.DebugFormat("Waiting {0} seconds before checking for new releases.", DELAY_TIME_SEC);
                 try
                 {
                     await Task.Delay(TimeSpan.FromSeconds(DELAY_TIME_SEC), _ct);
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     // squelch.
                 }

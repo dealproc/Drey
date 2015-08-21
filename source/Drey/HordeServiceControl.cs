@@ -1,5 +1,6 @@
 ﻿using Drey.Logging;
 using Drey.Nut;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,6 +31,8 @@ namespace Drey
 
         void ShellRequestHandler(object sender, ShellRequestArgs e)
         {
+            _Log.InfoFormat("'Shell Request' Event Received: {0}", e);
+
             switch (e.ActionToTake)
             {
                 case ShellAction.Startup:

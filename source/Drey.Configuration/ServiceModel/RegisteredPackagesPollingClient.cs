@@ -1,5 +1,6 @@
 ﻿using Drey.Logging;
 using Drey.Nut;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -74,26 +75,33 @@ namespace Drey.Configuration.ServiceModel
                         }
                     }
                 }
-                catch (HttpRequestException exc)
+                catch (HttpRequestException)
                 {
                     _Log.Info("Package server could not be contacted.");
-                    Task.Delay(TimeSpan.FromSeconds(DELAY_TIME_MS), _ct).Wait();
+                    Pause();
+                    continue;
                 }
                 catch (Exception exc)
                 {
                     _Log.ErrorException("While discovering new packages", exc);
-                    Task.Delay(TimeSpan.FromSeconds(DELAY_TIME_MS), _ct).Wait();
+                    Pause();
+                    continue;
                 }
 
-                Console.WriteLine("Waiting {0} seconds before re-checking for new releases.", DELAY_TIME_MS);
-                try
-                {
-                    await Task.Delay(TimeSpan.FromSeconds(DELAY_TIME_MS), _ct);
-                }
-                catch (Exception)
-                {
-                    // squashing.
-                }
+                _Log.InfoFormat("Waiting {0} seconds before re-checking for new releases.", DELAY_TIME_MS);
+                Pause();
+            }
+        }
+
+        void Pause()
+        {
+            try
+            {
+                Task.Delay(TimeSpan.FromSeconds(DELAY_TIME_MS), _ct).Wait();
+            }
+            catch (Exception)
+            {
+                // squashing.
             }
         }
     }
