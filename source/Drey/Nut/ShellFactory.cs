@@ -23,7 +23,7 @@ namespace Drey.Nut
             try
             {
                 discoverPath = (DiscoverStartupDllProxy)discoveryDomain.CreateInstanceFromAndUnwrap(discoverStartupType.Assembly.Location, discoverStartupType.FullName, false,
-                    BindingFlags.CreateInstance | BindingFlags.Instance | BindingFlags.Public, null, new[] { assemblyPath }, null, null);
+                    BindingFlags.CreateInstance | BindingFlags.Instance | BindingFlags.Public, null, new[] { pathToAssembly }, null, null);
                 discoveryDomain.AssemblyResolve += discoverPath.ResolveAssemblyInDomain;
                 entryDllAndType = discoverPath.DiscoverEntryDll(assemblyPath);
 
@@ -50,7 +50,7 @@ namespace Drey.Nut
 
             var domain = Utilities.AppDomainUtils.CreateDomain(Guid.NewGuid().ToString());
             var domainProxy = (StartupProxy)domain.CreateInstanceFromAndUnwrap(startupProxyType.Assembly.Location, startupProxyType.FullName, false,
-                BindingFlags.CreateInstance | BindingFlags.Instance | BindingFlags.Public, null, new[] { assemblyPath }, null, null);
+                BindingFlags.CreateInstance | BindingFlags.Instance | BindingFlags.Public, null, new[] { Path.GetDirectoryName(entryDllAndType.Item1) }, null, null);
             domain.AssemblyResolve += domainProxy.ResolveAssemblyInDomain;
             var appShell = (IShell)domainProxy.Build(entryDllAndType.Item1, entryDllAndType.Item2);
 

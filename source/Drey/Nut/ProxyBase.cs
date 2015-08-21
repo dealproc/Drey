@@ -22,11 +22,13 @@ namespace Drey.Nut
             var asmName = args.Name + ".dll";
             Console.WriteLine(asmName);
 
-            var foundDll = (new[] 
+            var searchPaths = (new[] 
             { 
-                    Path.GetDirectoryName(_pathToAppPackage), 
+                    Path.GetFullPath(_pathToAppPackage), 
                     Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) 
-            })
+            });
+
+            var foundDll = searchPaths
                 .Select(fullPath => Path.Combine(fullPath, asmName))
                 .Select(fullPath => File.Exists(fullPath) ? Assembly.LoadFrom(fullPath) : null)
                 .Where(asm => asm != null)
