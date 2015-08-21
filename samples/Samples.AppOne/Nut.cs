@@ -1,27 +1,48 @@
 ﻿using Drey.Nut;
 using System;
 using System.Threading;
+using System.Threading.Tasks;
 
-//[assembly: Drey.Nut.Cracking(typeof(Samples.AppOne.Nut), true, "Samples - App One", "samples.appone", "Samples - Application One")]
 namespace Samples.AppOne
 {
-    public class Nut : IDisposable
+    public class Nut : ShellBase, IDisposable
     {
-        public void Configuration(INutConfiguration configurationManager)
+        public override void Startup(INutConfiguration configurationManager)
         {
+            base.Startup(configurationManager);
             Console.WriteLine("Samples - App One Online");
         }
 
-        public bool Shutdown()
+        public override Task Shutdown()
         {
             Console.WriteLine("Shutting down after 2 second delay");
             Thread.Sleep(5000);
-            return true;
+            return Task.FromResult(0);
         }
 
-        public void Dispose()
+        public override void Dispose()
         {
             Console.WriteLine("Samples - App One Torn Down");
+        }
+
+        public override string Id
+        {
+            get { return this.GetType().Namespace; }
+        }
+
+        public override string NameDomainAs
+        {
+            get { return this.GetType().Namespace; }
+        }
+
+        public override string DisplayAs
+        {
+            get { return "Samples - Application #1"; }
+        }
+
+        public override bool RequiresConfigurationStorage
+        {
+            get { return false; }
         }
     }
 }

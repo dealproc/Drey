@@ -9,33 +9,33 @@ using System.Threading.Tasks;
 
 namespace Drey.Configuration
 {
-    public class Nut : MarshalByRefObject, IShell, IDisposable
+    public class Nut : ShellBase, IDisposable
     {
         INutConfiguration _configurationManager;
         IEventBus _eventBus;
         IDisposable _webApp;
 
-        public string Id
+        public override string Id
         {
             get { return "Drey.Configuration"; }
         }
 
-        public string NameDomainAs
+        public override string NameDomainAs
         {
             get { return "Drey.Configuration"; }
         }
 
-        public string DisplayAs
+        public override string DisplayAs
         {
             get { return "Drey Configuration Console"; }
         }
 
-        public bool RequiresConfigurationStorage
+        public override bool RequiresConfigurationStorage
         {
             get { return true; }
         }
 
-        public void Startup(INutConfiguration configurationManager)
+        public override void Startup(INutConfiguration configurationManager)
         {
             MigrationManager.Migrate(configurationManager);
 
@@ -59,12 +59,12 @@ namespace Drey.Configuration
             _webApp = host;
         }
 
-        public Task Shutdown()
+        public override Task Shutdown()
         {
             return Task.FromResult(0);
         }
 
-        public void Dispose()
+        public override void Dispose()
         {
             _eventBus.Unsubscribe(this);
             _webApp.Dispose();
