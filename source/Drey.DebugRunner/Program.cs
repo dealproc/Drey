@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Drey.Logging;
+using System;
 using Topshelf;
 
 namespace Drey.DebugRunner
@@ -27,6 +28,8 @@ namespace Drey.DebugRunner
 
     class HordeServiceWrapper : ServiceControl
     {
+        static ILog _Log = LogProvider.For<HordeServiceWrapper>();
+
         HordeServiceControl _Control;
 
         public HordeServiceWrapper()
@@ -35,11 +38,13 @@ namespace Drey.DebugRunner
         }
         public bool Start(HostControl hostControl)
         {
+            _Log.Info("Starting Hoarde Service");
             return _Control.Start();
         }
 
         public bool Stop(HostControl hostControl)
         {
+            _Log.Info("Stopping Hoarde Service");
             return _Control.Stop();
         }
     }
