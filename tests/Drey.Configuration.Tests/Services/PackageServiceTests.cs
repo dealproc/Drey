@@ -30,7 +30,7 @@ namespace Drey.Configuration.Tests.Services
             });
 
 
-            _SUT = new PackageService(_packageRepository);
+            _SUT = new PackageService(_packageRepository, A.Dummy<IConnectionStringRepository>(), A.Dummy<IPackageSettingRepository>());
         }
 
         [Fact]

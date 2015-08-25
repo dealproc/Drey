@@ -23,17 +23,27 @@ namespace Drey.Configuration.ServiceModel
         readonly Drey.Nut.INutConfiguration _configurationManager;
         readonly Services.IGlobalSettingsService _globalSettingsService;
         readonly Services.PackageService _packageService;
+        readonly Repositories.IPackageSettingRepository _packageSettingsRepository;
+        readonly Repositories.IConnectionStringRepository _connectionStringsRepository;
         readonly IEventBus _eventBus;
         readonly string _packageId;
 
         Task _pollingClientTask;
         CancellationToken _ct;
 
-        public ReleasesPollingClient(Drey.Nut.INutConfiguration configurationManager, Services.IGlobalSettingsService globalSettingsService, Services.PackageService packageService, IEventBus eventBus, string packageId)
+        public ReleasesPollingClient(Drey.Nut.INutConfiguration configurationManager, 
+            Services.IGlobalSettingsService globalSettingsService, 
+            Services.PackageService packageService, 
+            Repositories.IPackageSettingRepository packageSettingsRepository,
+            Repositories.IConnectionStringRepository connectionStringsRepository,
+            IEventBus eventBus, 
+            string packageId)
         {
             _configurationManager = configurationManager;
             _globalSettingsService = globalSettingsService;
             _packageService = packageService;
+            _packageSettingsRepository = packageSettingsRepository;
+            _connectionStringsRepository = connectionStringsRepository;
             _eventBus = eventBus;
             _packageId = packageId;
         }
@@ -47,7 +57,14 @@ namespace Drey.Configuration.ServiceModel
 
         async void executePollingLoop()
         {
-            _eventBus.Publish(new ShellRequestArgs { ActionToTake = ShellAction.Startup, PackageId = _packageId, Version = string.Empty });
+            _eventBus.Publish(new ShellRequestArgs
+            {
+                ActionToTake = ShellAction.Startup,
+                PackageId = _packageId,
+                Version = string.Empty,
+                ConfigurationManager = CreateConfigurationManager()
+            });
+
             while (!_ct.IsCancellationRequested)
             {
                 try
@@ -113,7 +130,13 @@ namespace Drey.Configuration.ServiceModel
 
                         _packageService.RecordReleases(newReleases);
 
-                        _eventBus.Publish(new ShellRequestArgs { ActionToTake = Drey.Nut.ShellAction.Restart, PackageId = releaseToDownload.Id, Version = releaseToDownload.Version });
+                        _eventBus.Publish(new ShellRequestArgs
+                        {
+                            ActionToTake = Drey.Nut.ShellAction.Restart,
+                            PackageId = releaseToDownload.Id,
+                            Version = releaseToDownload.Version,
+                            ConfigurationManager = CreateConfigurationManager()
+                        });
                     }
                 }
                 catch (Exception ex)
@@ -131,6 +154,11 @@ namespace Drey.Configuration.ServiceModel
                     // squelch.
                 }
             }
+        }
+
+        private Infrastructure.ConfigurationManagement.DbConfigurationSettings CreateConfigurationManager()
+        {
+            return new Drey.Configuration.Infrastructure.ConfigurationManagement.DbConfigurationSettings(_configurationManager.ApplicationSettings, _packageSettingsRepository, _connectionStringsRepository, _packageId);
         }
     }
 }

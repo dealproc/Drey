@@ -99,7 +99,9 @@
     <Compile Include="Infrastructure\Events\RecycleApp.cs" />
     <Compile Include="Infrastructure\IHandle.cs" />
     <Compile Include="Infrastructure\EventBus.cs" />
+    <Compile Include="Infrastructure\Schema\0100\201508241409_Register_DreyConfigurationApp.cs" />
     <Compile Include="Infrastructure\Schema\MigrationManager.cs" />
+    <Compile Include="Modules\AppletModule.cs" />
     <Compile Include="Modules\BaseModule.cs" />
     <Compile Include="RazorConfig.cs" />
     <Compile Include="Conventions\EmbeddedStaticContentConventionBuilder.cs" />
@@ -114,30 +116,41 @@
     <Compile Include="Modules\SetupModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Nut.cs" />
+    <Compile Include="Repositories\IConnectionStringRepository.cs" />
     <Compile Include="Repositories\IGlobalSettingsRepository.cs" />
     <Compile Include="Repositories\IPackageRepository.cs" />
+    <Compile Include="Repositories\IPackageSettingRepository.cs" />
+    <Compile Include="Repositories\SQLiteRepositories\ConnectionStringRepository.cs" />
     <Compile Include="Repositories\SQLiteRepositories\GlobalSettingsRepository.cs" />
     <Compile Include="Repositories\SQLiteRepositories\PackageRepository.cs" />
+    <Compile Include="Repositories\SQLiteRepositories\PackageSettingRepository.cs" />
     <Compile Include="Repositories\SQLiteRepositories\SqlRepository.cs" />
     <Compile Include="ServiceModel\IPollingClient.cs" />
     <Compile Include="ServiceModel\RegisteredPackagesPollingClient.cs" />
     <Compile Include="ServiceModel\ReleasesPollingClient.cs" />
     <Compile Include="ServiceModel\PollingClientCollection.cs" />
+    <Compile Include="Services\ApplicationSettingsService.cs" />
+    <Compile Include="Services\ConnectionStringsService.cs" />
     <Compile Include="Services\GlobalSettingsService.cs" />
     <Compile Include="Services\IGlobalSettingsService.cs" />
     <Compile Include="Services\IPackageService.cs" />
     <Compile Include="Services\PackageService.cs" />
+    <Compile Include="Services\ViewModels\AppletDashboardPmo.cs" />
     <Compile Include="Services\ViewModels\GlobalSettingsPmo.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Content\bootstrap-theme.css.map" />
     <EmbeddedResource Include="Content\bootstrap.css.map" />
-    <EmbeddedResource Include="fonts\glyphicons-halflings-regular.eot" />
-    <EmbeddedResource Include="fonts\glyphicons-halflings-regular.ttf" />
-    <EmbeddedResource Include="fonts\glyphicons-halflings-regular.woff" />
-    <EmbeddedResource Include="fonts\glyphicons-halflings-regular.woff2" />
+    <Content Include="fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="fonts\glyphicons-halflings-regular.woff2" />
     <None Include="app.config" />
     <None Include="Drey.Configuration.nuspec" />
+    <EmbeddedResource Include="fonts\fontawesome-webfont.eot" />
+    <EmbeddedResource Include="fonts\fontawesome-webfont.ttf" />
+    <EmbeddedResource Include="fonts\fontawesome-webfont.woff" />
+    <EmbeddedResource Include="fonts\FontAwesome.otf" />
     <None Include="packages.config" />
     <EmbeddedResource Include="Views\Home\index.cshtml" />
     <EmbeddedResource Include="Scripts\jquery-2.1.4.min.map" />
@@ -145,6 +158,7 @@
     <EmbeddedResource Include="Views\Shared\shell.cshtml" />
     <EmbeddedResource Include="Views\Shared\ValidationSummary.cshtml" />
     <EmbeddedResource Include="Views\_ViewStart.cshtml" />
+    <EmbeddedResource Include="Views\Applet\index.cshtml" />
     <None Include="Views\Web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -152,7 +166,7 @@
     <EmbeddedResource Include="Content\bootstrap-theme.min.css" />
     <EmbeddedResource Include="Content\bootstrap.css" />
     <EmbeddedResource Include="Content\bootstrap.min.css" />
-    <EmbeddedResource Include="fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <EmbeddedResource Include="Scripts\bootstrap.js" />
     <EmbeddedResource Include="Scripts\bootstrap.min.js" />
     <EmbeddedResource Include="Scripts\jquery-2.1.4.intellisense.js" />
@@ -168,6 +182,11 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Infrastructure\IoC\" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Content\font-awesome.css" />
+    <EmbeddedResource Include="Content\font-awesome.min.css" />
+    <EmbeddedResource Include="fonts\fontawesome-webfont.svg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

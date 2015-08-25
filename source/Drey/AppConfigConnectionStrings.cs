@@ -10,5 +10,10 @@ namespace Drey
         {
             get { return ConfigurationManager.ConnectionStrings[key].ConnectionString; }
         }
+
+        public void Register(System.Collections.Generic.IEnumerable<string> keys)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

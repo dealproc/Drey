@@ -60,7 +60,6 @@ namespace Drey.Configuration
             container.Register<Services.IGlobalSettingsService, Services.GlobalSettingsService>();
 
             container.Register<IEventBus>(_eventBus);
-
         }
 
         protected override NancyInternalConfiguration InternalConfiguration

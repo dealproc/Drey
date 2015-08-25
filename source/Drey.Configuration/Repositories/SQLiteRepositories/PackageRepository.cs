@@ -10,6 +10,11 @@ namespace Drey.Configuration.Repositories.SQLiteRepositories
     {
         public PackageRepository(INutConfiguration configurationManager) : base(configurationManager) { }
 
+        public IEnumerable<DataModel.Release> All()
+        {
+            return Execute(cn => cn.Query<DataModel.Release>("SELECT * FROM Releases"));
+        }
+
         public IEnumerable<DataModel.Package> GetPackages()
         {
             return Execute(cn => cn.Query<DataModel.Package>("SELECT Id, Min(Title) as Title FROM Releases GROUP BY Id"));

@@ -1,5 +1,4 @@
 ﻿using Drey.Logging;
-using Drey.Nut;
 
 using System;
 using System.Collections.Generic;
@@ -16,20 +15,30 @@ namespace Drey.Configuration.ServiceModel
 
         const int DELAY_TIME_MS = 60;
 
-        readonly INutConfiguration _configurationManager;
+        readonly Drey.Nut.INutConfiguration _configurationManager;
         readonly Services.IGlobalSettingsService _globalSettingsService;
         readonly Services.PackageService _packageService;
+        readonly Repositories.IPackageSettingRepository _packageSettingRepository;
+        readonly Repositories.IConnectionStringRepository _connectionStringRepository;
         readonly PollingClientCollection _pollingClients;
         readonly IEventBus _eventBus;
-        
+
         Task _pollingClientTask;
         CancellationToken _ct;
 
-        public RegisteredPackagesPollingClient(INutConfiguration configurationManager, Services.IGlobalSettingsService globalSettingsService, Services.PackageService packageService, IEventBus eventBus, PollingClientCollection pollingClients)
+        public RegisteredPackagesPollingClient(Drey.Nut.INutConfiguration configurationManager,
+            Services.IGlobalSettingsService globalSettingsService,
+            Services.PackageService packageService,
+            Repositories.IPackageSettingRepository packageSettingRepository,
+            Repositories.IConnectionStringRepository connectionStringRepository,
+            IEventBus eventBus,
+            PollingClientCollection pollingClients)
         {
             _configurationManager = configurationManager;
             _globalSettingsService = globalSettingsService;
             _packageService = packageService;
+            _packageSettingRepository = packageSettingRepository;
+            _connectionStringRepository = connectionStringRepository;
             _pollingClients = pollingClients;
             _eventBus = eventBus;
         }
@@ -43,7 +52,7 @@ namespace Drey.Configuration.ServiceModel
             var packages = _packageService.GetPackages();
             foreach (var pkg in packages)
             {
-                _pollingClients.Add(new ReleasesPollingClient(_configurationManager, _globalSettingsService, _packageService, _eventBus, pkg.Id));
+                _pollingClients.Add(CreateReleasesMonitor(pkg.Id));
             }
         }
 
@@ -68,7 +77,7 @@ namespace Drey.Configuration.ServiceModel
 
                     if (newPackages.Any())
                     {
-                        var clients = newPackages.Select(p => new ReleasesPollingClient(_configurationManager, _globalSettingsService, _packageService, _eventBus, p.Id));
+                        var clients = newPackages.Select(p => CreateReleasesMonitor(p.Id));
                         foreach (var client in clients)
                         {
                             _pollingClients.Add(client);
@@ -91,6 +100,11 @@ namespace Drey.Configuration.ServiceModel
                 _Log.InfoFormat("Waiting {0} seconds before re-checking for new releases.", DELAY_TIME_MS);
                 Pause();
             }
+        }
+
+        private ReleasesPollingClient CreateReleasesMonitor(string packageId)
+        {
+            return new ServiceModel.ReleasesPollingClient(_configurationManager, _globalSettingsService, _packageService, _packageSettingRepository, _connectionStringRepository, _eventBus, packageId);
         }
 
         void Pause()

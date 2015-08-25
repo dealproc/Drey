@@ -4,7 +4,7 @@ using Dapper;
 
 namespace Drey.Configuration.Repositories.SQLiteRepositories
 {
-    public class GlobalSettingsRepository : SqlRepository, IGlobalSettingsRepository
+    public class GlobalSettingsRepository : SqlRepository, IGlobalSettingsRepository, Drey.Nut.IGlobalSettings
     {
         public GlobalSettingsRepository(INutConfiguration configurationManager) : base(configurationManager) { }
 
@@ -16,6 +16,11 @@ namespace Drey.Configuration.Repositories.SQLiteRepositories
                 cn.Execute("INSERT INTO GlobalSettings ([Key], [Value], [CreatedOn], [UpdatedOn]) VALUES (@key, @value, @createdon, @updatedon)",
                     new { key = key, value = value, createdon = DateTime.Now, updatedon = DateTime.Now });
             });
+        }
+
+        public string this[string key]
+        {
+            get { return GetSetting(key); }
         }
 
         public string GetSetting(string key)

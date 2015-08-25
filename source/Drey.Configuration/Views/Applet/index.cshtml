@@ -1,0 +1,57 @@
+﻿@inherits NancyRazorViewBase<Drey.Configuration.Services.ViewModels.AppletDashboardPmo>
+@{
+    var faBase = "fa fa-fw fa-3x";
+}
+<h1>Service Panel</h1>
+
+<p>The following applications are installed in this runtime.</p>
+
+<h2>@Model.Title - @Model.Version</h2>
+
+<h3>Applet Settings</h3>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Key</th>
+            <th>Value</th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+        @foreach (Drey.Configuration.Services.ViewModels.AppletDashboardPmo.AppletSetting appSetting in Model.AppSettings)
+        {
+            <tr>
+                <td>@appSetting.Key</td>
+                <td>@appSetting.Value</td>
+            </tr>
+        }
+
+    </tbody>
+
+</table>
+
+<h3>Connection Strings</h3>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Provider Name</th>
+            <th>Connection String</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (Drey.Configuration.Services.ViewModels.AppletDashboardPmo.AppletConnectionString connStr in Model.ConnectionStrings)
+        {
+            <tr>
+                <td>@connStr.Name</td>
+                <td>@connStr.ProviderName</td>
+                <td>@connStr.ConnectionString</td>
+            </tr>
+        }
+    </tbody>
+
+</table>

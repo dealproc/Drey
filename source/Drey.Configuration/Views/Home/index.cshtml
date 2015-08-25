@@ -1,5 +1,24 @@
-﻿@inherits NancyRazorViewBase<dynamic>
+﻿@inherits NancyRazorViewBase<IEnumerable<Drey.Configuration.DataModel.Release>>
+@{
+    var faBase = "fa fa-fw fa-3x";
+}
 <h1>Service Panel</h1>
 
 <p>The following applications are installed in this runtime.</p>
 
+<ul class="media-list">
+    @foreach (Drey.Configuration.DataModel.Release pkg in Model)
+    {
+        <li class="media">
+            <div class="media-left media-top">
+                <span class="@faBase fa-ban text-danger" title="offline"></span>
+            </div>
+            <div class="media-body">
+                <a href="~/applet/@pkg.Id">
+                    <h2 class="media-heading">@pkg.Title</h2>
+                </a>
+                <p>@pkg.Description</p>
+            </div>
+        </li>
+    }
+</ul>
