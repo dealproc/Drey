@@ -1,13 +1,10 @@
 ﻿using Drey.Nut;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Drey.Configuration.Services
 {
-    public class ConnectionStringsService : IConnectionStrings
+    public class ConnectionStringsService : MarshalByRefObject, IConnectionStrings
     {
         readonly string _packageId;
         readonly Repositories.IConnectionStringRepository _connectionStringsRepository;

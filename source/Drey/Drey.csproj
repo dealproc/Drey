@@ -50,6 +50,8 @@
     <Compile Include="Extensions\EnumExtensions.cs" />
     <Compile Include="HordeServiceControl.cs" />
     <Compile Include="ApplicationHostNutConfiguration.cs" />
+    <Compile Include="Nut\DefaultAppSetting.cs" />
+    <Compile Include="Nut\DefaultConnectionString.cs" />
     <Compile Include="Nut\IApplicationSettings.cs" />
     <Compile Include="Nut\IConnectionStrings.cs" />
     <Compile Include="Nut\IGlobalSettings.cs" />

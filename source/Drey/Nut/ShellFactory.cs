@@ -66,6 +66,10 @@ namespace Drey.Nut
             domain.AssemblyResolve += domainProxy.ResolveAssemblyInDomain;
             var appShell = (IShell)domainProxy.Build(entryDllAndType.Item1, entryDllAndType.Item2);
 
+            _Log.Info("Registering default app settings.");
+
+            _Log.Info("Registering default connection string(s).");
+
             _Log.Info("Running app startup routine.");
             appShell.Startup(config);
             _Log.Info("App startup routine finished.");

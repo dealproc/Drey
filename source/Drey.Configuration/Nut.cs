@@ -4,8 +4,9 @@ using Drey.Nut;
 using Nancy.Hosting.Self;
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
-using System.Threading.Tasks;
+using System.Linq;
 
 namespace Drey.Configuration
 {
@@ -35,6 +36,16 @@ namespace Drey.Configuration
             get { return true; }
         }
 
+        public override IEnumerable<DefaultAppSetting> AppSettingDefaults
+        {
+            get { return Enumerable.Empty<DefaultAppSetting>(); }
+        }
+
+        public override IEnumerable<DefaultConnectionString> ConnectionStringDefaults
+        {
+            get { return Enumerable.Empty<DefaultConnectionString>(); }
+        }
+        
         public override void Startup(INutConfiguration configurationManager)
         {
             MigrationManager.Migrate(configurationManager);

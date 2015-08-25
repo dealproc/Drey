@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Drey.Configuration.Services
 {
-    public class ApplicationSettingsService : IApplicationSettings
+    public class ApplicationSettingsService : MarshalByRefObject, IApplicationSettings
     {
         readonly string _packageId;
         readonly Repositories.IPackageSettingRepository _packageSettingsRepository;

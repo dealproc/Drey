@@ -1,6 +1,7 @@
 ﻿using Drey.Logging;
 
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Drey.Nut
@@ -14,6 +15,17 @@ namespace Drey.Nut
         public abstract string NameDomainAs { get; }
         public abstract string DisplayAs { get; }
         public abstract bool RequiresConfigurationStorage { get; }
+
+        /// <summary>
+        /// Gets the application setting defaults.
+        /// </summary>
+        public abstract IEnumerable<DefaultAppSetting> AppSettingDefaults { get; }
+
+        /// <summary>
+        /// Gets the connection string defaults.
+        /// </summary>
+        public abstract IEnumerable<DefaultConnectionString> ConnectionStringDefaults { get; }
+
         public INutConfiguration ConfigurationManager { get; protected set; }
 
         /// <summary>

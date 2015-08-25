@@ -8,7 +8,7 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace Drey.Configuration.Services
 {
-    public class GlobalSettingsService : IGlobalSettingsService
+    public class GlobalSettingsService : MarshalByRefObject, IGlobalSettingsService
     {
         readonly IEventBus _eventBus;
         readonly IGlobalSettingsRepository _globalSettingsRepository;

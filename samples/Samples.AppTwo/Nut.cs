@@ -1,8 +1,9 @@
 ﻿using Drey.Nut;
-using System;
-using System.Threading.Tasks;
 
-//[assembly: Drey.Nut.Cracking(typeof(Samples.AppTwo.Nut), true, "Samples - App Two", "samples.apptwo", "Samples - Second Application")]
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
 namespace Samples.AppTwo
 {
     public class Nut : ShellBase, IDisposable
@@ -36,6 +37,16 @@ namespace Samples.AppTwo
         public override void Dispose()
         {
             Console.WriteLine("Samples - App Two Torn Down");
+        }
+
+        public override IEnumerable<DefaultAppSetting> AppSettingDefaults
+        {
+            get { return Enumerable.Empty<DefaultAppSetting>(); }
+        }
+
+        public override IEnumerable<DefaultConnectionString> ConnectionStringDefaults
+        {
+            get { return Enumerable.Empty<DefaultConnectionString>(); }
         }
     }
 }

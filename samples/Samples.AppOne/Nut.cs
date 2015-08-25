@@ -1,7 +1,9 @@
 ﻿using Drey.Nut;
+
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace Samples.AppOne
 {
@@ -42,6 +44,23 @@ namespace Samples.AppOne
         public override bool RequiresConfigurationStorage
         {
             get { return false; }
+        }
+
+        public override IEnumerable<DefaultAppSetting> AppSettingDefaults
+        {
+            get
+            {
+                yield return new DefaultAppSetting { Key = "Setting.One", Value = string.Empty };
+                yield return new DefaultAppSetting { Key = "Setting.Two", Value = string.Empty };
+            }
+        }
+
+        public override IEnumerable<DefaultConnectionString> ConnectionStringDefaults
+        {
+            get
+            {
+                yield return new DefaultConnectionString { Name = "FirstDb", ConnectionString = "", ProviderName = "some.provider" };
+            }
         }
     }
 }
