@@ -1,4 +1,5 @@
 ﻿using Drey.Nut;
+
 using System;
 using System.Collections.Generic;
 
@@ -17,7 +18,7 @@ namespace Drey.Configuration.Services
 
         public string this[string key]
         {
-            get { return _connectionStringsRepository.ByKey(_packageId, key); }
+            get { return _connectionStringsRepository.ByName(_packageId, key); }
         }
 
         public void Register(IEnumerable<string> keys)

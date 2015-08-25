@@ -1,0 +1,40 @@
+﻿@inherits NancyRazorViewBase<Drey.Configuration.Services.ViewModels.ConnectionStringPmo>
+@{
+    var faBase = "fa fa-fw fa-3x";
+}
+<h1>Connection String Editor</h1>
+
+@Html.Partial("Shared/ValidationSummary")
+
+<form method="post" action="~/applet/@Model.PackageId/connectionStrings">
+
+    <input type="hidden" name="Id" value="@Model.Id" />
+    <input type="hidden" name="PackageId" value="@Model.PackageId" />
+
+    <label for="Name">Name</label>
+    <input type="text" value="@Model.Name" name="Name" class="form-control" />
+
+    <label for="ConnectionString">Connection String</label>
+    <textarea name="ConnectionString" class="form-control">@Model.ConnectionString</textarea>
+
+    <label for="ProviderName">Provider</label>
+    <select name="ProviderName" class="form-control">
+        <option value=""></option>
+        @foreach (KeyValuePair<string, string> name in Model.Providers)
+        {
+            if (name.Key.Equals(Model.ProviderName))
+            {
+                <option value="@name.Key" selected="selected">@name.Value</option>
+            }
+            else
+            {
+                <option value="@name.Key">@name.Value</option>
+            }
+        }
+    </select>
+
+    <div>
+        <button type="submit" class="btn btn-primary">Save</button>
+        <a href="~/applet/@Model.PackageId" class="btn btn-default">Cancel</a>
+    </div>
+</form>

@@ -10,6 +10,10 @@
 
 <h3>Applet Settings</h3>
 
+<div class="btn-group">
+    <a href="~/applet/@Model.Id/appSetting/new" class="btn btn-default">New</a>
+</div>
+
 <table class="table">
     <thead>
         <tr>
@@ -23,7 +27,7 @@
         @foreach (Drey.Configuration.Services.ViewModels.AppletDashboardPmo.AppletSetting appSetting in Model.AppSettings)
         {
             <tr>
-                <td>@appSetting.Key</td>
+                <td><a href="~/applet/@Model.Id/appSetting/@appSetting.Key/Edit">@appSetting.Key</a></td>
                 <td>@appSetting.Value</td>
             </tr>
         }
@@ -33,6 +37,10 @@
 </table>
 
 <h3>Connection Strings</h3>
+
+<div class="btn-group">
+    <a href="~/applet/@Model.Id/connectionStrings/new" class="btn btn-default">New</a>
+</div>
 
 <table class="table">
     <thead>
@@ -47,7 +55,7 @@
         @foreach (Drey.Configuration.Services.ViewModels.AppletDashboardPmo.AppletConnectionString connStr in Model.ConnectionStrings)
         {
             <tr>
-                <td>@connStr.Name</td>
+                <td><a href="~/applet/@Model.Id/connectionStrings/@connStr.Name/Edit">@connStr.Name</a></td>
                 <td>@connStr.ProviderName</td>
                 <td>@connStr.ConnectionString</td>
             </tr>

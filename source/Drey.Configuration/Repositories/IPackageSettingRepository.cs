@@ -6,6 +6,8 @@ namespace Drey.Configuration.Repositories
     {
         IEnumerable<DataModel.PackageSetting> All();
         IEnumerable<DataModel.PackageSetting> All(string packageId);
-        string ByKey(string _packageId, string key);
+        DataModel.PackageSetting Get(string packageId, string key);
+        string ByKey(string packageId, string key);
+        void Store(Services.ViewModels.AppSettingPmo model);
     }
 }

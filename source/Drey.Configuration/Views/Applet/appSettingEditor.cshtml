@@ -1,0 +1,24 @@
+﻿@inherits NancyRazorViewBase<Drey.Configuration.Services.ViewModels.AppSettingPmo>
+@{
+    var faBase = "fa fa-fw fa-3x";
+}
+<h1>Application Setting Editor</h1>
+
+@Html.Partial("Shared/ValidationSummary")
+
+<form method="post" action="~/applet/@Model.PackageId/appSetting">
+
+    <input type="hidden" name="Id" value="@Model.Id" />
+    <input type="hidden" name="PackageId" value="@Model.PackageId" />
+
+    <label for="Key">Key</label>
+    <input type="text" value="@Model.Key" name="Key" class="form-control" />
+
+    <label for="Value">Value</label>
+    <input type="text" value="@Model.Value" name="Value" class="form-control" />
+
+    <div>
+        <button type="submit" class="btn btn-primary">Save</button>
+        <a href="~/applet/@Model.PackageId" class="btn btn-default">Cancel</a>
+    </div>
+</form>

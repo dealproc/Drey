@@ -136,6 +136,8 @@
     <Compile Include="Services\IPackageService.cs" />
     <Compile Include="Services\PackageService.cs" />
     <Compile Include="Services\ViewModels\AppletDashboardPmo.cs" />
+    <Compile Include="Services\ViewModels\AppSettingPmo.cs" />
+    <Compile Include="Services\ViewModels\ConnectionStringPmo.cs" />
     <Compile Include="Services\ViewModels\GlobalSettingsPmo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -159,6 +161,8 @@
     <EmbeddedResource Include="Views\Shared\ValidationSummary.cshtml" />
     <EmbeddedResource Include="Views\_ViewStart.cshtml" />
     <EmbeddedResource Include="Views\Applet\index.cshtml" />
+    <EmbeddedResource Include="Views\Applet\connStringEditor.cshtml" />
+    <EmbeddedResource Include="Views\Applet\appSettingEditor.cshtml" />
     <None Include="Views\Web.config" />
   </ItemGroup>
   <ItemGroup>

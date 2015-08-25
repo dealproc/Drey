@@ -1,5 +1,6 @@
 ﻿using Drey.Configuration.Repositories;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq;
 
 namespace Drey.Configuration.Services
@@ -67,6 +68,42 @@ namespace Drey.Configuration.Services
                 AppSettings = _packageSettingRepository.All(packageId).Select(setting => new ViewModels.AppletDashboardPmo.AppletSetting { Id = setting.Id, Key = setting.Key, Value = setting.Value }),
                 ConnectionStrings = _connectionStringRepository.All(packageId).Select(cn => new ViewModels.AppletDashboardPmo.AppletConnectionString { Id = cn.Id, Name = cn.Name, ConnectionString = cn.ConnectionString, ProviderName = cn.ProviderName })
             };
+        }
+
+
+        public ViewModels.AppSettingPmo GetAppSetting(string packageId, string key)
+        {
+            var dbAppSetting = _packageSettingRepository.Get(packageId, key);
+            return dbAppSetting != null
+                ?
+                new ViewModels.AppSettingPmo { Key = dbAppSetting.Key, Value = dbAppSetting.Value, PackageId = dbAppSetting.PackageId }
+                :
+                default(ViewModels.AppSettingPmo);
+        }
+
+        public void RecordAppSetting(ViewModels.AppSettingPmo model)
+        {
+            _packageSettingRepository.Store(model);
+        }
+
+        public ViewModels.ConnectionStringPmo GetConnectionString(string packageId, string name)
+        {
+            var dbConnStr = _connectionStringRepository.Get(packageId, name);
+            return dbConnStr != null
+                ?
+                new ViewModels.ConnectionStringPmo { Name = dbConnStr.Name, ConnectionString = dbConnStr.ConnectionString, ProviderName = dbConnStr.ProviderName, PackageId = dbConnStr.PackageId, Providers = this.ConnectionFactoryProviders() }
+                :
+                default(ViewModels.ConnectionStringPmo);
+        }
+
+        public void RecordConnectionString(ViewModels.ConnectionStringPmo model)
+        {
+            _connectionStringRepository.Store(model);
+        }
+
+        public IDictionary<string, string> ConnectionFactoryProviders()
+        {
+            return DbProviderFactories.GetFactoryClasses().Select().ToDictionary(dr => dr["Name"].ToString(), dr => dr["InvariantName"].ToString());
         }
     }
 }
