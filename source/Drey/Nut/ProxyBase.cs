@@ -19,6 +19,12 @@ namespace Drey.Nut
             _pathToAppPackage = pathToAppPackage;
         }
 
+        /// <summary>
+        /// Resolves the assembly within the child domain, so we can support assembly unloading.
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="args">The <see cref="ResolveEventArgs"/> instance containing the event data.</param>
+        /// <returns></returns>
         public Assembly ResolveAssemblyInDomain(object sender, ResolveEventArgs args)
         {
             var asmName = args.Name + ".dll";

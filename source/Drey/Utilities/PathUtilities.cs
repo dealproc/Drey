@@ -12,7 +12,7 @@ namespace Drey.Utilities
         /// <param name="relativePath">The relative path.</param>
         /// <param name="includePathSeparator">if set to <c>true</c> [include path separator].</param>
         /// <returns></returns>
-         public static string ResolvePath(string relativePath, bool includePathSeparator = true)
+        public static string ResolvePath(string relativePath, bool includePathSeparator = true)
         {
             var respondWith = relativePath;
 

@@ -17,16 +17,32 @@ namespace Drey.Server.Services
             _fileService = fileService;
         }
 
+        /// <summary>
+        /// Gets an aggregate list of packages within the system.
+        /// </summary>
+        /// <returns></returns>
         public Task<IEnumerable<Models.Package>> GetPackagesAsync()
         {
             return _releaseStore.ListPackages();
         }
 
+        /// <summary>
+        /// Retrieves all known releases, based on a package id.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <returns></returns>
         public Task<IEnumerable<Models.Release>> GetReleasesAsync(string id)
         {
             return _releaseStore.ListByIdAsync(id);
         }
 
+        /// <summary>
+        /// Retrieves the nupkg based on its id and version, and prepares the nupkg for download by the client.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <param name="version">The version.</param>
+        /// <returns></returns>
+        /// <exception cref="System.IO.InvalidDataException"></exception>
         public async Task<Models.FileDownload> GetReleaseAsync(string id, string version)
         {
             var releaseInfo = await _releaseStore.GetAsync(id, version);
@@ -43,6 +59,11 @@ namespace Drey.Server.Services
             };
         }
 
+        /// <summary>
+        /// Syndicates the nupkg stream for use within the system.
+        /// </summary>
+        /// <param name="stream">The stream.</param>
+        /// <returns></returns>
         public async Task<Models.Release> SyndicateAsync(Stream stream)
         {
             ZipPackage package = new ZipPackage(stream);
@@ -80,6 +101,13 @@ namespace Drey.Server.Services
             return await _releaseStore.StoreAsync(release);
         }
 
+        /// <summary>
+        /// Deletes the requested package/version from storage.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <param name="version">The version.</param>
+        /// <returns></returns>
+        /// <exception cref="System.IO.FileNotFoundException">Package id/version does not exist.</exception>
         public async Task DeleteAsync(string id, string version)
         {
             var releaseInfo = await _releaseStore.GetAsync(id, version);

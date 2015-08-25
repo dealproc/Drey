@@ -16,16 +16,34 @@ namespace Drey.Nut
         public abstract bool RequiresConfigurationStorage { get; }
         public INutConfiguration ConfigurationManager { get; protected set; }
 
+        /// <summary>
+        /// Occurs when this shell needs the runtime to perform an operation on the shell's behalf.
+        /// </summary>
         public event EventHandler<ShellRequestArgs> OnShellRequest;
 
+        /// <summary>
+        /// The startup routine for the applet.  Think of this like `static main(string args[]) { ... }`.
+        /// </summary>
+        /// <param name="configurationManager">The configuration manager.</param>
         public virtual void Startup(INutConfiguration configurationManager)
         {
             ConfigurationManager = configurationManager;
         }
 
+        /// <summary>
+        /// Should your app need a specific shutdown routine, you will override this method and impement it.
+        /// </summary>
         public virtual void Shutdown() { }
+
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
         public virtual void Dispose() { }
 
+        /// <summary>
+        /// Emits the shell request.
+        /// </summary>
+        /// <param name="args">The arguments.</param>
         protected void EmitShellRequest(ShellRequestArgs args)
         {
             var handler = OnShellRequest;

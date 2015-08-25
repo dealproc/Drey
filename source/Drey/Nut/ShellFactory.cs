@@ -10,6 +10,12 @@ namespace Drey.Nut
     {
         static readonly ILog _Log = LogProvider.For<ShellFactory>();
 
+        /// <summary>
+        /// Creates the specified app.
+        /// </summary>
+        /// <param name="assemblyPath">The assembly path.</param>
+        /// <param name="config">The configuration.</param>
+        /// <returns></returns>
         public Tuple<AppDomain, IShell> Create(string assemblyPath, INutConfiguration config)
         {
             if (string.IsNullOrWhiteSpace(assemblyPath)) { return null; }

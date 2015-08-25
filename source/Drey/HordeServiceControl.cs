@@ -7,6 +7,10 @@ using System.Linq;
 
 namespace Drey
 {
+    /// <summary>
+    /// This is a non-platform specific implementation of the service control class.
+    /// <remarks>This should be created within the platform specific service and subsequently started/stopped using the platform-specific start/stop methods</remarks>
+    /// </summary>
     public class HordeServiceControl : MarshalByRefObject
     {
         static readonly ILog _Log = LogProvider.For<HordeServiceControl>();
@@ -15,11 +19,19 @@ namespace Drey
         INutConfiguration _nutConfiguration = new ApplicationHostNutConfiguration();
         List<Tuple<AppDomain, IShell>> _appInstances = new List<Tuple<AppDomain, IShell>>();
 
+        /// <summary>
+        /// Starts the horde service.
+        /// </summary>
+        /// <returns></returns>
         public bool Start()
         {
             return StartupInstance(_nutConfiguration, DreyConstants.ConfigurationPackageName, string.Empty);
         }
 
+        /// <summary>
+        /// Stops the horde service.
+        /// </summary>
+        /// <returns></returns>
         public bool Stop()
         {
             var packageIds = _appInstances.Select(x => x.Item2.Id).ToArray();
@@ -29,6 +41,14 @@ namespace Drey
             return true;
         }
 
+        /// <summary>
+        /// Handles requests coming from an app instance.
+        /// <remarks>
+        /// Realistically, the only app that will utilize this event will be Drey.Configuration, so it can request for instances to be started/stopped/restarted as necessary.
+        /// </remarks>
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The e.</param>
         void ShellRequestHandler(object sender, ShellRequestArgs e)
         {
             _Log.InfoFormat("'Shell Request' Event Received: {0}", e);
@@ -51,6 +71,13 @@ namespace Drey
             }
         }
 
+        /// <summary>
+        /// Starts an app instance from the horde.
+        /// </summary>
+        /// <param name="configurationManager">The configuration manager.</param>
+        /// <param name="id">The identifier.</param>
+        /// <param name="version">The version. <remarks>If no version is passed into this method, the system will try to identify the latest version of the app, and start that version.</remarks></param>
+        /// <returns></returns>
         bool StartupInstance(INutConfiguration configurationManager, string id, string version = "")
         {
             string packageDir = string.IsNullOrWhiteSpace(version)
@@ -72,6 +99,10 @@ namespace Drey
             return true;
         }
 
+        /// <summary>
+        /// Shutdowns an app instance, based on its package id.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
         void ShutdownInstance(string id)
         {
             var instancesToShutdown = _appInstances.Where(i => i.Item2.Id == id).ToArray();

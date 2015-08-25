@@ -1,4 +1,5 @@
 ﻿using Drey.Logging;
+
 using System;
 using System.IO;
 using System.Linq;
@@ -10,6 +11,11 @@ namespace Drey.Nut
     {
         public DiscoverStartupDllProxy(string pathToAppPackage) : base(pathToAppPackage) { }
 
+        /// <summary>
+        /// Discovers the entry DLL for the applet.
+        /// </summary>
+        /// <param name="assemblyPath">The assembly path.</param>
+        /// <returns></returns>
         public Tuple<string, string> DiscoverEntryDll(string assemblyPath)
         {
             Log.Info("Attempting to discover entry dll.");
