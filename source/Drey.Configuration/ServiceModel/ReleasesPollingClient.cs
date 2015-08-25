@@ -89,44 +89,7 @@ namespace Drey.Configuration.ServiceModel
                             .First()
                             .release;
 
-                        // download latest, based on SHA (storage in {hordebasedir}\packages
-                        var fileResult = await webClient.GetAsync("/.well-known/releases/" + releaseToDownload.Id + "/" + releaseToDownload.Version);
-
-                        fileResult.EnsureSuccessStatusCode();
-
-                        var fileName = fileResult
-                            .Content
-                            .Headers
-                            .First(x => x.Key.Equals("Content-Disposition", StringComparison.InvariantCultureIgnoreCase))
-                            .Value
-                            .Single()
-                            .Replace("attachment; filename=", string.Empty).Replace("\"", string.Empty);
-
-                        var destinationFileNameAndPath = Path.Combine(_configurationManager.HordeBaseDirectory, "packages", fileName);
-                        var destinationFolder = Path.GetDirectoryName(destinationFileNameAndPath);
-
-                        if (!Directory.Exists(destinationFolder))
-                        {
-                            Directory.CreateDirectory(destinationFolder);
-                        }
-
-                        if (File.Exists(destinationFileNameAndPath))
-                        {
-                            File.Delete(destinationFileNameAndPath);
-                        }
-
-                        _Log.InfoFormat("File will be stored at: '{0}'", destinationFileNameAndPath);
-
-                        using (var fStream = File.OpenWrite(destinationFileNameAndPath))
-                        {
-                            await fileResult.Content.CopyToAsync(fStream);
-                        }
-
-                        var pkg = new NuGet.ZipPackage(destinationFileNameAndPath);
-                        var zipFileInfo = new FileInfo(fileName);
-                        var zipFolderName = zipFileInfo.Name;
-                        zipFolderName = zipFolderName.Substring(0, zipFolderName.Length - zipFileInfo.Extension.Length);
-                        pkg.ExtractContents(new NuGet.PhysicalFileSystem(_configurationManager.HordeBaseDirectory), zipFolderName);
+                        await DownloadAndExtractRelease(webClient, releaseToDownload);
 
                         _packageService.RecordReleases(newReleases);
 
@@ -154,6 +117,48 @@ namespace Drey.Configuration.ServiceModel
                     // squelch.
                 }
             }
+        }
+
+        private async Task DownloadAndExtractRelease(HttpClient webClient, DataModel.Release releaseToDownload)
+        {
+            // download latest, based on package id and version (storage in {hordebasedir}\packages
+            var fileResult = await webClient.GetAsync("/.well-known/releases/" + releaseToDownload.Id + "/" + releaseToDownload.Version);
+
+            fileResult.EnsureSuccessStatusCode();
+
+            var fileName = fileResult
+                .Content
+                .Headers
+                .First(x => x.Key.Equals("Content-Disposition", StringComparison.InvariantCultureIgnoreCase))
+                .Value
+                .Single()
+                .Replace("attachment; filename=", string.Empty).Replace("\"", string.Empty);
+
+            var destinationFileNameAndPath = Path.Combine(_configurationManager.HordeBaseDirectory, "packages", fileName);
+            var destinationFolder = Path.GetDirectoryName(destinationFileNameAndPath);
+
+            if (!Directory.Exists(destinationFolder))
+            {
+                Directory.CreateDirectory(destinationFolder);
+            }
+
+            if (File.Exists(destinationFileNameAndPath))
+            {
+                File.Delete(destinationFileNameAndPath);
+            }
+
+            _Log.InfoFormat("File will be stored at: '{0}'", destinationFileNameAndPath);
+
+            using (var fStream = File.OpenWrite(destinationFileNameAndPath))
+            {
+                await fileResult.Content.CopyToAsync(fStream);
+            }
+
+            var pkg = new NuGet.ZipPackage(destinationFileNameAndPath);
+            var zipFileInfo = new FileInfo(fileName);
+            var zipFolderName = zipFileInfo.Name;
+            zipFolderName = zipFolderName.Substring(0, zipFolderName.Length - zipFileInfo.Extension.Length);
+            pkg.ExtractContents(new NuGet.PhysicalFileSystem(_configurationManager.HordeBaseDirectory), zipFolderName);
         }
 
         private Infrastructure.ConfigurationManagement.DbConfigurationSettings CreateConfigurationManager()
