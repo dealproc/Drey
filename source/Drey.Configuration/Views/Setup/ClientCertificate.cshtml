@@ -1,0 +1,24 @@
+﻿@inherits NancyRazorViewBase<Drey.Configuration.Services.ViewModels.GlobalSettingsPmo>
+@{
+    ViewBag.Title = "Update Client Certificate";
+}
+@Html.Partial("Shared/ValidationSummary")
+<div class="row">
+    <div class="col-md-4 col-md-offset-4 col-xs-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">@ViewBag.Title</div>
+            <div class="panel-body">
+                <form method="post" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="SSLPfx">SSL Certificate</label>
+                        <input type="file" name="SSLPfx" class="form-control" />
+                    </div>
+                    <div>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                        <a href="~/" class="btn btn-default">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

@@ -139,6 +139,7 @@
     <Compile Include="Services\ViewModels\AppSettingPmo.cs" />
     <Compile Include="Services\ViewModels\ConnectionStringPmo.cs" />
     <Compile Include="Services\ViewModels\GlobalSettingsPmo.cs" />
+    <Compile Include="Services\ViewModels\ServerHostnamePmo.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Content\bootstrap-theme.css.map" />
@@ -163,6 +164,8 @@
     <EmbeddedResource Include="Views\Applet\index.cshtml" />
     <EmbeddedResource Include="Views\Applet\connStringEditor.cshtml" />
     <EmbeddedResource Include="Views\Applet\appSettingEditor.cshtml" />
+    <EmbeddedResource Include="Views\Setup\ServerUrl.cshtml" />
+    <EmbeddedResource Include="Views\Setup\ClientCertificate.cshtml" />
     <None Include="Views\Web.config" />
   </ItemGroup>
   <ItemGroup>
