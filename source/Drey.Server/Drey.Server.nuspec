@@ -15,6 +15,7 @@
     <dependencies>
       <dependency id="Nancy" version="1.2.0" />
       <dependency id="Nuget.Core" version="2.8.6" />
+      <dependency id="Nancy.MSOwinSecurity" version="1.0.1" />
     </dependencies>
   </metadata>
   <files>

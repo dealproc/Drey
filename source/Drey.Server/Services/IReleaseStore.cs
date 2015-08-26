@@ -1,5 +1,7 @@
 ﻿using NuGet;
+
 using System.Collections.Generic;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Drey.Server.Services
@@ -23,20 +25,20 @@ namespace Drey.Server.Services
         /// Lists the packages.
         /// </summary>
         /// <returns></returns>
-        Task<IEnumerable<Models.Package>> ListPackages();
+        Task<IEnumerable<Models.Package>> ListPackages(ClaimsPrincipal principal = null);
 
         /// <summary>
         /// Lists all known releases of all stored packages.
         /// </summary>
         /// <returns></returns>
-        Task<IEnumerable<Models.Release>> ListAsync();
+        Task<IEnumerable<Models.Release>> ListAsync(ClaimsPrincipal principal = null);
 
         /// <summary>
         /// Produces a list of releases, by package id.
         /// </summary>
         /// <param name="id">The package id.</param>
         /// <returns></returns>
-        Task<IEnumerable<Models.Release>> ListByIdAsync(string id);
+        Task<IEnumerable<Models.Release>> ListByIdAsync(string id, ClaimsPrincipal principal = null);
 
         /// <summary>
         /// Gets information about a specific package/version.
@@ -44,7 +46,7 @@ namespace Drey.Server.Services
         /// <param name="id">The package id.</param>
         /// <param name="version">The version of the package.</param>
         /// <returns></returns>
-        Task<Models.Release> GetAsync(string id, string version);
+        Task<Models.Release> GetAsync(string id, string version, ClaimsPrincipal principal = null);
 
         /// <summary>
         /// Deletes a specific package/version combination from the store.

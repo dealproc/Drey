@@ -1,8 +1,10 @@
 ﻿using Drey.Server.Services;
+
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Drey.Server.Tests.Fixtures
@@ -39,7 +41,7 @@ namespace Drey.Server.Tests.Fixtures
             return Task.FromResult(model);
         }
 
-        public Task<IEnumerable<Models.Package>> ListPackages()
+        public Task<IEnumerable<Models.Package>> ListPackages(ClaimsPrincipal principal = null)
         {
             return Task.FromResult(_releases
                 .GroupBy(r => r.Id)
@@ -51,19 +53,19 @@ namespace Drey.Server.Tests.Fixtures
             ));
         }
 
-        public Task<IEnumerable<Models.Release>> ListAsync()
+        public Task<IEnumerable<Models.Release>> ListAsync(ClaimsPrincipal principal = null)
         {
             return Task.FromResult(_releases.AsEnumerable());
         }
 
-        public Task<IEnumerable<Models.Release>> ListByIdAsync(string id)
+        public Task<IEnumerable<Models.Release>> ListByIdAsync(string id, ClaimsPrincipal principal = null)
         {
             if (id.Equals("exception", StringComparison.InvariantCultureIgnoreCase)) { throw new Exception("test exception."); }
 
             return Task.FromResult(_releases.Where(r => r.Id.Equals(id, StringComparison.InvariantCultureIgnoreCase)));
         }
 
-        public Task<Models.Release> GetAsync(string id, string version)
+        public Task<Models.Release> GetAsync(string id, string version, ClaimsPrincipal principal = null)
         {
             if (id.Equals("exception", StringComparison.InvariantCultureIgnoreCase)) { throw new Exception("test exception"); }
             return Task.FromResult(_releases.FirstOrDefault(r => r.Id.Equals(id, StringComparison.InvariantCultureIgnoreCase) && r.Version.Equals(version)));

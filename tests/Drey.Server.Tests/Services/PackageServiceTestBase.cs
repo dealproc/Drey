@@ -6,6 +6,7 @@ using Shouldly;
 
 using System.IO;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 using Xunit;
@@ -30,21 +31,19 @@ namespace Drey.Server.Tests.Services
         [Fact]
         public async Task CanRetrievePackagesAsync()
         {
-            A.CallTo(() => _releaseStore.ListPackages()).Returns(new[] { new Models.Package { } });
+            A.CallTo(() => _releaseStore.ListPackages(A<ClaimsPrincipal>.Ignored)).Returns(new[] { new Models.Package { } });
 
             var listOfPackages = await _SUT.GetPackagesAsync();
 
             listOfPackages.ShouldNotBe(null);
             listOfPackages.Count().ShouldBe(1);
-
-            A.CallTo(() => _releaseStore.ListPackages()).MustHaveHappened();
         }
 
         [Fact]
         public async Task CanQueryReleasesAsync()
         {
             string test_package_id = "test.package";
-            A.CallTo(() => _releaseStore.ListByIdAsync(A<string>.That.IsEqualTo(test_package_id)))
+            A.CallTo(() => _releaseStore.ListByIdAsync(A<string>.That.IsEqualTo(test_package_id), A<ClaimsPrincipal>.Ignored))
                 .Returns(
                 new[]
                 {
@@ -55,7 +54,6 @@ namespace Drey.Server.Tests.Services
 
             var releases = await _SUT.GetReleasesAsync(test_package_id);
 
-            A.CallTo(() => _releaseStore.ListByIdAsync(A<string>.That.IsEqualTo(test_package_id))).MustHaveHappened();
             releases.ShouldNotBe(null);
             releases.Count().ShouldBe(3);
         }
@@ -67,7 +65,7 @@ namespace Drey.Server.Tests.Services
             string version = "1.0.0.0";
             string relative_url = string.Format("{0}.{1}.nupkg", packageId, version);
 
-            A.CallTo(() => _releaseStore.GetAsync(A<string>.Ignored, A<string>.Ignored)).Returns(new Models.Release { Id = packageId, Version = version, RelativeUri = relative_url });
+            A.CallTo(() => _releaseStore.GetAsync(A<string>.Ignored, A<string>.Ignored, A<ClaimsPrincipal>.Ignored)).Returns(new Models.Release { Id = packageId, Version = version, RelativeUri = relative_url });
             A.CallTo(() => _fileService.DownloadBlobAsync(A<string>.That.IsEqualTo(relative_url))).Returns(new MemoryStream(Resources.Files.validzipfile));
 
             var downloadInfo = await _SUT.GetReleaseAsync(packageId, version);
@@ -82,7 +80,7 @@ namespace Drey.Server.Tests.Services
         [InlineData("unknown", "1.0.0.0")]
         public async Task ThrowsExceptionOnInvalidIdOrVersion(string id, string version)
         {
-            A.CallTo(() => _releaseStore.GetAsync(A<string>.Ignored, A<string>.Ignored)).Returns(default(Models.Release));
+            A.CallTo(() => _releaseStore.GetAsync(A<string>.Ignored, A<string>.Ignored, A<ClaimsPrincipal>.Ignored)).Returns(default(Models.Release));
 
             await Assert.ThrowsAsync<InvalidDataException>(() => _SUT.GetReleaseAsync(id, version));
         }
@@ -99,7 +97,7 @@ namespace Drey.Server.Tests.Services
         public async Task CanDeleteAPackage()
         {
             var relativeUri = "somedumburi";
-            A.CallTo(() => _releaseStore.GetAsync(A<string>.Ignored, A<string>.Ignored)).Returns(new Models.Release { Id = "test.package", Version = "1.0.0.0", RelativeUri = relativeUri });
+            A.CallTo(() => _releaseStore.GetAsync(A<string>.Ignored, A<string>.Ignored, A<ClaimsPrincipal>.Ignored)).Returns(new Models.Release { Id = "test.package", Version = "1.0.0.0", RelativeUri = relativeUri });
             A.CallTo(() => _releaseStore.DeleteAsync(A<string>.Ignored, A<string>.Ignored)).Returns(Task.FromResult(0));
             A.CallTo(() => _fileService.DeleteAsync(A<string>.That.IsEqualTo(relativeUri))).Returns(true);
 
@@ -111,7 +109,7 @@ namespace Drey.Server.Tests.Services
         [InlineData("test.package", "0.0.0.0")]
         public async Task ShouldThrow_FileNotFoundException_WithBad(string id, string version)
         {
-            A.CallTo(() => _releaseStore.GetAsync(A<string>.That.IsEqualTo(id), A<string>.That.IsEqualTo(version))).Returns(default(Models.Release));
+            A.CallTo(() => _releaseStore.GetAsync(A<string>.That.IsEqualTo(id), A<string>.That.IsEqualTo(version), A<ClaimsPrincipal>.Ignored)).Returns(default(Models.Release));
 
             await Assert.ThrowsAsync<FileNotFoundException>(() => _SUT.DeleteAsync(id, version));
         }

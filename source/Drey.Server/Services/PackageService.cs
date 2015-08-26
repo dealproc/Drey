@@ -1,7 +1,9 @@
 ﻿using NuGet;
+
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Drey.Server.Services
@@ -21,9 +23,9 @@ namespace Drey.Server.Services
         /// Gets an aggregate list of packages within the system.
         /// </summary>
         /// <returns></returns>
-        public Task<IEnumerable<Models.Package>> GetPackagesAsync()
+        public Task<IEnumerable<Models.Package>> GetPackagesAsync(ClaimsPrincipal principal = null)
         {
-            return _releaseStore.ListPackages();
+            return _releaseStore.ListPackages(principal);
         }
 
         /// <summary>
@@ -31,9 +33,9 @@ namespace Drey.Server.Services
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <returns></returns>
-        public Task<IEnumerable<Models.Release>> GetReleasesAsync(string id)
+        public Task<IEnumerable<Models.Release>> GetReleasesAsync(string id, ClaimsPrincipal principal = null)
         {
-            return _releaseStore.ListByIdAsync(id);
+            return _releaseStore.ListByIdAsync(id, principal);
         }
 
         /// <summary>
@@ -43,9 +45,9 @@ namespace Drey.Server.Services
         /// <param name="version">The version.</param>
         /// <returns></returns>
         /// <exception cref="System.IO.InvalidDataException"></exception>
-        public async Task<Models.FileDownload> GetReleaseAsync(string id, string version)
+        public async Task<Models.FileDownload> GetReleaseAsync(string id, string version, ClaimsPrincipal principal = null)
         {
-            var releaseInfo = await _releaseStore.GetAsync(id, version);
+            var releaseInfo = await _releaseStore.GetAsync(id, version, principal);
 
             if (releaseInfo == null) { throw new InvalidDataException(string.Format("Package {0} {1} does not exist.", id, version)); }
 

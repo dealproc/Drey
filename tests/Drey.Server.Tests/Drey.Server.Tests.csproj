@@ -91,6 +91,7 @@
     <Compile Include="TestNancyBootstrapper.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="packages.config" />
     <EmbeddedResource Include="Resources\Files\validzipfile.zip" />
   </ItemGroup>

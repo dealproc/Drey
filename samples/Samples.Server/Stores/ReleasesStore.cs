@@ -1,7 +1,9 @@
 ﻿using Drey.Server.Models;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Samples.Server.Stores
@@ -22,7 +24,7 @@ namespace Samples.Server.Stores
             return Task.FromResult(model);
         }
 
-        public Task<IEnumerable<Package>> ListPackages()
+        public Task<IEnumerable<Package>> ListPackages(ClaimsPrincipal principal = null)
         {
             return Task.FromResult(_releases
                 .GroupBy(r => r.Id)
@@ -34,17 +36,17 @@ namespace Samples.Server.Stores
             ));
         }
 
-        public Task<IEnumerable<Release>> ListAsync()
+        public Task<IEnumerable<Release>> ListAsync(ClaimsPrincipal principal = null)
         {
             return Task.FromResult(_releases.AsEnumerable());
         }
 
-        public Task<IEnumerable<Release>> ListByIdAsync(string id)
+        public Task<IEnumerable<Release>> ListByIdAsync(string id, ClaimsPrincipal principal = null)
         {
             return Task.FromResult(_releases.Where(r => r.Id.Equals(id, StringComparison.InvariantCultureIgnoreCase)));
         }
 
-        public Task<Release> GetAsync(string id, string version)
+        public Task<Release> GetAsync(string id, string version, ClaimsPrincipal principal = null)
         {
             return Task.FromResult(_releases.FirstOrDefault(r => r.Id.Equals(id, StringComparison.InvariantCultureIgnoreCase) && r.Version.Equals(version)));
         }

@@ -1,6 +1,9 @@
-﻿using System.IO;
-using Nancy.Hosting.Self;
+﻿using Microsoft.Owin.Hosting;
+
+using Owin;
+
 using System;
+using System.IO;
 
 namespace Samples.Server
 {
@@ -13,16 +16,30 @@ namespace Samples.Server
                 Directory.Delete(@"c:\packages_test", true);
             }
 
+            var url = "http://localhost:81";
+
             try
             {
-                using (var server = new NancyHost(new Uri("http://localhost:81")))
+                using (var webApp = WebApp.Start<Startup>(url))
                 {
-                    server.Start();
                     Console.WriteLine("Publication Server started.");
+                    Console.WriteLine("Running on {0}", url);
+                    Console.WriteLine("Press enter to exit.");
                     Console.ReadLine();
                 }
             }
             finally { } // squelching any disposal issues.
+        }
+    }
+
+    class Startup
+    {
+        public void Configuration(IAppBuilder app)
+        {
+            app.UseNancy(new Nancy.Owin.NancyOptions
+            {
+                EnableClientCertificates = true
+            });
         }
     }
 }

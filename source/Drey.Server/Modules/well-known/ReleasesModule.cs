@@ -2,6 +2,7 @@
 using Drey.Server.Services;
 
 using Nancy;
+using Nancy.Security;
 
 using System;
 using System.Collections.Generic;
@@ -31,7 +32,7 @@ namespace Drey.Server.Modules.well_known
 
         private async Task<dynamic> GetSubscribedPackages(dynamic args, CancellationToken ct)
         {
-            return await _packageService.GetPackagesAsync();
+            return await _packageService.GetPackagesAsync(Context.GetMSOwinUser());
         }
 
         private async Task<dynamic> GetPackageReleasesAsync(dynamic args, CancellationToken ct)
@@ -39,7 +40,7 @@ namespace Drey.Server.Modules.well_known
             try
             {
                 _Log.Trace("Attempting to list releases for package id: " + (string)args.id);
-                var releases = await _packageService.GetReleasesAsync((string)args.id);
+                var releases = await _packageService.GetReleasesAsync((string)args.id, Context.GetMSOwinUser());
 
                 if (releases.Any())
                 {
@@ -67,7 +68,7 @@ namespace Drey.Server.Modules.well_known
 
             try
             {
-                var file = await _packageService.GetReleaseAsync(id, version);
+                var file = await _packageService.GetReleaseAsync(id, version, Context.GetMSOwinUser());
                 var response = Response.FromStream(file.FileContents, file.MimeType);
                 response.Headers.Add("Content-Disposition", "attachment; filename=\"" + file.Filename + "\"");
                 return response;
