@@ -1,10 +1,10 @@
 ﻿@inherits NancyRazorViewBase<IEnumerable<Drey.Configuration.DataModel.Release>>
 @{
+    ViewBag.Title = "Global Settings";
     var faBase = "fa fa-fw fa-3x";
 }
-<h1>Service Panel</h1>
 
-<p>The following applications are installed in this runtime.</p>
+<p class="lead">The following applications are installed in this runtime.</p>
 
 <ul class="media-list">
     @foreach (Drey.Configuration.DataModel.Release pkg in Model)

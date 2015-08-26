@@ -40,7 +40,14 @@ namespace Drey.Configuration.Modules
 
         private dynamic EditAppSetting(dynamic arg)
         {
-            return Negotiate.WithView("appSettingEditor").WithModel(_packageService.GetAppSetting((string)arg.id, (string)arg.key));
+            var model = _packageService.GetAppSetting((string)arg.id, (string)arg.key);
+            
+            if (model == null)
+            {
+                return HttpStatusCode.NotFound;
+            }
+
+            return Negotiate.WithView("appSettingEditor").WithModel(model);
         }
 
         private dynamic SaveAppSetting(dynamic arg)
@@ -64,7 +71,14 @@ namespace Drey.Configuration.Modules
 
         private dynamic EditConnectionString(dynamic arg)
         {
-            return Negotiate.WithView("connStringEditor").WithModel(_packageService.GetConnectionString((string)arg.id, (string)arg.name));
+            var model = _packageService.GetConnectionString((string)arg.id, (string)arg.name);
+            
+            if (model == null)
+            {
+                return HttpStatusCode.NotFound;
+            }
+
+            return Negotiate.WithView("connStringEditor").WithModel(model);
         }
 
         private dynamic SaveConnectionString(dynamic arg)

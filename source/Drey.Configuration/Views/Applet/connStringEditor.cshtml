@@ -1,8 +1,8 @@
 ﻿@inherits NancyRazorViewBase<Drey.Configuration.Services.ViewModels.ConnectionStringPmo>
 @{
+    ViewBag.Title = "Connection String Editor";
     var faBase = "fa fa-fw fa-3x";
 }
-<h1>Connection String Editor</h1>
 
 @Html.Partial("Shared/ValidationSummary")
 
@@ -11,27 +11,41 @@
     <input type="hidden" name="Id" value="@Model.Id" />
     <input type="hidden" name="PackageId" value="@Model.PackageId" />
 
-    <label for="Name">Name</label>
-    <input type="text" value="@Model.Name" name="Name" class="form-control" />
-
-    <label for="ConnectionString">Connection String</label>
-    <textarea name="ConnectionString" class="form-control">@Model.ConnectionString</textarea>
-
-    <label for="ProviderName">Provider</label>
-    <select name="ProviderName" class="form-control">
-        <option value=""></option>
-        @foreach (KeyValuePair<string, string> name in Model.Providers)
+    <div class="form-group">
+        <label for="Name">Name</label>
+        @if (Model.Id != 0)
         {
-            if (name.Key.Equals(Model.ProviderName))
-            {
-                <option value="@name.Key" selected="selected">@name.Value</option>
-            }
-            else
-            {
-                <option value="@name.Key">@name.Value</option>
-            }
+            <input type="hidden" value="@Model.Name" name="Name" />
+            <span class="form-control-static">@Model.Name</span>
         }
-    </select>
+        else
+        {
+            <input type="text" value="@Model.Name" name="Name" class="form-control" />
+        }
+    </div>
+
+    <div class="form-group">
+        <label for="ConnectionString">Connection String</label>
+        <textarea name="ConnectionString" class="form-control">@Model.ConnectionString</textarea>
+    </div>
+
+    <div class="form-group">
+        <label for="ProviderName">Provider</label>
+        <select name="ProviderName" class="form-control">
+            <option value=""></option>
+            @foreach (KeyValuePair<string, string> name in Model.Providers)
+            {
+                if (name.Key.Equals(Model.ProviderName))
+                {
+                    <option value="@name.Key" selected="selected">@name.Value</option>
+                }
+                else
+                {
+                    <option value="@name.Key">@name.Value</option>
+                }
+            }
+        </select>
+    </div>
 
     <div>
         <button type="submit" class="btn btn-primary">Save</button>

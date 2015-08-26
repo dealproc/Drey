@@ -12,6 +12,7 @@ namespace Drey.Configuration
 
         public IEnumerable<string> GetAssemblyNames()
         {
+            yield return "Drey";
             yield return "Drey.Configuration";
             yield return "Nancy.Validation.DataAnnotations";
             yield return "System.ComponentModel.DataAnnotations, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35";

@@ -1,65 +1,107 @@
-﻿@inherits NancyRazorViewBase<Drey.Configuration.Services.ViewModels.AppletDashboardPmo>
+﻿@using System.Linq;
+@inherits NancyRazorViewBase<Drey.Configuration.Services.ViewModels.AppletDashboardPmo>
 @{
+    ViewBag.Title = "Applet Settings - " + Model.Title;
     var faBase = "fa fa-fw fa-3x";
+    var cmdBtnColSize = "col-md-2";
 }
-<h1>Service Panel</h1>
 
-<p>The following applications are installed in this runtime.</p>
+@section Buttons{
+    <div class="btn-group">
+        <a href="~/applet/@Model.Id/appSetting/new" class="btn btn-default" title="New Applet Setting"><span class="fa fa-fw fa-lg fa-list"></span></a>
+        <a href="~/applet/@Model.Id/connectionStrings/new" class="btn btn-default" title="New Connection String"><span class="fa fa-fw fa-lg fa-database"></span></a>
+    </div>
+}
 
 <h2>@Model.Title - @Model.Version</h2>
 
-<h3>Applet Settings</h3>
+<div class="panel panel-default">
+    <div class="panel-body">
+        <div>
+            <ul class="nav nav-tabs" role="tablist">
+                <li role="presentation" class="active"><a href="#appSettings" role="tab" data-toggle="tab">Applet Settings</a></li>
+                <li role="presentation"><a href="#connStrings" role="tab" data-toggle="tab">Connection Strings</a></li>
+            </ul>
+            <div class="tab-content">
+                <div role="tabpanel" class="tab-pane active" id="appSettings">
+                    @if (Model.AppSettings.Any())
+                    {
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th class="@cmdBtnColSize"></th>
+                                    <th>Key</th>
+                                    <th>Value</th>
+                                </tr>
+                            </thead>
 
-<div class="btn-group">
-    <a href="~/applet/@Model.Id/appSetting/new" class="btn btn-default">New</a>
+                            <tbody>
+
+                                @foreach (Drey.Configuration.Services.ViewModels.AppletDashboardPmo.AppletSetting appSetting in Model.AppSettings)
+                                {
+                                    <tr>
+                                        <td class="@cmdBtnColSize">
+                                            <div class="btn-group">
+                                                <a href="~/applet/@Model.Id/appSetting/@appSetting.Key/Edit" class="btn btn-default">Edit</a>
+                                                <a href="#" data-toggle="dropdown" class="btn btn-default dropdown-toggle"><span class="caret"></span><span class="sr-only">Toggle Dropdown</span></a>
+                                                <ul role="menu" class="dropdown-menu">
+                                                    <li><a href="~/applet/@Model.Id/appSetting/@appSetting.Key/Edit"><span class="glyphicon glyphicon-pencil"></span> Edit</a></li>
+                                                </ul>
+                                            </div>
+                                        </td>
+                                        <td>@appSetting.Key</td>
+                                        <td>@appSetting.Value</td>
+                                    </tr>
+                                }
+
+                            </tbody>
+                        </table>
+                    }
+                    else
+                    {
+                        <p class="lead" style="margin-top: 20px;">No Applet Settings have been configured.</p>
+                    }
+                </div>
+                <div role="tabpanel" class="tab-pane" id="connStrings">
+                    @if (Model.ConnectionStrings.Any())
+                    {
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th class="@cmdBtnColSize"></th>
+                                    <th>Name</th>
+                                    <th>Provider Name</th>
+                                    <th>Connection String</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                @foreach (Drey.Configuration.Services.ViewModels.AppletDashboardPmo.AppletConnectionString connStr in Model.ConnectionStrings)
+                                {
+                                    <tr>
+                                        <td class="@cmdBtnColSize">
+                                            <div class="btn-group">
+                                                <a href="~/applet/@Model.Id/connectionStrings/@connStr.Name/Edit" class="btn btn-default">Edit</a>
+                                                <a href="#" data-toggle="dropdown" class="btn btn-default dropdown-toggle"><span class="caret"></span><span class="sr-only">Toggle Dropdown</span></a>
+                                                <ul role="menu" class="dropdown-menu">
+                                                    <li><a href="~/applet/@Model.Id/connectionStrings/@connStr.Name/Edit"><span class="glyphicon glyphicon-pencil"></span> Edit</a></li>
+                                                </ul>
+                                            </div>
+                                        </td>
+                                        <td>@connStr.Name</td>
+                                        <td>@connStr.ProviderName</td>
+                                        <td>@connStr.ConnectionString</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                    else
+                    {
+                        <p class="lead" style="margin-top: 20px;">No Connection Strings configured for this applet.</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-
-<table class="table">
-    <thead>
-        <tr>
-            <th>Key</th>
-            <th>Value</th>
-        </tr>
-    </thead>
-
-    <tbody>
-
-        @foreach (Drey.Configuration.Services.ViewModels.AppletDashboardPmo.AppletSetting appSetting in Model.AppSettings)
-        {
-            <tr>
-                <td><a href="~/applet/@Model.Id/appSetting/@appSetting.Key/Edit">@appSetting.Key</a></td>
-                <td>@appSetting.Value</td>
-            </tr>
-        }
-
-    </tbody>
-
-</table>
-
-<h3>Connection Strings</h3>
-
-<div class="btn-group">
-    <a href="~/applet/@Model.Id/connectionStrings/new" class="btn btn-default">New</a>
-</div>
-
-<table class="table">
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Provider Name</th>
-            <th>Connection String</th>
-        </tr>
-    </thead>
-
-    <tbody>
-        @foreach (Drey.Configuration.Services.ViewModels.AppletDashboardPmo.AppletConnectionString connStr in Model.ConnectionStrings)
-        {
-            <tr>
-                <td><a href="~/applet/@Model.Id/connectionStrings/@connStr.Name/Edit">@connStr.Name</a></td>
-                <td>@connStr.ProviderName</td>
-                <td>@connStr.ConnectionString</td>
-            </tr>
-        }
-    </tbody>
-
-</table>

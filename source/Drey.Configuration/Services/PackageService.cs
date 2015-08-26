@@ -76,7 +76,7 @@ namespace Drey.Configuration.Services
             var dbAppSetting = _packageSettingRepository.Get(packageId, key);
             return dbAppSetting != null
                 ?
-                new ViewModels.AppSettingPmo { Key = dbAppSetting.Key, Value = dbAppSetting.Value, PackageId = dbAppSetting.PackageId }
+                new ViewModels.AppSettingPmo { Id = dbAppSetting.Id, Key = dbAppSetting.Key, Value = dbAppSetting.Value, PackageId = dbAppSetting.PackageId }
                 :
                 default(ViewModels.AppSettingPmo);
         }
@@ -91,7 +91,7 @@ namespace Drey.Configuration.Services
             var dbConnStr = _connectionStringRepository.Get(packageId, name);
             return dbConnStr != null
                 ?
-                new ViewModels.ConnectionStringPmo { Name = dbConnStr.Name, ConnectionString = dbConnStr.ConnectionString, ProviderName = dbConnStr.ProviderName, PackageId = dbConnStr.PackageId, Providers = this.ConnectionFactoryProviders() }
+                new ViewModels.ConnectionStringPmo { Id = dbConnStr.Id, Name = dbConnStr.Name, ConnectionString = dbConnStr.ConnectionString, ProviderName = dbConnStr.ProviderName, PackageId = dbConnStr.PackageId, Providers = this.ConnectionFactoryProviders() }
                 :
                 default(ViewModels.ConnectionStringPmo);
         }

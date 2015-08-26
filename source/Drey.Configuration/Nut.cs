@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 
 namespace Drey.Configuration
 {
@@ -15,6 +16,11 @@ namespace Drey.Configuration
         INutConfiguration _configurationManager;
         IEventBus _eventBus;
         IDisposable _webApp;
+
+        public static string Version
+        {
+            get { return typeof(Nut).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion; }
+        }
 
         public override string Id
         {
