@@ -1,11 +1,10 @@
 ﻿using Shouldly;
-
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-
 using Xunit;
 
 namespace Drey.Server.Tests
@@ -22,14 +21,19 @@ namespace Drey.Server.Tests
             {
                 var response = client.GetAsync(".well-known/releases/" + packageId).Result;
 
-                response.StatusCode.ShouldBe(expectedResponse);
 
                 if (response.StatusCode == HttpStatusCode.OK || response.StatusCode == HttpStatusCode.Created)
                 {
                     var result = response.Content.ReadAsAsync<IEnumerable<Models.Release>>().Result;
                     result.Count().ShouldBe(1);
                 }
+                else
+                {
+                    var content = response.Content.ReadAsStringAsync().Result;
+                    Console.WriteLine(content);
+                }
 
+                response.StatusCode.ShouldBe(expectedResponse);
                 return Task.FromResult(0);
             });
         }

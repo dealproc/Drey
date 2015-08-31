@@ -31,7 +31,12 @@ namespace Drey.Server.Tests
         {
             using (var server = TestServer.Create<TestingStartup>())
             {
-                return test.Invoke(server.HttpClient);
+                var client = server.HttpClient;
+                
+                client.DefaultRequestHeaders
+                    .Add("Accept", "application/json");
+
+                return test.Invoke(client);
             }
         }
     }

@@ -19,7 +19,7 @@ namespace Drey.Server.Tests.Fixtures
         {
             _fileService = fileService;
 
-            if (File.Exists(Path.Combine(TestNancyBootstrapper.TEST_PACKAGE_DIR, test_package)))
+            if (!File.Exists(Path.Combine(TestNancyBootstrapper.TEST_PACKAGE_DIR, test_package)))
             {
                 File.WriteAllBytes(Path.Combine(TestNancyBootstrapper.TEST_PACKAGE_DIR, test_package), Resources.Files.validzipfile);
             }
