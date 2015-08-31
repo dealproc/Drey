@@ -1,6 +1,8 @@
 ﻿using NuGet;
+
 using System;
 using System.ComponentModel.DataAnnotations;
+
 namespace Drey.Server.Models
 {
     public class Release

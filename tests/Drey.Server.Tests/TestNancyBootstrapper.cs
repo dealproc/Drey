@@ -12,7 +12,6 @@ namespace Drey.Server.Tests
             container.Register<Drey.Server.Services.IFileService>(filesvc);
             container.Register<Drey.Server.Services.IReleaseStore, Fixtures.ReleasesStorage>();
             container.Register<Drey.Server.Services.IPackageService, Drey.Server.Services.PackageService>();
-            //base.ConfigureApplicationContainer(container);
         }
     }
 }

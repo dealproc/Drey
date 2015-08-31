@@ -31,6 +31,16 @@ namespace Drey.Configuration.ServiceModel
         Task _pollingClientTask;
         CancellationToken _ct;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ReleasesPollingClient"/> class.
+        /// </summary>
+        /// <param name="configurationManager">The configuration manager.</param>
+        /// <param name="globalSettingsService">The global settings service.</param>
+        /// <param name="packageService">The package service.</param>
+        /// <param name="packageSettingsRepository">The package settings repository.</param>
+        /// <param name="connectionStringsRepository">The connection strings repository.</param>
+        /// <param name="eventBus">The event bus.</param>
+        /// <param name="packageId">The package identifier.</param>
         public ReleasesPollingClient(Drey.Nut.INutConfiguration configurationManager, 
             Services.IGlobalSettingsService globalSettingsService, 
             Services.PackageService packageService, 
@@ -48,6 +58,10 @@ namespace Drey.Configuration.ServiceModel
             _packageId = packageId;
         }
 
+        /// <summary>
+        /// Starts the polling client and query for updated releases.
+        /// </summary>
+        /// <param name="ct">The ct.</param>
         public void Start(CancellationToken ct)
         {
             _ct = ct;

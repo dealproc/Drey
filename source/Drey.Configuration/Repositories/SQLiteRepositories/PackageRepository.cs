@@ -1,30 +1,53 @@
 ﻿using Dapper;
+
 using Drey.Nut;
+
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Drey.Configuration.Repositories.SQLiteRepositories
 {
     public class PackageRepository : SqlRepository, IPackageRepository
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PackageRepository"/> class.
+        /// </summary>
+        /// <param name="configurationManager">The configuration manager.</param>
         public PackageRepository(INutConfiguration configurationManager) : base(configurationManager) { }
 
+        /// <summary>
+        /// Alls this instance.
+        /// </summary>
+        /// <returns></returns>
         public IEnumerable<DataModel.Release> All()
         {
             return Execute(cn => cn.Query<DataModel.Release>("SELECT * FROM Releases"));
         }
 
+        /// <summary>
+        /// Gets the packages.
+        /// </summary>
+        /// <returns></returns>
         public IEnumerable<DataModel.Package> GetPackages()
         {
             return Execute(cn => cn.Query<DataModel.Package>("SELECT Id, Min(Title) as Title FROM Releases GROUP BY Id"));
         }
 
+        /// <summary>
+        /// Gets the releases.
+        /// </summary>
+        /// <param name="packageId">The package identifier.</param>
+        /// <returns></returns>
         public IEnumerable<DataModel.Release> GetReleases(string packageId)
         {
             return Execute(cn => cn.Query<DataModel.Release>(@"SELECT * FROM RELEASES WHERE Id = @packageId", new { packageId = packageId }));
         }
 
+        /// <summary>
+        /// Stores the specified release.
+        /// </summary>
+        /// <param name="release">The release.</param>
+        /// <returns></returns>
         public DataModel.Release Store(DataModel.Release release)
         {
             return Execute(cn =>

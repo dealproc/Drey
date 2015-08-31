@@ -1,13 +1,24 @@
-﻿using Drey.Nut;
+﻿using Dapper;
+
+using Drey.Nut;
+
 using System;
-using Dapper;
 
 namespace Drey.Configuration.Repositories.SQLiteRepositories
 {
     public class GlobalSettingsRepository : SqlRepository, IGlobalSettingsRepository, Drey.Nut.IGlobalSettings
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GlobalSettingsRepository"/> class.
+        /// </summary>
+        /// <param name="configurationManager">The configuration manager.</param>
         public GlobalSettingsRepository(INutConfiguration configurationManager) : base(configurationManager) { }
 
+        /// <summary>
+        /// Saves the setting.
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <param name="value">The value.</param>
         public void SaveSetting(string key, string value)
         {
             ExecuteWithTransaction((cn) =>
@@ -18,11 +29,24 @@ namespace Drey.Configuration.Repositories.SQLiteRepositories
             });
         }
 
+        /// <summary>
+        /// Gets the <see cref="System.String"/> with the specified key.
+        /// </summary>
+        /// <value>
+        /// The <see cref="System.String"/>.
+        /// </value>
+        /// <param name="key">The key.</param>
+        /// <returns></returns>
         public string this[string key]
         {
             get { return GetSetting(key); }
         }
 
+        /// <summary>
+        /// Gets the setting.
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <returns></returns>
         public string GetSetting(string key)
         {
             return Execute((cn) =>

@@ -187,9 +187,7 @@
       <Private>True</Private>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Infrastructure\IoC\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <EmbeddedResource Include="Content\font-awesome.css" />
     <EmbeddedResource Include="Content\font-awesome.min.css" />

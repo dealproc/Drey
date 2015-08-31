@@ -5,6 +5,9 @@ namespace Drey.Configuration.Services.ViewModels
 {
     public class ConnectionStringPmo
     {
+        /// <summary>
+        /// Gets or sets the identifier.
+        /// </summary>
         public int Id { get; set; }
 
         /// <summary>

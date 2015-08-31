@@ -13,12 +13,23 @@ namespace Drey.Configuration.Services
         readonly IEventBus _eventBus;
         readonly IGlobalSettingsRepository _globalSettingsRepository;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GlobalSettingsService"/> class.
+        /// </summary>
+        /// <param name="eventBus">The event bus.</param>
+        /// <param name="globalSettingsRepository">The global settings repository.</param>
         public GlobalSettingsService(IEventBus eventBus, IGlobalSettingsRepository globalSettingsRepository)
         {
             _eventBus = eventBus;
             _globalSettingsRepository = globalSettingsRepository;
         }
 
+        /// <summary>
+        /// Stores the initial settings in the Global Settings store.
+        /// <remarks>This method should only be used for a new deployment.  Updates to settings should be done via the UpdateServerHostname/UpdateSSLCertificate method(s)</remarks>
+        /// </summary>
+        /// <param name="settings">The settings.</param>
+        /// <returns></returns>
         public bool StoreSettings(ViewModels.GlobalSettingsPmo settings)
         {
             UpdateServerHostname(settings.ServerHostname);
@@ -29,10 +40,19 @@ namespace Drey.Configuration.Services
             return true;
         }
 
+        /// <summary>
+        /// Gets the server hostname from the Global Settings store.
+        /// </summary>
+        /// <returns></returns>
         public string GetServerHostname()
         {
             return _globalSettingsRepository.GetSetting("ServerHostname");
         }
+
+        /// <summary>
+        /// Gets the certificate from the Global Settings store.
+        /// </summary>
+        /// <returns></returns>
         public X509Certificate2 GetCertificate()
         {
             try
@@ -53,18 +73,32 @@ namespace Drey.Configuration.Services
             }
         }
 
+        /// <summary>
+        /// Updates the server hostname in the Global Settings store.
+        /// </summary>
+        /// <param name="serverHostName">Name of the server host.</param>
+        /// <exception cref="System.ArgumentNullException"></exception>
         public void UpdateServerHostname(string serverHostName)
         {
             if (string.IsNullOrWhiteSpace(serverHostName)) { throw new ArgumentNullException(serverHostName); }
             _globalSettingsRepository.SaveSetting("ServerHostname", serverHostName);
         }
 
+        /// <summary>
+        /// Updates the SSL certificate in the Global Settings store.
+        /// </summary>
+        /// <param name="cert">The cert.</param>
+        /// <exception cref="System.ArgumentNullException">cert</exception>
         public void UpdateSSLCertificate(byte[] cert)
         {
             if (cert == null) { throw new ArgumentNullException("cert"); }
             _globalSettingsRepository.SaveSetting("SSLPfx", Convert.ToBase64String(cert));
         }
 
+        /// <summary>
+        /// Determines whether the global settings are valid or not.
+        /// </summary>
+        /// <returns></returns>
         public bool HasValidSettings()
         {
             bool hasHostname = !string.IsNullOrWhiteSpace(GetServerHostname());
@@ -72,6 +106,10 @@ namespace Drey.Configuration.Services
             return hasHostname && hasCertificate;
         }
 
+        /// <summary>
+        /// Manufacturers an Http Client with default values.
+        /// </summary>
+        /// <returns></returns>
         public HttpClient GetHttpClient()
         {
             var url = new Uri(GetServerHostname());

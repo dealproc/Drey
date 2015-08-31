@@ -1,4 +1,5 @@
 ﻿using Drey.Configuration.Repositories;
+
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
@@ -11,6 +12,12 @@ namespace Drey.Configuration.Services
         IConnectionStringRepository _connectionStringRepository;
         IPackageSettingRepository _packageSettingRepository;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PackageService"/> class.
+        /// </summary>
+        /// <param name="packageRepository">The package repository.</param>
+        /// <param name="connectionStringRepository">The connection string repository.</param>
+        /// <param name="packageSettingRepository">The package setting repository.</param>
         public PackageService(IPackageRepository packageRepository, IConnectionStringRepository connectionStringRepository, IPackageSettingRepository packageSettingRepository)
         {
             _packageRepository = packageRepository;
@@ -18,11 +25,20 @@ namespace Drey.Configuration.Services
             _packageSettingRepository = packageSettingRepository;
         }
 
+        /// <summary>
+        /// Gets the list of historical releases, for a given package id.
+        /// </summary>
+        /// <param name="packageId">The package identifier.</param>
+        /// <returns></returns>
         public IEnumerable<DataModel.Release> GetReleases(string packageId)
         {
             return _packageRepository.GetReleases(packageId);
         }
 
+        /// <summary>
+        /// Retrieves the list of latest releases registered on the system.
+        /// </summary>
+        /// <returns></returns>
         public IEnumerable<DataModel.Release> LatestRegisteredReleases()
         {
             return _packageRepository.All()
@@ -31,6 +47,10 @@ namespace Drey.Configuration.Services
                 .Select(x => x.OrderByDescending(rel => rel.Version).First().Release);
         }
 
+        /// <summary>
+        /// Gets a list of packages.
+        /// </summary>
+        /// <returns></returns>
         public IEnumerable<DataModel.Package> GetPackages()
         {
             return _packageRepository.GetPackages();
@@ -48,11 +68,20 @@ namespace Drey.Configuration.Services
             return discoveredReleases.Where(d => !appliedSHAs.Contains(d.SHA1));
         }
 
+        /// <summary>
+        /// Stores a list of releases.
+        /// </summary>
+        /// <param name="newReleases">The new releases.</param>
         public void RecordReleases(IEnumerable<DataModel.Release> newReleases)
         {
             newReleases.Select(r => _packageRepository.Store(r)).ToList();
         }
 
+        /// <summary>
+        /// Renders a PMO to display the configuration of a package.
+        /// </summary>
+        /// <param name="packageId">The package identifier.</param>
+        /// <returns></returns>
         public ViewModels.AppletDashboardPmo Dashboard(string packageId)
         {
             var release = _packageRepository.GetReleases(packageId)
@@ -70,7 +99,12 @@ namespace Drey.Configuration.Services
             };
         }
 
-
+        /// <summary>
+        /// Gets the application setting from the repository.
+        /// </summary>
+        /// <param name="packageId">The package identifier.</param>
+        /// <param name="key">The key.</param>
+        /// <returns></returns>
         public ViewModels.AppSettingPmo GetAppSetting(string packageId, string key)
         {
             var dbAppSetting = _packageSettingRepository.Get(packageId, key);
@@ -81,11 +115,21 @@ namespace Drey.Configuration.Services
                 default(ViewModels.AppSettingPmo);
         }
 
+        /// <summary>
+        /// Records the application setting to the repository.
+        /// </summary>
+        /// <param name="model">The model.</param>
         public void RecordAppSetting(ViewModels.AppSettingPmo model)
         {
             _packageSettingRepository.Store(model);
         }
 
+        /// <summary>
+        /// Retrieves the connection string from the repository.
+        /// </summary>
+        /// <param name="packageId">The package identifier.</param>
+        /// <param name="name">The name.</param>
+        /// <returns></returns>
         public ViewModels.ConnectionStringPmo GetConnectionString(string packageId, string name)
         {
             var dbConnStr = _connectionStringRepository.Get(packageId, name);
@@ -96,11 +140,19 @@ namespace Drey.Configuration.Services
                 default(ViewModels.ConnectionStringPmo);
         }
 
+        /// <summary>
+        /// Stores the connection string to the repository.
+        /// </summary>
+        /// <param name="model">The model.</param>
         public void RecordConnectionString(ViewModels.ConnectionStringPmo model)
         {
             _connectionStringRepository.Store(model);
         }
 
+        /// <summary>
+        /// Retrieves a list of the System.Data Connection Factory Providers registered in this system.
+        /// </summary>
+        /// <returns></returns>
         public IDictionary<string, string> ConnectionFactoryProviders()
         {
             return DbProviderFactories.GetFactoryClasses().Select().ToDictionary(dr => dr["Name"].ToString(), dr => dr["InvariantName"].ToString());

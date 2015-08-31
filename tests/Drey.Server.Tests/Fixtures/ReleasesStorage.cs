@@ -11,7 +11,7 @@ namespace Drey.Server.Tests.Fixtures
 {
     public class ReleasesStorage : IReleaseStore
     {
-        readonly string test_package = "test.package-1.0.0.0.nupkg";
+        readonly string test_package = "test.package.1.0.0.0.nupkg";
         readonly IFileService _fileService;
         readonly List<Models.Release> _releases;
 
