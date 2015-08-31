@@ -1,10 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" 
+          Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Version Condition=" '$(BuildNumber)' == '' ">1.0.0.0</Version>
     <Version Condition=" '$(BuildNumber)' != '' ">$(BuildNumber)</Version>
+    <OutputPath Condition=" '$(PackagePath)' == '' ">$(MSBuildThisFileDirectory)\package</OutputPath>
+    <OutputPath Condition=" '$(PackagePath)' != '' ">$(PackagePath)</OutputPath>
   </PropertyGroup>
   
   <ItemGroup>
@@ -13,15 +16,20 @@
   </ItemGroup>
 
   <Target Name="Build">
+    <Message Text="Working in solution directory: '$(MSBuildThisFileDirectory)'" />
+    
+    <Message Text="Creating directory '$(OutputPath)' if not exists." />
+    <MakeDir Directories="$(OutputPath)" Condition="!Exists($(OutputPath))" />
+    
     <Message Text="%(NuspecFiles.Identity)" />
 
-    <Exec WorkingDirectory="$(SolutionDir)"
-          Command=".nuget\nuget.exe pack %(NuspecFiles.Identity) -NoDefaultExcludes -NoPackageAnalysis -OutputDirectory &quot;$(SolutionDir)Package&quot; -Version $(Version) -Properties &quot;configuration=$(Configuration)&quot;" />
+    <Exec WorkingDirectory="$(MSBuildThisFileDirectory)"
+          Command=".nuget\nuget.exe pack %(NuspecFiles.Identity) -NoDefaultExcludes -NoPackageAnalysis -OutputDirectory &quot;$(OutputPath)&quot; -Version $(Version) -Properties &quot;configuration=$(Configuration)&quot;" />
   </Target>
 
   <Target Name="Publish">
     <Message Text="%(Samples.Identity)" />
-    <Exec WorkingDirectory="$(SolutionDir)"
+    <Exec WorkingDirectory="$(MSBuildThisFileDirectory)"
           Command=".nuget\nuget.exe push %(Samples.Identity) -Source http://localhost:81/ " />
   </Target>
 </Project>
