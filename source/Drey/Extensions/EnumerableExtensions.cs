@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Drey
 {
-    static class EnumExtensions
+    static class EnumerableExtensions
     {
         /// <summary>
         /// Wrapper function to create a foreach... loop over an IEnumerable{T}.

@@ -47,7 +47,7 @@
     <Compile Include="AppConfigConnectionStrings.cs" />
     <Compile Include="App_Packages\LibLog.4.2\LibLog.cs" />
     <Compile Include="DreyConstants.cs" />
-    <Compile Include="Extensions\EnumExtensions.cs" />
+    <Compile Include="Extensions\EnumerableExtensions.cs" />
     <Compile Include="HordeServiceControl.cs" />
     <Compile Include="ApplicationHostNutConfiguration.cs" />
     <Compile Include="Nut\DefaultAppSetting.cs" />
