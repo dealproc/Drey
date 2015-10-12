@@ -34,11 +34,6 @@ namespace Samples.AppTwo
             get { return false; }
         }
 
-        public override void Dispose()
-        {
-            Console.WriteLine("Samples - App Two Torn Down");
-        }
-
         public override IEnumerable<DefaultAppSetting> AppSettingDefaults
         {
             get { return Enumerable.Empty<DefaultAppSetting>(); }
@@ -47,6 +42,12 @@ namespace Samples.AppTwo
         public override IEnumerable<DefaultConnectionString> ConnectionStringDefaults
         {
             get { return Enumerable.Empty<DefaultConnectionString>(); }
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            Console.WriteLine("Samples - App Two Torn Down");
+            base.Dispose(disposing);
         }
     }
 }

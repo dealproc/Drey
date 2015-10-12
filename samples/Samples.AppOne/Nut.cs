@@ -21,11 +21,6 @@ namespace Samples.AppOne
             Thread.Sleep(2000);
         }
 
-        public override void Dispose()
-        {
-            Console.WriteLine("Samples - App One Torn Down");
-        }
-
         public override string Id
         {
             get { return this.GetType().Namespace; }
@@ -61,6 +56,12 @@ namespace Samples.AppOne
             {
                 yield return new DefaultConnectionString { Name = "FirstDb", ConnectionString = "", ProviderName = "some.provider" };
             }
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            Console.WriteLine("Samples - App One Torn Down");
+            base.Dispose(disposing);
         }
     }
 }

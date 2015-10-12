@@ -15,6 +15,16 @@ namespace Drey.Nut
         public abstract string NameDomainAs { get; }
         public abstract string DisplayAs { get; }
         public abstract bool RequiresConfigurationStorage { get; }
+        protected bool Disposed { get; private set; }
+
+        public ShellBase()
+        {
+            Disposed = false;
+        }
+        ~ShellBase()
+        {
+            Dispose(false);
+        }
 
         /// <summary>
         /// Gets the application setting defaults.
@@ -50,7 +60,17 @@ namespace Drey.Nut
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
-        public virtual void Dispose() { }
+        public void Dispose()
+        {
+            Dispose(true);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposing || Disposed) { return; }
+
+            Disposed = true;
+        }
 
         /// <summary>
         /// Emits the shell request.

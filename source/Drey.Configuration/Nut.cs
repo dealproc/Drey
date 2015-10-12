@@ -1,8 +1,7 @@
 ﻿using Drey.Configuration.Infrastructure.Schema;
+using Drey.Logging;
 using Drey.Nut;
-
 using Nancy.Hosting.Self;
-
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -51,7 +50,7 @@ namespace Drey.Configuration
         {
             get { return Enumerable.Empty<DefaultConnectionString>(); }
         }
-        
+
         public override void Startup(INutConfiguration configurationManager)
         {
             MigrationManager.Migrate(configurationManager);
@@ -81,10 +80,25 @@ namespace Drey.Configuration
             _webApp = host;
         }
 
-        public override void Dispose()
+        protected override void Dispose(bool disposing)
         {
-            _eventBus.Unsubscribe(this);
-            _webApp.Dispose();
+            Log.Trace("Disposing Drey Configuration host.");
+            
+            base.Dispose(disposing);
+
+            if (!disposing) { return; }
+
+            if (_eventBus != null)
+            {
+                _eventBus.Unsubscribe(this);
+                _eventBus = null;
+            }
+
+            if (_webApp != null)
+            {
+                _webApp.Dispose();
+                _webApp = null;
+            }
         }
     }
 }
