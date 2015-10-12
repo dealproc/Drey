@@ -3,7 +3,7 @@ using System.Reflection;
 
 namespace Drey.Utilities
 {
-    static class PathUtilities
+    public static class PathUtilities
     {
         /// <summary>
         /// Resolves the path.
@@ -18,18 +18,22 @@ namespace Drey.Utilities
 
             if (respondWith.StartsWith("~/"))
             {
-                var dir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase.Remove(0, 8)) + DreyConstants.PathSeparator;
+
+                var dir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase.Remove(0, 8)) + Path.DirectorySeparatorChar.ToString();
                 respondWith = respondWith.Replace("~/", dir);
             }
 
-            if (!respondWith.EndsWith(DreyConstants.PathSeparator) && includePathSeparator)
+            if (!respondWith.EndsWith(Path.DirectorySeparatorChar.ToString()) && includePathSeparator)
             {
-                respondWith += DreyConstants.PathSeparator;
+                respondWith += Path.DirectorySeparatorChar.ToString();
             }
 
-            respondWith = respondWith.Replace("/", DreyConstants.PathSeparator);
+            return respondWith.NormalizePathSeparator();
+        }
 
-            return respondWith;
+        public static string NormalizePathSeparator(this string inPath)
+        {
+            return inPath.Replace('/', Path.DirectorySeparatorChar).Replace('\\', Path.DirectorySeparatorChar);
         }
     }
 }

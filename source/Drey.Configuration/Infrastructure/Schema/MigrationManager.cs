@@ -1,5 +1,8 @@
-﻿using FluentMigrator.Runner.Announcers;
+﻿using Drey.Utilities;
+
+using FluentMigrator.Runner.Announcers;
 using FluentMigrator.Runner.Initialization;
+
 using System;
 using System.IO;
 using System.Linq;
@@ -30,7 +33,7 @@ namespace Drey.Configuration.Infrastructure.Schema
             {
                 ApplicationContext = string.Empty,
                 Database = "sqlite",
-                Connection = string.Format(CONNECTION_STRING_FORMAT, dbNameAndPath),
+                Connection = string.Format(CONNECTION_STRING_FORMAT, dbNameAndPath).NormalizePathSeparator(),
                 Targets = new[] { "Drey.Configuration" }
             };
 
@@ -57,7 +60,7 @@ namespace Drey.Configuration.Infrastructure.Schema
             if (!currentDb.Exists) { return string.Empty; }
 
 
-            var dirPath = Path.GetDirectoryName(currentDb.FullName);
+            var dirPath = Path.GetDirectoryName(currentDb.FullName).NormalizePathSeparator();
             var backupFile = Path.Combine(dirPath, string.Format(DB_BACKUP_FILENAME_FORMAT, DateTime.UtcNow));
             currentDb.CopyTo(backupFile);
 
