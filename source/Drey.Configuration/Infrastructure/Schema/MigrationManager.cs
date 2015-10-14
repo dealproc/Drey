@@ -24,7 +24,7 @@ namespace Drey.Configuration.Infrastructure.Schema
         /// <returns>A boolean, where <value>true</value> means the migration(s) were successful, and <value>false</value> means that an error occurred.</returns>
         public static void Migrate(Drey.Nut.INutConfiguration config)
         {
-            string dbNameAndPath = Path.Combine(config.HordeBaseDirectory, CONFIG_FILE_NAME);
+            string dbNameAndPath = Path.Combine(config.WorkingDirectory, CONFIG_FILE_NAME);
 
             var currentDb = new FileInfo(dbNameAndPath);
             var backupDb = Backup(currentDb);

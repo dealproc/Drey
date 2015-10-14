@@ -148,7 +148,7 @@ namespace Drey.Configuration.ServiceModel
                 .Single()
                 .Replace("attachment; filename=", string.Empty).Replace("\"", string.Empty);
 
-            var destinationFileNameAndPath = Path.Combine(_configurationManager.HordeBaseDirectory, "packages", fileName);
+            var destinationFileNameAndPath = Path.Combine(_configurationManager.WorkingDirectory, "packages", fileName);
             var destinationFolder = Path.GetDirectoryName(destinationFileNameAndPath);
 
             if (!Directory.Exists(destinationFolder))

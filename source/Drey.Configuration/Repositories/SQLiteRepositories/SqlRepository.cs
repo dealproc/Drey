@@ -27,7 +27,7 @@ namespace Drey.Configuration.Repositories.SQLiteRepositories
         {
             using (var cn = System.Data.SQLite.SQLiteFactory.Instance.CreateConnection())
             {
-                cn.ConnectionString = string.Format(CONNECTION_STRING_FORMAT, Path.Combine(_configurationManager.HordeBaseDirectory, CONFIG_FILE_NAME).NormalizePathSeparator());
+                cn.ConnectionString = string.Format(CONNECTION_STRING_FORMAT, Path.Combine(_configurationManager.WorkingDirectory, CONFIG_FILE_NAME).NormalizePathSeparator());
                 cn.Open();
 
                 work(cn);
@@ -44,7 +44,7 @@ namespace Drey.Configuration.Repositories.SQLiteRepositories
         {
             using (var cn = System.Data.SQLite.SQLiteFactory.Instance.CreateConnection())
             {
-                cn.ConnectionString = string.Format(CONNECTION_STRING_FORMAT, Path.Combine(_configurationManager.HordeBaseDirectory, CONFIG_FILE_NAME).NormalizePathSeparator());
+                cn.ConnectionString = string.Format(CONNECTION_STRING_FORMAT, Path.Combine(_configurationManager.WorkingDirectory, CONFIG_FILE_NAME).NormalizePathSeparator());
                 cn.Open();
 
                 return work(cn);

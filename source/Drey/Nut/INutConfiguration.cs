@@ -5,6 +5,7 @@
         IGlobalSettings GlobalSettings { get; }
         IApplicationSettings ApplicationSettings { get; }
         IConnectionStrings ConnectionStrings { get; }
+        string WorkingDirectory { get; }
         string HordeBaseDirectory { get; }
     }
 }

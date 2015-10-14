@@ -1,6 +1,9 @@
 ﻿using Drey.Configuration.Repositories;
 using Drey.Nut;
+using Drey.Utilities;
+
 using System;
+using System.IO;
 
 namespace Drey.Configuration.Infrastructure.ConfigurationManagement
 {
@@ -56,12 +59,18 @@ namespace Drey.Configuration.Infrastructure.ConfigurationManagement
             get { return _connectionStringsService; }
         }
 
+        public string WorkingDirectory
+        {
+            get { return _runtimeApplicationSettings["WorkingDirectory"].NormalizePathSeparator(); }
+        }
+
         /// <summary>
         /// Gets the horde base directory.
         /// </summary>
         public string HordeBaseDirectory
         {
-            get { return _runtimeApplicationSettings["horde.directory"]; }
+            get { return Path.Combine(WorkingDirectory, "Hoarde").NormalizePathSeparator(); }
         }
+
     }
 }

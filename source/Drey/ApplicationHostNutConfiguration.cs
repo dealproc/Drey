@@ -1,5 +1,8 @@
-﻿using Drey.Nut;
+﻿using Drey.Utilities;
+using Drey.Nut;
+
 using System;
+using System.IO;
 
 namespace Drey
 {
@@ -33,9 +36,13 @@ namespace Drey
             get { return _connectionStrings; }
         }
 
+        public string WorkingDirectory
+        {
+            get { return _applicationSettings["WorkingDirectory"].NormalizePathSeparator(); }
+        }
         public string HordeBaseDirectory
         {
-            get { return _applicationSettings["horde.directory"]; }
+            get { return Path.Combine(WorkingDirectory, "Hoarde").NormalizePathSeparator(); }
         }
     }
 }
