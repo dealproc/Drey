@@ -27,7 +27,11 @@ namespace Drey.Nut
         /// <returns></returns>
         public Assembly ResolveAssemblyInDomain(object sender, ResolveEventArgs args)
         {
-            var asmName = args.Name + ".dll";
+            var asmName = args.Name.IndexOf(',') > 0 ? args.Name.Substring(0, args.Name.IndexOf(',')) : args.Name;
+
+            asmName = asmName + ".dll";
+
+            Console.WriteLine("Attempting to resolve " + asmName);
 
             Log.Info(() => "Attempting to resolve " + asmName);
 
