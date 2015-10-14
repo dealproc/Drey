@@ -74,7 +74,10 @@ namespace Drey.Configuration
             _eventBus.Subscribe(this);
 
             var startupUri = string.Format("http://localhost:{0}/", _configurationManager.ApplicationSettings["drey.configuration.consoleport"]);
-            var host = new NancyHost(new Bootstrapper(_configurationManager, _eventBus), new[] { new Uri(startupUri) });
+            var hostConfig = new HostConfiguration();
+            hostConfig.UrlReservations.CreateAutomatically = true;
+
+            var host = new NancyHost(new Bootstrapper(_configurationManager, _eventBus), hostConfig, new[] { new Uri(startupUri) });
             host.Start();
 
             _webApp = host;
