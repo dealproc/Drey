@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Drey.Server.Directors
 {
-    public class ListLogsDirector : Director<DomainModel.Empty, IEnumerable<string>>, IListLogsDirector
+    public class ListLogsDirector : Director<DomainModel.Request<DomainModel.Empty>, DomainModel.Response<IEnumerable<string>>>, IListLogsDirector
     {
         public ListLogsDirector(IEventBus eventBus, IHubContext<DomainModel.IRuntimeClient> runtimeClientContext)
             : base(eventBus, runtimeClientContext) { }

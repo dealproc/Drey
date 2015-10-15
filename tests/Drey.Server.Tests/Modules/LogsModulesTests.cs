@@ -57,7 +57,7 @@ namespace Drey.Server.Tests.Modules
             [Fact]
             public Task Should_Return_Timeout_StatusCode_Async()
             {
-                TaskCompletionSource<IEnumerable<string>> tsc = new TaskCompletionSource<IEnumerable<string>>();
+                TaskCompletionSource<DomainModel.Response<IEnumerable<string>>> tsc = new TaskCompletionSource<DomainModel.Response<IEnumerable<string>>>();
                 tsc.SetException(new TimeoutException());
 
                 A.CallTo(() => _testFixture.ListLogsDirector.PendingTask)
@@ -73,7 +73,7 @@ namespace Drey.Server.Tests.Modules
             [Fact]
             public Task Should_Return_ServiceUnavailable_StatusCode_Async()
             {
-                TaskCompletionSource<IEnumerable<string>> tsc = new TaskCompletionSource<IEnumerable<string>>();
+                TaskCompletionSource<DomainModel.Response<IEnumerable<string>>> tsc = new TaskCompletionSource<DomainModel.Response<IEnumerable<string>>>();
                 tsc.SetException(new RuntimeHasNotConnectedException());
 
                 A.CallTo(() => _testFixture.ListLogsDirector.PendingTask)
@@ -131,7 +131,7 @@ namespace Drey.Server.Tests.Modules
             [Fact]
             public Task Should_Return_Timeout_StatusCode_Async()
             {
-                TaskCompletionSource<byte[]> tsc = new TaskCompletionSource<byte[]>();
+                TaskCompletionSource<DomainModel.Response<byte[]>> tsc = new TaskCompletionSource<DomainModel.Response<byte[]>>();
                 tsc.SetException(new TimeoutException());
 
                 A.CallTo(() => _testFixture.OpenLogFileDirector.PendingTask)
@@ -147,7 +147,7 @@ namespace Drey.Server.Tests.Modules
             [Fact]
             public Task Should_Return_ServiceUnavailable_StatusCode_Async()
             {
-                TaskCompletionSource<byte[]> tsc = new TaskCompletionSource<byte[]>();
+                TaskCompletionSource<DomainModel.Response<byte[]>> tsc = new TaskCompletionSource<DomainModel.Response<byte[]>>();
                 tsc.SetException(new RuntimeHasNotConnectedException());
 
                 A.CallTo(() => _testFixture.OpenLogFileDirector.PendingTask)

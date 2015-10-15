@@ -27,8 +27,8 @@ namespace Drey.Server.Tests
             container.Register<Drey.Server.Services.IReleaseStore, Fixtures.ReleasesStorage>();
             container.Register<Drey.Server.Services.IPackageService, Drey.Server.Services.PackageService>();
 
-            container.Register<Directors.IListLogsDirector>(_testFixture.ListLogsDirector);
-            container.Register<Directors.IOpenLogFileDirector>(_testFixture.OpenLogFileDirector);
+            container.Register<Server.Directors.IListLogsDirector>(_testFixture.ListLogsDirector);
+            container.Register<Server.Directors.IOpenLogFileDirector>(_testFixture.OpenLogFileDirector);
         }
     }
 }

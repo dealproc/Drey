@@ -2,7 +2,7 @@
 
 namespace Drey.Server.Directors
 {
-    internal class OpenLogFileDirector : Director<DomainModel.FileDownloadOptions, byte[]>, IOpenLogFileDirector
+    public class OpenLogFileDirector : Director<DomainModel.Request<DomainModel.FileDownloadOptions>, DomainModel.Response<byte[]>>, IOpenLogFileDirector
     {
         public OpenLogFileDirector(IEventBus eventBus, IHubContext<DomainModel.IRuntimeClient> runtimeClientContext)
             : base(eventBus, runtimeClientContext) { }

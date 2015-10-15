@@ -4,9 +4,9 @@ using System.Threading.Tasks;
 
 namespace Drey.Server.Directors
 {
-    public interface IListLogsDirector : IHandle<IEnumerable<string>>
+    public interface IListLogsDirector : IHandle<DomainModel.Response<IEnumerable<string>>>
     {
         void Initiate(string clientId, DomainModel.Request<DomainModel.Empty> message);
-        Task<IEnumerable<string>> PendingTask { get; }
+        Task<DomainModel.Response<IEnumerable<string>>> PendingTask { get; }
     }
 }

@@ -110,6 +110,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Directors\ListLogsDirectorTests.cs" />
+    <Compile Include="Directors\OpenLogFileDirectorTests.cs" />
     <Compile Include="Fixtures\ReleasesStorage.cs" />
     <Compile Include="Modules\LogsModulesTests.cs" />
     <Compile Include="Modules\NugetUploadModuleTests.cs" />

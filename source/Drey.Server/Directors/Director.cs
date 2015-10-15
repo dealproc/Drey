@@ -10,6 +10,8 @@ using System.Timers;
 namespace Drey.Server.Directors
 {
     public abstract class Director<TRequest, TResponse> : IHandle<TResponse>, IDisposable
+        where TRequest : DomainModel.Request
+        where TResponse : DomainModel.Response
     {
         protected static ILog Log { get; private set; }
 
@@ -47,7 +49,7 @@ namespace Drey.Server.Directors
         /// </summary>
         /// <param name="clientId">This should be the username of the connected client.</param>
         /// <param name="message">The message.</param>
-        public virtual void Initiate(string clientId, DomainModel.Request<TRequest> message)
+        public virtual void Initiate(string clientId, TRequest message)
         {
             Log.DebugFormat("Initiating {0} subscription to event bus.", this.GetType().Name);
             _eventBus.Subscribe(this, message.Token);
