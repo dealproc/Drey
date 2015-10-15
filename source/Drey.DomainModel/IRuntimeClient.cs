@@ -3,6 +3,6 @@
     public interface IRuntimeClient
     {
         void BeginListLogFiles(Request<Empty> request);
-        void BeginOpenLogFile(Request<string> request);
+        void BeginOpenLogFile(Request<FileDownloadOptions> request);
     }
 }

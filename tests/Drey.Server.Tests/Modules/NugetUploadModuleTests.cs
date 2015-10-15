@@ -4,13 +4,19 @@ using Xunit;
 
 namespace Drey.Server.Tests.Modules
 {
-    [Collection("Package Management")]
-    public class NugetUploadModuleTests : NancyTestingBase
+    public class NugetUploadModuleTests : IClassFixture<ApiTestFixture>
     {
+        ApiTestFixture _testFixture;
+
+        public NugetUploadModuleTests(ApiTestFixture testFixture)
+        {
+            _testFixture = testFixture;
+        }
+
         [Fact]
         public void ANugetPackageCanBeDeleted()
         {
-            var result = TestBrowser.Delete("/api/v2/package/test.package/1.0.0.0", with => with.HttpRequest());
+            var result = _testFixture.TestBrowser.Delete("/api/v2/package/test.package/1.0.0.0", with => with.HttpRequest());
 
             result.StatusCode.ShouldBe(HttpStatusCode.OK);
         }

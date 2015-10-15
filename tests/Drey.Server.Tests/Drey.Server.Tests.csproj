@@ -43,11 +43,18 @@
     <Reference Include="FakeItEasy">
       <HintPath>..\..\packages\FakeItEasy.1.25.3\lib\net40\FakeItEasy.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.AspNet.SignalR.Core, Version=2.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\Microsoft.AspNet.SignalR.Core.2.2.0\lib\net45\Microsoft.AspNet.SignalR.Core.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Owin">
       <HintPath>..\..\packages\Microsoft.Owin.3.0.1\lib\net45\Microsoft.Owin.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Owin.Hosting">
       <HintPath>..\..\packages\Microsoft.Owin.Hosting.3.0.1\lib\net45\Microsoft.Owin.Hosting.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security">
+      <HintPath>..\..\packages\Microsoft.Owin.Security.3.0.1\lib\net45\Microsoft.Owin.Security.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Owin.Testing">
       <HintPath>..\..\packages\Microsoft.Owin.Testing.3.0.1\lib\net45\Microsoft.Owin.Testing.dll</HintPath>
@@ -104,8 +111,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Fixtures\ReleasesStorage.cs" />
+    <Compile Include="Modules\LogsModulesTests.cs" />
     <Compile Include="Modules\NugetUploadModuleTests.cs" />
-    <Compile Include="NancyTestingBase.cs" />
+    <Compile Include="Fixtures\ApiTestFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Modules\ReleasesModuleTests.cs" />
     <Compile Include="Resources\Files.Designer.cs">
@@ -123,6 +131,10 @@
     <EmbeddedResource Include="Resources\Files\validzipfile.zip" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\source\Drey.DomainModel\Drey.DomainModel.csproj">
+      <Project>{424b2437-2f2e-414c-a353-aa8bbbc6e052}</Project>
+      <Name>Drey.DomainModel</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\source\Drey.Server\Drey.Server.csproj">
       <Project>{2e3619db-2b50-46e7-a8b2-22b89fc6e1bd}</Project>
       <Name>Drey.Server</Name>

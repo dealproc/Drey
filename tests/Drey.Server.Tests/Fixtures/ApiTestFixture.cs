@@ -1,38 +1,52 @@
-﻿using Microsoft.Owin.Testing;
+﻿using FakeItEasy;
 
-using Nancy.Bootstrapper;
+using Microsoft.Owin.Testing;
+
 using Nancy.Testing;
 
 using System;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-using Xunit;
-
 namespace Drey.Server.Tests
 {
-    [Collection("Package Management")]
-    public abstract class NancyTestingBase : IDisposable
+    public class ApiTestFixture : IDisposable
     {
         bool _disposed;
-        INancyBootstrapper _bootstrapper;
+        TestNancyBootstrapper _bootstrapper;
         Browser _browser;
 
         public Browser TestBrowser { get { return _browser; } }
-        public INancyBootstrapper Bootstrapper { get { return _bootstrapper; } }
+        public TestNancyBootstrapper Bootstrapper { get { return _bootstrapper; } }
         public string HostingUri { get { return "http://localhost:1/"; } }
 
-        public NancyTestingBase()
+        public Directors.IListLogsDirector ListLogsDirector { get; private set; }
+        public Directors.IOpenLogFileDirector OpenLogFileDirector { get; private set; }
+
+        public ApiTestFixture()
         {
-            _bootstrapper = new TestNancyBootstrapper();
+            ListLogsDirector = A.Fake<Directors.IListLogsDirector>(opts =>
+            {
+            });
+            A.CallTo(() => ListLogsDirector.PendingTask).Returns((new string[] { "one", "two" }).AsEnumerable());
+            A.CallTo(() => ListLogsDirector.Initiate(A<string>.Ignored, A<DomainModel.Request<DomainModel.Empty>>.Ignored)).DoesNothing();
+
+            OpenLogFileDirector = A.Fake<Directors.IOpenLogFileDirector>();
+            A.CallTo(() => OpenLogFileDirector.PendingTask).Returns(new byte[10]);
+
+            _bootstrapper = new TestNancyBootstrapper(this);
             _browser = new Browser(_bootstrapper, defaults: to => to.Accept("application/json"));
+
+            TestingStartup.BootstrapperFunc = () => Bootstrapper;
         }
-        ~NancyTestingBase()
+
+        ~ApiTestFixture()
         {
             Dispose(false);
         }
 
-        protected Task WithOwinServer(Func<HttpClient, Task> test)
+        public Task WithOwinServer(Func<HttpClient, Task> test)
         {
             using (var server = TestServer.Create<TestingStartup>())
             {

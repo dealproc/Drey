@@ -12,24 +12,21 @@
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\</SolutionDir>
+    <DefineConstants>LIBLOG_PUBLIC;TRACE;</DefineConstants>
+    <OutputPath>bin\$(Configuration)\</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
     <RestorePackages>true</RestorePackages>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+    <DefineConstants>$(DefineConstants)DEBUG;</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.AspNet.SignalR.Core">
@@ -74,15 +71,24 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Packages\LibLog.4.2\LibLog.cs" />
+    <Compile Include="Directors\Director.cs" />
+    <Compile Include="Directors\IListLogsDirector.cs" />
+    <Compile Include="Directors\IOpenLogFileDirector.cs" />
+    <Compile Include="Directors\ListLogsDirector.cs" />
+    <Compile Include="Directors\OpenLogFileDirector.cs" />
     <Compile Include="EventBus.cs" />
+    <Compile Include="Exceptions\RuntimeHasNotConnectedException.cs" />
+    <Compile Include="Extensions\TaskExtensions.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Hubs\RuntimeHub.cs" />
     <Compile Include="Models\FileDownload.cs" />
     <Compile Include="Models\Package.cs" />
     <Compile Include="Models\Release.cs" />
+    <Compile Include="Modules\LogsModules.cs" />
     <Compile Include="Modules\NugetUploadModule.cs" />
     <Compile Include="Modules\well-known\ReleasesModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ServerErrorHandler.cs" />
     <Compile Include="Services\FilesytemFileService.cs" />
     <Compile Include="Services\IClientHealthService.cs" />
     <Compile Include="Services\IFileService.cs" />
