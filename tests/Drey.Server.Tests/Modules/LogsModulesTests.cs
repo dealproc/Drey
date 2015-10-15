@@ -13,13 +13,18 @@ namespace Drey.Server.Tests.Modules
 {
     public class LogsModulesTests
     {
-        public class ListLogsTests
+        public class ListLogsTests : IDisposable
         {
+            bool _disposed = false;
             ApiTestFixture _testFixture;
 
             public ListLogsTests()
             {
                 _testFixture = new ApiTestFixture();
+            }
+            ~ListLogsTests()
+            {
+                Dispose(false);
             }
 
             [Fact]
@@ -85,15 +90,36 @@ namespace Drey.Server.Tests.Modules
                     result.StatusCode.ShouldBe(HttpStatusCode.ServiceUnavailable);
                 });
             }
+
+            public void Dispose()
+            {
+                Dispose(true);
+                _disposed = true;
+            }
+            protected virtual void Dispose(bool disposing)
+            {
+                if (_testFixture != null)
+                {
+                    _testFixture.Dispose();
+                    _testFixture = null;
+                }
+
+                if (!disposing || _disposed) { return; }
+            }
         }
 
-        public class OpenLogFileTests
+        public class OpenLogFileTests : IDisposable
         {
             ApiTestFixture _testFixture;
+            bool _disposed = false;
 
             public OpenLogFileTests()
             {
                 _testFixture = new ApiTestFixture();
+            }
+            ~OpenLogFileTests()
+            {
+                Dispose(false);
             }
 
             [Fact]
@@ -158,6 +184,22 @@ namespace Drey.Server.Tests.Modules
                     var result = await client.PostAsync("/runtime/Logs/OpenLog/1?token=" + Guid.NewGuid().ToString().ToLower(), new StringContent(string.Empty));
                     result.StatusCode.ShouldBe(HttpStatusCode.ServiceUnavailable);
                 });
+            }
+
+            public void Dispose()
+            {
+                Dispose(true);
+                _disposed = true;
+            }
+            protected virtual void Dispose(bool disposing)
+            {
+                if (_testFixture != null)
+                {
+                    _testFixture.Dispose();
+                    _testFixture = null;
+                }
+
+                if (!disposing || _disposed) { return; }
             }
         }
     }
