@@ -24,13 +24,13 @@ namespace Drey.Server.Directors
         readonly TaskCompletionSource<TResponse> _responseCompletion;
         readonly Stopwatch _stopWatch = new Stopwatch();
 
-        public Director(IEventBus eventBus, IHubContext<DomainModel.IRuntimeClient> runtimeClientContext)
+        public Director(IEventBus eventBus, IHubContext<DomainModel.IRuntimeClient> runtimeClientContext, int timeoutInSeconds = 30)
         {
             _eventBus = eventBus;
             RuntimeClientContext = runtimeClientContext;
 
             _responseCompletion = new TaskCompletionSource<TResponse>();
-            _responseTimeout = new Timer(TimeSpan.FromSeconds(30).TotalMilliseconds);
+            _responseTimeout = new Timer(TimeSpan.FromSeconds(timeoutInSeconds).TotalMilliseconds);
             _responseTimeout.Elapsed += responseTimeout_Elapsed;
         }
         static Director()
