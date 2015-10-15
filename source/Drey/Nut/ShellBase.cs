@@ -2,7 +2,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
+using System.Security.Permissions;
 
 namespace Drey.Nut
 {
@@ -63,6 +63,12 @@ namespace Drey.Nut
         public void Dispose()
         {
             Dispose(true);
+        }
+
+        [SecurityPermission(SecurityAction.Demand, Flags = SecurityPermissionFlag.Infrastructure)]
+        public override object InitializeLifetimeService()
+        {
+            return null;
         }
 
         protected virtual void Dispose(bool disposing)

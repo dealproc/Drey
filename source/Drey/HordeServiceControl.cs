@@ -4,6 +4,7 @@ using Drey.Nut;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Permissions;
 
 namespace Drey
 {
@@ -39,6 +40,12 @@ namespace Drey
             _appInstances = null;
 
             return true;
+        }
+
+        [SecurityPermission(SecurityAction.Demand, Flags = SecurityPermissionFlag.Infrastructure)]
+        public override object InitializeLifetimeService()
+        {
+            return null;
         }
 
         /// <summary>

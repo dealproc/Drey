@@ -1,6 +1,8 @@
 ﻿using Drey.Nut;
+
 using System;
 using System.Configuration;
+using System.Security.Permissions;
 
 namespace Drey
 {
@@ -14,6 +16,12 @@ namespace Drey
         public void Register(System.Collections.Generic.IEnumerable<string> keys)
         {
             throw new NotImplementedException();
+        }
+
+        [SecurityPermission(SecurityAction.Demand, Flags = SecurityPermissionFlag.Infrastructure)]
+        public override object InitializeLifetimeService()
+        {
+            return null;
         }
     }
 }

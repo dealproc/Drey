@@ -30,6 +30,8 @@ namespace Drey.Configuration
 
             ThisAssembly = this.GetType().Assembly;
             _eventBus.Subscribe(this);
+
+            StaticConfiguration.DisableErrorTraces = false;
         }
         ~Bootstrapper()
         {

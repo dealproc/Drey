@@ -3,6 +3,7 @@
 using System;
 using System.IO;
 using System.Reflection;
+using System.Security.Permissions;
 
 namespace Drey.Nut
 {
@@ -75,6 +76,12 @@ namespace Drey.Nut
             _Log.Info("App startup routine finished.");
 
             return new Tuple<AppDomain, IShell>(domain, appShell);
+        }
+
+        [SecurityPermission(SecurityAction.Demand, Flags = SecurityPermissionFlag.Infrastructure)]
+        public override object InitializeLifetimeService()
+        {
+            return null;
         }
     }
 }

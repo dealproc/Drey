@@ -4,6 +4,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Security.Permissions;
 
 namespace Drey.Nut
 {
@@ -52,6 +53,12 @@ namespace Drey.Nut
             Log.Trace(() => "Has Dll been resolved? " + (resolvedDll != null ? "Yes" : "No"));
 
             return resolvedDll;
+        }
+
+        [SecurityPermission(SecurityAction.Demand, Flags = SecurityPermissionFlag.Infrastructure)]
+        public override object InitializeLifetimeService()
+        {
+            return null;
         }
     }
 }

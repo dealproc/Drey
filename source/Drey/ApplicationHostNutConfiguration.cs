@@ -3,6 +3,7 @@ using Drey.Nut;
 
 using System;
 using System.IO;
+using System.Security.Permissions;
 
 namespace Drey
 {
@@ -43,6 +44,12 @@ namespace Drey
         public string HordeBaseDirectory
         {
             get { return Path.Combine(WorkingDirectory, "Hoarde").NormalizePathSeparator(); }
+        }
+
+        [SecurityPermission(SecurityAction.Demand, Flags = SecurityPermissionFlag.Infrastructure)]
+        public override object InitializeLifetimeService()
+        {
+            return null;
         }
     }
 }
