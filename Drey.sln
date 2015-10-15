@@ -43,6 +43,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Samples.Server", "samples\S
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Drey.Configuration.Tests", "tests\Drey.Configuration.Tests\Drey.Configuration.Tests.csproj", "{5897F27B-5020-4CAF-9460-8298E0818A52}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Drey.DomainModel", "source\Drey.DomainModel\Drey.DomainModel.csproj", "{424B2437-2F2E-414C-A353-AA8BBBC6E052}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -85,6 +87,10 @@ Global
 		{5897F27B-5020-4CAF-9460-8298E0818A52}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5897F27B-5020-4CAF-9460-8298E0818A52}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5897F27B-5020-4CAF-9460-8298E0818A52}.Release|Any CPU.Build.0 = Release|Any CPU
+		{424B2437-2F2E-414C-A353-AA8BBBC6E052}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{424B2437-2F2E-414C-A353-AA8BBBC6E052}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{424B2437-2F2E-414C-A353-AA8BBBC6E052}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{424B2437-2F2E-414C-A353-AA8BBBC6E052}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

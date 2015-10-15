@@ -32,9 +32,15 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.AspNet.SignalR.Core">
+      <HintPath>..\..\packages\Microsoft.AspNet.SignalR.Core.2.2.0\lib\net45\Microsoft.AspNet.SignalR.Core.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Owin, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\packages\Microsoft.Owin.3.0.1\lib\net45\Microsoft.Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security">
+      <HintPath>..\..\packages\Microsoft.Owin.Security.3.0.1\lib\net45\Microsoft.Owin.Security.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Web.XmlTransform">
       <HintPath>..\..\packages\Microsoft.Web.Xdt.2.1.1\lib\net40\Microsoft.Web.XmlTransform.dll</HintPath>
@@ -45,6 +51,10 @@
     </Reference>
     <Reference Include="Nancy.MSOwinSecurity">
       <HintPath>..\..\packages\Nancy.MSOwinSecurity.1.0.1\lib\net45\Nancy.MSOwinSecurity.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="NuGet.Core, Version=2.8.60717.93, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -64,7 +74,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Packages\LibLog.4.2\LibLog.cs" />
+    <Compile Include="EventBus.cs" />
     <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="Hubs\RuntimeHub.cs" />
     <Compile Include="Models\FileDownload.cs" />
     <Compile Include="Models\Package.cs" />
     <Compile Include="Models\Release.cs" />
@@ -72,13 +84,20 @@
     <Compile Include="Modules\well-known\ReleasesModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\FilesytemFileService.cs" />
+    <Compile Include="Services\IClientHealthService.cs" />
     <Compile Include="Services\IFileService.cs" />
+    <Compile Include="Services\IGroupMembershipService.cs" />
     <Compile Include="Services\IPackageService.cs" />
     <Compile Include="Services\IReleaseStore.cs" />
     <Compile Include="Services\PackageService.cs" />
     <Compile Include="Utilities.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\Drey.DomainModel\Drey.DomainModel.csproj">
+      <Project>{424b2437-2f2e-414c-a353-aa8bbbc6e052}</Project>
+      <Name>Drey.DomainModel</Name>
+    </ProjectReference>
+  </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
     <None Include="Drey.Server.nuspec" />
