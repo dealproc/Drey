@@ -78,11 +78,11 @@ namespace Drey.Server.Tests.Services
         [Theory]
         [InlineData("test.package", "")]
         [InlineData("unknown", "1.0.0.0")]
-        public async Task ThrowsExceptionOnInvalidIdOrVersion(string id, string version)
+        public Task ThrowsExceptionOnInvalidIdOrVersion(string id, string version)
         {
             A.CallTo(() => _releaseStore.GetAsync(A<string>.Ignored, A<string>.Ignored, A<ClaimsPrincipal>.Ignored)).Returns(default(Models.Release));
 
-            await Assert.ThrowsAsync<InvalidDataException>(() => _SUT.GetReleaseAsync(id, version));
+            return Should.ThrowAsync<InvalidDataException>(() => _SUT.GetReleaseAsync(id, version));
         }
 
 
@@ -107,11 +107,11 @@ namespace Drey.Server.Tests.Services
         [Theory]
         [InlineData("bad.package", "0.0.0.0")]
         [InlineData("test.package", "0.0.0.0")]
-        public async Task ShouldThrow_FileNotFoundException_WithBad(string id, string version)
+        public Task ShouldThrow_FileNotFoundException_WithBad(string id, string version)
         {
             A.CallTo(() => _releaseStore.GetAsync(A<string>.That.IsEqualTo(id), A<string>.That.IsEqualTo(version), A<ClaimsPrincipal>.Ignored)).Returns(default(Models.Release));
 
-            await Assert.ThrowsAsync<FileNotFoundException>(() => _SUT.DeleteAsync(id, version));
+            return Should.ThrowAsync<FileNotFoundException>(() => _SUT.DeleteAsync(id, version));
         }
     }
 }
