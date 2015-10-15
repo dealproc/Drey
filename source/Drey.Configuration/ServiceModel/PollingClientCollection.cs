@@ -6,7 +6,13 @@ namespace Drey.Configuration.ServiceModel
 {
     class PollingClientCollection : ConcurrentBag<IPollingClient>, IDisposable
     {
+        bool _disposed = false;
         CancellationTokenSource _cts = new CancellationTokenSource();
+
+        ~PollingClientCollection()
+        {
+            Dispose(false);
+        }
 
         /// <summary>
         /// Adds the specified client.
@@ -24,7 +30,19 @@ namespace Drey.Configuration.ServiceModel
         /// </summary>
         public void Dispose()
         {
-            _cts.Cancel();
+            Dispose(true);
+            _disposed = true;
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_cts != null)
+            {
+                _cts.Dispose();
+                _cts = null;
+            }
+
+            if (!disposing || _disposed) { return; }
         }
     }
 }

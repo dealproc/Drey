@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Drey.Configuration.ServiceModel
 {
-    class RegisteredPackagesPollingClient : IPollingClient
+    class RegisteredPackagesPollingClient : IPollingClient, IDisposable
     {
         static readonly ILog _Log = LogProvider.For<RegisteredPackagesPollingClient>();
 
@@ -25,6 +25,8 @@ namespace Drey.Configuration.ServiceModel
 
         Task _pollingClientTask;
         CancellationToken _ct;
+
+        bool _disposed = false;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RegisteredPackagesPollingClient"/> class.
@@ -51,6 +53,10 @@ namespace Drey.Configuration.ServiceModel
             _connectionStringRepository = connectionStringRepository;
             _pollingClients = pollingClients;
             _eventBus = eventBus;
+        }
+        ~RegisteredPackagesPollingClient()
+        {
+            Dispose(false);
         }
 
         /// <summary>
@@ -131,6 +137,23 @@ namespace Drey.Configuration.ServiceModel
             {
                 // squashing.
             }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            _disposed = true;
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_pollingClientTask != null)
+            {
+                _pollingClientTask.Dispose();
+                _pollingClientTask = null;
+            }
+
+            if (!disposing || _disposed) { return; }
         }
     }
 }

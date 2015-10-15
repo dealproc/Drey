@@ -64,6 +64,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Packages\LibLog.4.2\LibLog.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Models\FileDownload.cs" />
     <Compile Include="Models\Package.cs" />
     <Compile Include="Models\Release.cs" />

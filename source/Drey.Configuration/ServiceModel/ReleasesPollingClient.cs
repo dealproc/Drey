@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Drey.Configuration.ServiceModel
 {
-    class ReleasesPollingClient : IPollingClient
+    class ReleasesPollingClient : IPollingClient, IDisposable
     {
         static readonly ILog _Log = LogProvider.For<ReleasesPollingClient>();
 
@@ -31,6 +31,8 @@ namespace Drey.Configuration.ServiceModel
         Task _pollingClientTask;
         CancellationToken _ct;
 
+        bool _disposed = false;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ReleasesPollingClient"/> class.
         /// </summary>
@@ -41,12 +43,12 @@ namespace Drey.Configuration.ServiceModel
         /// <param name="connectionStringsRepository">The connection strings repository.</param>
         /// <param name="eventBus">The event bus.</param>
         /// <param name="packageId">The package identifier.</param>
-        public ReleasesPollingClient(Drey.Nut.INutConfiguration configurationManager, 
-            Services.IGlobalSettingsService globalSettingsService, 
-            Services.PackageService packageService, 
+        public ReleasesPollingClient(Drey.Nut.INutConfiguration configurationManager,
+            Services.IGlobalSettingsService globalSettingsService,
+            Services.PackageService packageService,
             Repositories.IPackageSettingRepository packageSettingsRepository,
             Repositories.IConnectionStringRepository connectionStringsRepository,
-            IEventBus eventBus, 
+            IEventBus eventBus,
             string packageId)
         {
             _configurationManager = configurationManager;
@@ -56,6 +58,10 @@ namespace Drey.Configuration.ServiceModel
             _connectionStringsRepository = connectionStringsRepository;
             _eventBus = eventBus;
             _packageId = packageId;
+        }
+        ~ReleasesPollingClient()
+        {
+            Dispose(false);
         }
 
         /// <summary>
@@ -178,6 +184,22 @@ namespace Drey.Configuration.ServiceModel
         private Infrastructure.ConfigurationManagement.DbConfigurationSettings CreateConfigurationManager()
         {
             return new Drey.Configuration.Infrastructure.ConfigurationManagement.DbConfigurationSettings(_configurationManager.ApplicationSettings, _packageSettingsRepository, _connectionStringsRepository, _packageId);
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            _disposed = true;
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_pollingClientTask != null)
+            {
+                _pollingClientTask.Dispose();
+                _pollingClientTask = null;
+            }
+            if (!disposing || _disposed) { return; }
         }
     }
 }

@@ -35,7 +35,7 @@ namespace Drey.Configuration
         }
         ~Bootstrapper()
         {
-            _eventBus.Unsubscribe(this);
+            Dispose(false);
         }
 
         protected override void ApplicationStartup(TinyIoCContainer container, IPipelines pipelines)
@@ -94,6 +94,13 @@ namespace Drey.Configuration
         protected override IEnumerable<Type> ViewEngines
         {
             get { yield return typeof(RazorViewEngine); }
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            _eventBus.Unsubscribe(this);
+
+            if (!disposing) { return; }
         }
 
         public void Handle(Infrastructure.Events.RecycleApp message)
