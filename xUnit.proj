@@ -1,14 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Test"
          xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <UsingTask AssemblyFile="$(SolutionDir)packages\xunit.runner.msbuild.2.0.0\build\portable-net45+win+wpa81+wp80+monotouch+monoandroid+Xamarin.iOS\xunit.runner.msbuild.dll"
+  <UsingTask AssemblyFile="$(SolutionDir)packages\xunit.runner.msbuild.2.1.0\build\portable-net45+win8+wp8+wpa81\xunit.runner.msbuild.dll"
              TaskName="Xunit.Runner.MSBuild.xunit" />
   <ItemGroup>
     <TestAssemblies Include="**/*.Tests.dll;**/*.IntegrationTests.dll" Exclude="**/obj/**;**/*IntegrationTests*;" />
   </ItemGroup>
 
   <Target Name="Test">
-    <xunit Assemblies="@(TestAssemblies)" TeamCity="true" ParallelizeTestCollections="false" />
+    <xunit Assemblies="@(TestAssemblies)" ParallelizeTestCollections="false" Reporter="teamcity" />
   </Target>
   
   <Target Name="Console">
