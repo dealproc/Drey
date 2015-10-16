@@ -10,15 +10,27 @@ namespace Drey
 {
     /// <summary>
     /// This is a non-platform specific implementation of the service control class.
-    /// <remarks>This should be created within the platform specific service and subsequently started/stopped using the platform-specific start/stop methods</remarks>
+    /// <remarks>
+    /// <para>This should be created within the platform specific service and subsequently started/stopped using the platform-specific start/stop methods.</para>
+    /// <para>This class inherits from <see cref="MarshalByRefObject" /> because we need to cross app domain boundaries.</para>
+    /// </remarks>
     /// </summary>
     public class HordeServiceControl : MarshalByRefObject
     {
-        static readonly ILog _Log = LogProvider.For<HordeServiceControl>();
+        public static Action<INutConfiguration> ConfigureLogging = (config) => { };
 
-        ShellFactory _appFactory = new ShellFactory();
-        INutConfiguration _nutConfiguration = new ApplicationHostNutConfiguration();
-        List<Tuple<AppDomain, IShell>> _appInstances = new List<Tuple<AppDomain, IShell>>();
+        readonly ILog _log;
+        readonly ShellFactory _appFactory;
+        readonly INutConfiguration _nutConfiguration;
+        readonly List<Tuple<AppDomain, IShell>> _appInstances;
+
+        public HordeServiceControl()
+        {
+            _log = LogProvider.For<HordeServiceControl>();
+            _appFactory = new ShellFactory();
+            _nutConfiguration = new ApplicationHostNutConfiguration();
+            _appInstances = new List<Tuple<AppDomain, IShell>>();
+        }
 
         /// <summary>
         /// Starts the horde service.
@@ -26,6 +38,8 @@ namespace Drey
         /// <returns></returns>
         public bool Start()
         {
+            ConfigureLogging(_nutConfiguration);
+            _log.Info("Runtime is starting.");
             return StartupInstance(_nutConfiguration, DreyConstants.ConfigurationPackageName, string.Empty);
         }
 
@@ -35,9 +49,11 @@ namespace Drey
         /// <returns></returns>
         public bool Stop()
         {
+            _log.Info("Runtime is shutting down.");
+
             var packageIds = _appInstances.Select(x => x.Item2.Id).ToArray();
             packageIds.Apply(ShutdownInstance);
-            _appInstances = null;
+            _appInstances.Clear();
 
             return true;
         }
@@ -58,7 +74,7 @@ namespace Drey
         /// <param name="e">The e.</param>
         void ShellRequestHandler(object sender, ShellRequestArgs e)
         {
-            _Log.InfoFormat("'Shell Request' Event Received: {0}", e);
+            _log.InfoFormat("'Shell Request' Event Received: {0}", e);
 
             switch (e.ActionToTake)
             {
@@ -73,7 +89,7 @@ namespace Drey
                     StartupInstance(e.ConfigurationManager, e.PackageId, e.Version);
                     break;
                 default:
-                    _Log.ErrorFormat("Received an unknown action: {0}", e.ActionToTake);
+                    _log.ErrorFormat("Received an unknown action: {0}", e.ActionToTake);
                     break;
             }
         }
@@ -96,11 +112,11 @@ namespace Drey
             var shell = _appFactory.Create(packageDir, configurationManager);
             if (shell == null)
             {
-                _Log.Fatal("Did not create the configuration console.  app exiting.");
+                _log.Fatal("Did not create the configuration console.  app exiting.");
                 return false;
             }
 
-            _Log.Info("Configuration shell created.  Starting to listen for events.");
+            _log.Info("Configuration shell created.  Starting to listen for events.");
             shell.Item2.OnShellRequest += ShellRequestHandler;
             _appInstances.Add(shell);
             return true;

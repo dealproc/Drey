@@ -6,7 +6,7 @@ using System;
 
 namespace Drey.Configuration.Repositories.SQLiteRepositories
 {
-    public class GlobalSettingsRepository : SqlRepository, IGlobalSettingsRepository, Drey.Nut.IGlobalSettings
+    public class GlobalSettingsRepository : SqlRepository, IGlobalSettingsRepository
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="GlobalSettingsRepository"/> class.

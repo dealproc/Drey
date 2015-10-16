@@ -26,7 +26,6 @@ namespace Drey.Nut
             var pathToAssembly = Utilities.PathUtilities.ResolvePath(assemblyPath);
             var discoverStartupType = typeof(DiscoverStartupDllProxy);
             var startupProxyType = typeof(StartupProxy);
-            var dreyAssemblyPath = Utilities.PathUtilities.ResolvePath(startupProxyType.Assembly.GetName().CodeBase.Remove(0, 8), false);
             var discoveryDomain = Utilities.AppDomainUtils.CreateDomain(Guid.NewGuid().ToString());
             Tuple<string, string> entryDllAndType;
             DiscoverStartupDllProxy discoverPath = null;

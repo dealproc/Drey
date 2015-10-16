@@ -1,5 +1,5 @@
-﻿using System.IO;
-using System.Reflection;
+﻿using System;
+using System.IO;
 
 namespace Drey.Utilities
 {
@@ -19,7 +19,8 @@ namespace Drey.Utilities
             if (respondWith.StartsWith("~/"))
             {
 
-                var dir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase.Remove(0, 8)) + Path.DirectorySeparatorChar.ToString();
+                //var dir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase.Remove(0, 8)) + Path.DirectorySeparatorChar.ToString();
+                var dir = Path.GetDirectoryName(Environment.CurrentDirectory) + Path.DirectorySeparatorChar.ToString();
                 respondWith = respondWith.Replace("~/", dir);
             }
 

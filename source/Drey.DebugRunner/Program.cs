@@ -1,6 +1,10 @@
 ﻿using Drey.Logging;
+using Drey.Nut;
 using System;
 using Topshelf;
+using NLog;
+using NLog.Config;
+using NLog.Targets;
 
 namespace Drey.DebugRunner
 {
@@ -8,6 +12,38 @@ namespace Drey.DebugRunner
     {
         static int Main(string[] args)
         {
+            HordeServiceControl.ConfigureLogging = (INutConfiguration config) =>
+            {
+                // Step 1. Create configuration object 
+                var nlogConfig = new LoggingConfiguration();
+
+                // Step 2. Create targets and add them to the configuration 
+                var consoleTarget = new ColoredConsoleTarget();
+                nlogConfig.AddTarget("console", consoleTarget);
+
+                var fileTarget = new FileTarget();
+                nlogConfig.AddTarget("file", fileTarget);
+
+                // Step 3. Set target properties 
+                consoleTarget.Layout = "${message}";
+                fileTarget.FileName = config.LogsDirectory + "log.${machinename}.txt";
+                fileTarget.ArchiveFileName = config.LogsDirectory + "archives/log.${machinename}.{#####}.txt";
+                fileTarget.Layout = "${longdate}|${level:uppercase=true}|${logger}|${message}|${exception:maxInnerExceptionLevel=4}";
+
+                // Step 4. Define rules
+                var rule1 = new LoggingRule("*", NLog.LogLevel.Debug, consoleTarget);
+                nlogConfig.LoggingRules.Add(rule1);
+
+                var rule2 = new LoggingRule("*", NLog.LogLevel.Debug, fileTarget);
+                nlogConfig.LoggingRules.Add(rule2);
+
+                // Step 5. Activate the configuration
+                LogManager.Configuration = nlogConfig;
+                LogManager.ReconfigExistingLoggers();
+                LogManager.Flush();
+            };
+            HordeServiceControl.ConfigureLogging(new ApplicationHostNutConfiguration());
+
             return (int)HostFactory.Run(f =>
             {
                 f.SetInstanceName("DebugRunner");

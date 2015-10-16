@@ -11,7 +11,7 @@ namespace Drey.Configuration.Infrastructure.ConfigurationManagement
     {
         readonly string _packageId;
         readonly IApplicationSettings _runtimeApplicationSettings;
-        readonly IGlobalSettings _globalSettingsRepository;
+        readonly IGlobalSettingsRepository _globalSettingsRepository;
         readonly IApplicationSettings _applicationSettingsService;
         readonly IConnectionStrings _connectionStringsService;
 
@@ -72,5 +72,6 @@ namespace Drey.Configuration.Infrastructure.ConfigurationManagement
             get { return Path.Combine(WorkingDirectory, "Hoarde").NormalizePathSeparator(); }
         }
 
+        public string LogsDirectory { get { return Path.Combine(WorkingDirectory, "Logs").NormalizePathSeparator(); } }
     }
 }

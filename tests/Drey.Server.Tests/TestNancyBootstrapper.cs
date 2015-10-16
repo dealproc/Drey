@@ -1,11 +1,5 @@
-﻿using FakeItEasy;
-using Microsoft.AspNet.SignalR;
-using Nancy;
-using Nancy.Bootstrapper;
+﻿using Nancy;
 using Nancy.TinyIoc;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Drey.Server.Tests
 {

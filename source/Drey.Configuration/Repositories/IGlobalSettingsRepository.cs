@@ -1,6 +1,6 @@
 ﻿namespace Drey.Configuration.Repositories
 {
-    public interface IGlobalSettingsRepository
+    public interface IGlobalSettingsRepository : Drey.Nut.IGlobalSettings
     {
         /// <summary>
         /// Saves the setting.

@@ -7,5 +7,6 @@
         IConnectionStrings ConnectionStrings { get; }
         string WorkingDirectory { get; }
         string HordeBaseDirectory { get; }
+        string LogsDirectory { get; }
     }
 }

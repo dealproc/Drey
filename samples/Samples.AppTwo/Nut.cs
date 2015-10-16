@@ -19,16 +19,6 @@ namespace Samples.AppTwo
             get { return this.GetType().Namespace; }
         }
 
-        public override string NameDomainAs
-        {
-            get { return this.GetType().Namespace; }
-        }
-
-        public override string DisplayAs
-        {
-            get { return "Samples - Application #2"; }
-        }
-
         public override bool RequiresConfigurationStorage
         {
             get { return false; }

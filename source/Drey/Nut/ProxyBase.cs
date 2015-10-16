@@ -39,7 +39,8 @@ namespace Drey.Nut
             var searchPaths = (new[] 
             { 
                     Path.GetFullPath(_pathToAppPackage), 
-                    Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) 
+                    Path.GetDirectoryName(Environment.CurrentDirectory),
+                    // Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) - trying to eliminate reflection whereever possible.
             });
 
             Log.Debug(() => string.Format("Searching the following locations: {0}", searchPaths.Aggregate((s1, s2) => s1 + ";" + s2)));

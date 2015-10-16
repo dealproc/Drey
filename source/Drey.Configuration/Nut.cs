@@ -1,7 +1,9 @@
 ﻿using Drey.Configuration.Infrastructure.Schema;
 using Drey.Logging;
 using Drey.Nut;
+
 using Nancy.Hosting.Self;
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -24,16 +26,6 @@ namespace Drey.Configuration
         public override string Id
         {
             get { return "Drey.Configuration"; }
-        }
-
-        public override string NameDomainAs
-        {
-            get { return "Drey.Configuration"; }
-        }
-
-        public override string DisplayAs
-        {
-            get { return "Drey Configuration Console"; }
         }
 
         public override bool RequiresConfigurationStorage

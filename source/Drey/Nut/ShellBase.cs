@@ -12,8 +12,6 @@ namespace Drey.Nut
         protected static ILog Log { get { return _Log; } }
 
         public abstract string Id { get; }
-        public abstract string NameDomainAs { get; }
-        public abstract string DisplayAs { get; }
         public abstract bool RequiresConfigurationStorage { get; }
         protected bool Disposed { get; private set; }
 
