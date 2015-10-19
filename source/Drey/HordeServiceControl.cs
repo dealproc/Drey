@@ -131,9 +131,15 @@ namespace Drey
             var instancesToShutdown = _appInstances.Where(i => i.Item2.Id == id).ToArray();
             instancesToShutdown.Apply(i =>
             {
-                i.Item2.Shutdown();
-                AppDomain.Unload(i.Item1);
-                _appInstances.Remove(i);
+                try
+                {
+                    i.Item2.Shutdown();
+                    AppDomain.Unload(i.Item1);
+                }
+                finally
+                {
+                    _appInstances.Remove(i);
+                }
             });
         }
     }

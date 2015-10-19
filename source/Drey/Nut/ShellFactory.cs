@@ -27,7 +27,7 @@ namespace Drey.Nut
             var discoverStartupType = typeof(DiscoverStartupDllProxy);
             var startupProxyType = typeof(StartupProxy);
             var discoveryDomain = Utilities.AppDomainUtils.CreateDomain(Guid.NewGuid().ToString());
-            Tuple<string, string> entryDllAndType;
+            Tuple<string, string, string> entryDllAndType;
             DiscoverStartupDllProxy discoverPath = null;
 
             try
@@ -60,7 +60,7 @@ namespace Drey.Nut
             }
 
             _Log.Info("Instantiating app.");
-            var domain = Utilities.AppDomainUtils.CreateDomain(Guid.NewGuid().ToString());
+            var domain = Utilities.AppDomainUtils.CreateDomain(entryDllAndType.Item3);
             var domainProxy = (StartupProxy)domain.CreateInstanceFromAndUnwrap(startupProxyType.Assembly.Location, startupProxyType.FullName, false,
                 BindingFlags.CreateInstance | BindingFlags.Instance | BindingFlags.Public, null, new[] { Path.GetDirectoryName(entryDllAndType.Item1) }, null, null);
             domain.AssemblyResolve += domainProxy.ResolveAssemblyInDomain;

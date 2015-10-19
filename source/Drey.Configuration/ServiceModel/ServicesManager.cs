@@ -1,21 +1,21 @@
-﻿using Drey.Configuration.Extensions;
-using Drey.Configuration.Infrastructure;
+﻿using Drey.Configuration.Infrastructure;
 using Drey.Logging;
 
 using Microsoft.AspNet.SignalR.Client;
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
-namespace Drey.Configuration.ServiceModel {
-    public interface IServicesManager : IHandle<Infrastructure.Events.ReEstablishMonitoring>, IHandle<Infrastructure.Events.RecycleApp> {
+namespace Drey.Configuration.ServiceModel
+{
+    public interface IServicesManager : IHandle<Infrastructure.Events.ReEstablishMonitoring>, IHandle<Infrastructure.Events.RecycleApp>
+    {
         bool Start();
         bool Stop();
     }
-    public class ServicesManager : IServicesManager, IDisposable {
+    public class ServicesManager : IServicesManager, IDisposable
+    {
         ILog _log;
 
         readonly IEventBus _eventBus;
@@ -37,7 +37,8 @@ namespace Drey.Configuration.ServiceModel {
 
 
         public ServicesManager(IEventBus eventBus, IEnumerable<IRemoteInvocationService> remoteInvokedServices, IEnumerable<IReportPeriodically> pushServices,
-            Services.IGlobalSettingsService globalSettings, Func<RegisteredPackagesPollingClient> packagesPollerFactory, Func<PollingClientCollection> pollingCollectionFactory) {
+            Services.IGlobalSettingsService globalSettings, Func<RegisteredPackagesPollingClient> packagesPollerFactory, Func<PollingClientCollection> pollingCollectionFactory)
+        {
             _log = LogProvider.For<ServicesManager>();
 
             _eventBus = eventBus;
@@ -51,11 +52,15 @@ namespace Drey.Configuration.ServiceModel {
             _eventBus.Subscribe(this);
         }
 
-        public bool Start() {
-            try {
+        public bool Start()
+        {
+            try
+            {
                 Connect().Wait();
                 InitializePollingClients();
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 _log.FatalException("Could not connect.", ex);
                 return false;
             }
@@ -63,7 +68,8 @@ namespace Drey.Configuration.ServiceModel {
             return true;
         }
 
-        public bool Stop() {
+        public bool Stop()
+        {
             _pushServices.Apply(x => x.Stop());
             _runtimeHubProxy = null;
             _hubConnectionManager.Stop();
@@ -71,17 +77,20 @@ namespace Drey.Configuration.ServiceModel {
             return true;
         }
 
-        public void Handle(Infrastructure.Events.ReEstablishMonitoring message) {
+        public void Handle(Infrastructure.Events.ReEstablishMonitoring message)
+        {
             Stop();
             Start();
             InitializePollingClients();
         }
 
-        public void Handle(Infrastructure.Events.RecycleApp message) {
+        public void Handle(Infrastructure.Events.RecycleApp message)
+        {
             InitializePollingClients();
         }
 
-        private Task Connect() {
+        private Task Connect()
+        {
             var brokerUrl = _globalSettings.GetServerHostname();
 
             _log.Trace("Connecting to runtime hub.");
@@ -95,8 +104,10 @@ namespace Drey.Configuration.ServiceModel {
             _pushServices.Apply(x => x.Start(_hubConnectionManager, _runtimeHubProxy));
 
             _log.Trace("Establishing connection to runtime hub.");
-            _hubConnectionManager.StateChanged += change => {
-                switch (change.NewState) {
+            _hubConnectionManager.StateChanged += change =>
+            {
+                switch (change.NewState)
+                {
                     case ConnectionState.Connecting:
                         _log.InfoFormat("Attempting to connect to {url}.", brokerUrl);
                         break;
@@ -115,29 +126,48 @@ namespace Drey.Configuration.ServiceModel {
             return _hubConnectionManager.Initialize();
         }
 
-        private void InitializePollingClients() {
-            if (_pollingCollection != null) {
+        private void InitializePollingClients()
+        {
+            if (_pollingCollection != null)
+            {
                 _pollingCollection.Dispose();
                 _pollingCollection = null;
             }
-            if (_registeredPackagesPoller != null) {
+            if (_registeredPackagesPoller != null)
+            {
                 _registeredPackagesPoller.Dispose();
                 _registeredPackagesPoller = null;
             }
 
-            if (_globalSettings.HasValidSettings()) {
+            if (_globalSettings.HasValidSettings())
+            {
                 _registeredPackagesPoller = _packagesPollerFactory.Invoke();
                 _pollingCollection = _pollingCollectionFactory.Invoke();
                 _pollingCollection.Add(_registeredPackagesPoller);
             }
         }
 
-        public void Dispose() {
-
+        public void Dispose()
+        {
+            Dispose(true);
+            _disposed = true;
         }
-        protected virtual void Dispose(bool disposing) {
-            if (_eventBus != null) {
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_eventBus != null)
+            {
                 _eventBus.Unsubscribe(this);
+            }
+
+            if (_pollingCollection != null)
+            {
+                _pollingCollection.Dispose();
+                _pollingCollection = null;
+            }
+            if (_registeredPackagesPoller != null)
+            {
+                _registeredPackagesPoller.Dispose();
+                _registeredPackagesPoller = null;
             }
 
             if (!disposing || _disposed) { return; }

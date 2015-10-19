@@ -17,7 +17,7 @@ namespace Drey.Nut
         /// </summary>
         /// <param name="assemblyPath">The assembly path.</param>
         /// <returns></returns>
-        public Tuple<string, string> DiscoverEntryDll(string assemblyPath)
+        public Tuple<string, string, string> DiscoverEntryDll(string assemblyPath)
         {
             _log.Info("Attempting to discover entry dll.");
             foreach (var file in Directory.GetFiles(assemblyPath, "*.dll"))
@@ -29,7 +29,8 @@ namespace Drey.Nut
                 {
                     _log.DebugFormat("--Found entry dll: {0}|{1}", file, entryType.FullName);
                     _log.InfoFormat("Entry Dll discovered: {0}", file);
-                    return new Tuple<string, string>(file, entryType.FullName);
+                    IShell shell = (IShell)asmToReflect.CreateInstance(entryType.FullName);
+                    return new Tuple<string, string, string>(file, entryType.FullName, shell.Id);
                 }
                 else
                 {
