@@ -4,7 +4,7 @@ using System.Threading;
 
 namespace Drey.Configuration.ServiceModel
 {
-    class PollingClientCollection : ConcurrentBag<IPollingClient>, IDisposable
+    public class PollingClientCollection : ConcurrentBag<IPollingClient>, IDisposable
     {
         bool _disposed = false;
         CancellationTokenSource _cts = new CancellationTokenSource();

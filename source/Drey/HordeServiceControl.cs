@@ -132,7 +132,6 @@ namespace Drey
             instancesToShutdown.Apply(i =>
             {
                 i.Item2.Shutdown();
-                i.Item2.Dispose();
                 AppDomain.Unload(i.Item1);
                 _appInstances.Remove(i);
             });

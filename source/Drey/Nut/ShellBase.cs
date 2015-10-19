@@ -4,10 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Security.Permissions;
 
-namespace Drey.Nut
-{
-    public abstract class ShellBase : MarshalByRefObject, IShell
-    {
+namespace Drey.Nut {
+    public abstract class ShellBase : MarshalByRefObject, IShell {
         static ILog _Log = LogProvider.GetCurrentClassLogger();
         protected static ILog Log { get { return _Log; } }
 
@@ -15,12 +13,11 @@ namespace Drey.Nut
         public abstract bool RequiresConfigurationStorage { get; }
         protected bool Disposed { get; private set; }
 
-        public ShellBase()
-        {
+        public ShellBase() {
+            ConfigureLogging = (config) => { };
             Disposed = false;
         }
-        ~ShellBase()
-        {
+        ~ShellBase() {
             Dispose(false);
         }
 
@@ -36,6 +33,8 @@ namespace Drey.Nut
 
         public INutConfiguration ConfigurationManager { get; protected set; }
 
+        public Action<INutConfiguration> ConfigureLogging { get; set; }
+
         /// <summary>
         /// Occurs when this shell needs the runtime to perform an operation on the shell's behalf.
         /// </summary>
@@ -45,9 +44,9 @@ namespace Drey.Nut
         /// The startup routine for the applet.  Think of this like `static main(string args[]) { ... }`.
         /// </summary>
         /// <param name="configurationManager">The configuration manager.</param>
-        public virtual void Startup(INutConfiguration configurationManager)
-        {
+        public virtual void Startup(INutConfiguration configurationManager) {
             ConfigurationManager = configurationManager;
+            ConfigureLogging(configurationManager);
         }
 
         /// <summary>
@@ -58,19 +57,16 @@ namespace Drey.Nut
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
-        public void Dispose()
-        {
+        public void Dispose() {
             Dispose(true);
         }
 
         [SecurityPermission(SecurityAction.Demand, Flags = SecurityPermissionFlag.Infrastructure)]
-        public override object InitializeLifetimeService()
-        {
+        public override object InitializeLifetimeService() {
             return null;
         }
 
-        protected virtual void Dispose(bool disposing)
-        {
+        protected virtual void Dispose(bool disposing) {
             if (!disposing || Disposed) { return; }
 
             Disposed = true;
@@ -80,11 +76,9 @@ namespace Drey.Nut
         /// Emits the shell request.
         /// </summary>
         /// <param name="args">The arguments.</param>
-        protected void EmitShellRequest(ShellRequestArgs args)
-        {
+        protected void EmitShellRequest(ShellRequestArgs args) {
             var handler = OnShellRequest;
-            if (handler != null)
-            {
+            if (handler != null) {
                 handler(this, args);
             }
         }

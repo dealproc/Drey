@@ -3,7 +3,7 @@ using System.Threading;
 
 namespace Drey.Configuration.ServiceModel
 {
-    interface IPollingClient
+    public interface IPollingClient
     {
         /// <summary>
         /// Starts the specified ct.

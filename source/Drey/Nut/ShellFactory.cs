@@ -65,6 +65,7 @@ namespace Drey.Nut
                 BindingFlags.CreateInstance | BindingFlags.Instance | BindingFlags.Public, null, new[] { Path.GetDirectoryName(entryDllAndType.Item1) }, null, null);
             domain.AssemblyResolve += domainProxy.ResolveAssemblyInDomain;
             var appShell = (IShell)domainProxy.Build(entryDllAndType.Item1, entryDllAndType.Item2);
+            appShell.ConfigureLogging = HordeServiceControl.ConfigureLogging;
 
             _Log.Info("Registering default app settings.");
 

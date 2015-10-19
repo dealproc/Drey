@@ -1,17 +1,25 @@
-﻿using Nancy;
-using Nancy.TinyIoc;
+﻿using Autofac;
+
+using Nancy.Bootstrappers.Autofac;
 
 namespace Samples.Server
 {
-    public class SampleServerBootstrapper : DefaultNancyBootstrapper
+    public class SampleServerBootstrapper : AutofacNancyBootstrapper
     {
-        protected override void ConfigureApplicationContainer(TinyIoCContainer container)
+        readonly IContainer _container;
+
+        public SampleServerBootstrapper(IContainer container)
         {
-            var filesvc = new Drey.Server.Services.FilesytemFileService(@"c:\packages_test");
-            container.Register<Drey.Server.Services.IFileService>(filesvc);
-            container.Register<Drey.Server.Services.IReleaseStore, Stores.ReleasesStore>();
-            container.Register<Drey.Server.Services.IPackageService, Drey.Server.Services.PackageService>();
-            //base.ConfigureApplicationContainer(container);
+            new Drey.Server.Exceptions.RuntimeHasNotConnectedException();
+            _container = container;
+        }
+        protected override ILifetimeScope GetApplicationContainer()
+        {
+            return _container;
+        }
+        protected override System.Collections.Generic.IEnumerable<Nancy.INancyModule> GetAllModules(ILifetimeScope container) {
+            var mod = base.GetAllModules(container);
+            return mod;
         }
     }
 }

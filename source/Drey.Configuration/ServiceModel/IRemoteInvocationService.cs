@@ -2,10 +2,13 @@
 
 namespace Drey.Configuration.ServiceModel
 {
-    interface IRemoteInvocationService<TRequest, TResponse>
+    public interface IRemoteInvocationService
+    {
+        void SubscribeToEvents(IHubProxy runtimeHubProxy);
+    }
+    public interface IRemoteInvocationService<TRequest, TResponse> : IRemoteInvocationService
         where TRequest : DomainModel.Request
         where TResponse : DomainModel.Response
     {
-        void SubscribeToEvents(IHubProxy runtimeHubProxy);
     }
 }

@@ -1,0 +1,146 @@
+﻿using Drey.Configuration.Extensions;
+using Drey.Configuration.Infrastructure;
+using Drey.Logging;
+
+using Microsoft.AspNet.SignalR.Client;
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Drey.Configuration.ServiceModel {
+    public interface IServicesManager : IHandle<Infrastructure.Events.ReEstablishMonitoring>, IHandle<Infrastructure.Events.RecycleApp> {
+        bool Start();
+        bool Stop();
+    }
+    public class ServicesManager : IServicesManager, IDisposable {
+        ILog _log;
+
+        readonly IEventBus _eventBus;
+        readonly IEnumerable<IRemoteInvocationService> _remoteInvokedServices;
+        readonly IEnumerable<IReportPeriodically> _pushServices;
+        readonly Services.IGlobalSettingsService _globalSettings;
+
+        IHubConnectionManager _hubConnectionManager;
+        IHubProxy _runtimeHubProxy;
+
+        RegisteredPackagesPollingClient _registeredPackagesPoller;
+        PollingClientCollection _pollingCollection;
+
+        Func<RegisteredPackagesPollingClient> _packagesPollerFactory;
+        Func<PollingClientCollection> _pollingCollectionFactory;
+
+        bool _disposed = false;
+
+
+
+        public ServicesManager(IEventBus eventBus, IEnumerable<IRemoteInvocationService> remoteInvokedServices, IEnumerable<IReportPeriodically> pushServices,
+            Services.IGlobalSettingsService globalSettings, Func<RegisteredPackagesPollingClient> packagesPollerFactory, Func<PollingClientCollection> pollingCollectionFactory) {
+            _log = LogProvider.For<ServicesManager>();
+
+            _eventBus = eventBus;
+            _remoteInvokedServices = remoteInvokedServices;
+            _pushServices = pushServices;
+            _globalSettings = globalSettings;
+
+            _packagesPollerFactory = packagesPollerFactory;
+            _pollingCollectionFactory = pollingCollectionFactory;
+
+            _eventBus.Subscribe(this);
+        }
+
+        public bool Start() {
+            try {
+                Connect().Wait();
+                InitializePollingClients();
+            } catch (Exception ex) {
+                _log.FatalException("Could not connect.", ex);
+                return false;
+            }
+
+            return true;
+        }
+
+        public bool Stop() {
+            _pushServices.Apply(x => x.Stop());
+            _runtimeHubProxy = null;
+            _hubConnectionManager.Stop();
+            _hubConnectionManager = null;
+            return true;
+        }
+
+        public void Handle(Infrastructure.Events.ReEstablishMonitoring message) {
+            Stop();
+            Start();
+            InitializePollingClients();
+        }
+
+        public void Handle(Infrastructure.Events.RecycleApp message) {
+            InitializePollingClients();
+        }
+
+        private Task Connect() {
+            var brokerUrl = _globalSettings.GetServerHostname();
+
+            _log.Trace("Connecting to runtime hub.");
+
+            _hubConnectionManager = HubConnectionManager.GetHubConnectionManager(brokerUrl);
+            _hubConnectionManager.UseClientCertificate(_globalSettings.GetCertificate());
+
+            _log.Trace("Creating runtime hub proxy and assigning to services.");
+            _runtimeHubProxy = _hubConnectionManager.CreateHubProxy("Runtime");
+            _remoteInvokedServices.Apply(x => x.SubscribeToEvents(_runtimeHubProxy));
+            _pushServices.Apply(x => x.Start(_hubConnectionManager, _runtimeHubProxy));
+
+            _log.Trace("Establishing connection to runtime hub.");
+            _hubConnectionManager.StateChanged += change => {
+                switch (change.NewState) {
+                    case ConnectionState.Connecting:
+                        _log.InfoFormat("Attempting to connect to {url}.", brokerUrl);
+                        break;
+                    case ConnectionState.Connected:
+                        _log.InfoFormat("Connection established with {url}.", brokerUrl);
+                        break;
+                    case ConnectionState.Reconnecting:
+                        _log.InfoFormat("Lost connection with {url}.  Attempting to reconnect.", brokerUrl);
+                        break;
+                    case ConnectionState.Disconnected:
+                        _log.InfoFormat("Disconnected from {url}", brokerUrl);
+                        break;
+                }
+            };
+
+            return _hubConnectionManager.Initialize();
+        }
+
+        private void InitializePollingClients() {
+            if (_pollingCollection != null) {
+                _pollingCollection.Dispose();
+                _pollingCollection = null;
+            }
+            if (_registeredPackagesPoller != null) {
+                _registeredPackagesPoller.Dispose();
+                _registeredPackagesPoller = null;
+            }
+
+            if (_globalSettings.HasValidSettings()) {
+                _registeredPackagesPoller = _packagesPollerFactory.Invoke();
+                _pollingCollection = _pollingCollectionFactory.Invoke();
+                _pollingCollection.Add(_registeredPackagesPoller);
+            }
+        }
+
+        public void Dispose() {
+
+        }
+        protected virtual void Dispose(bool disposing) {
+            if (_eventBus != null) {
+                _eventBus.Unsubscribe(this);
+            }
+
+            if (!disposing || _disposed) { return; }
+        }
+    }
+}

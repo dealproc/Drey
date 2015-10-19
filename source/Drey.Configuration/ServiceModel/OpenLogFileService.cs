@@ -10,7 +10,7 @@ namespace Drey.Configuration.ServiceModel
     {
         readonly INutConfiguration _configurationManager;
 
-        public OpenLogFileService(INutConfiguration configurationManager) : base("", "")
+        public OpenLogFileService(INutConfiguration configurationManager) : base("BeginOpenLogFile", "EndOpenLogFile")
         {
             _configurationManager = configurationManager;
         }

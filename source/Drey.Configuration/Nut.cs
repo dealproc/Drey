@@ -14,10 +14,12 @@ namespace Drey.Configuration
 {
     public class Nut : ShellBase, IHandle<ShellRequestArgs>, IDisposable
     {
-        INutConfiguration _configurationManager;
         IEventBus _eventBus;
         IDisposable _webApp;
 
+        /// <summary>
+        /// Gets the version of the dll for display on the web console.
+        /// </summary>
         public static string Version
         {
             get { return typeof(Nut).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion; }
@@ -45,14 +47,15 @@ namespace Drey.Configuration
 
         public override void Startup(INutConfiguration configurationManager)
         {
+            base.Startup(configurationManager);
+
             MigrationManager.Migrate(configurationManager);
 
-            _configurationManager = configurationManager;
             _eventBus = new EventBus();
 
             BuildApp();
 
-            var startupUri = string.Format("http://localhost:{0}/", _configurationManager.ApplicationSettings["drey.configuration.consoleport"]);
+            var startupUri = string.Format("http://localhost:{0}/", ConfigurationManager.ApplicationSettings["drey.configuration.consoleport"]);
             Process.Start(startupUri);
         }
 
@@ -65,8 +68,8 @@ namespace Drey.Configuration
         {
             _eventBus.Subscribe(this);
 
-            var startupUri = string.Format("http://localhost:{0}/", _configurationManager.ApplicationSettings["drey.configuration.consoleport"]);
-            var host = new NancyHost(new Bootstrapper(_configurationManager, _eventBus), new[] { new Uri(startupUri) });
+            var startupUri = string.Format("http://localhost:{0}/", ConfigurationManager.ApplicationSettings["drey.configuration.consoleport"]);
+            var host = new NancyHost(new Bootstrapper(ConfigurationManager, _eventBus), new[] { new Uri(startupUri) });
             host.Start();
 
             _webApp = host;

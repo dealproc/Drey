@@ -16,11 +16,12 @@ using System.Reflection;
 
 namespace Drey.Configuration
 {
-    public class Bootstrapper : DefaultNancyBootstrapper, IHandle<Infrastructure.Events.RecycleApp>
+    public class Bootstrapper : DefaultNancyBootstrapper
     {
         readonly INutConfiguration _configurationManager;
         readonly Assembly ThisAssembly;
         readonly IEventBus _eventBus;
+        ServiceModel.IServicesManager _servicesManager;
 
         public Bootstrapper(INutConfiguration configurationManager, IEventBus eventBus)
             : base()
@@ -29,19 +30,13 @@ namespace Drey.Configuration
             _eventBus = eventBus;
 
             ThisAssembly = this.GetType().Assembly;
-            _eventBus.Subscribe(this);
 
             StaticConfiguration.DisableErrorTraces = false;
-        }
-        ~Bootstrapper()
-        {
-            Dispose(false);
         }
 
         protected override void ApplicationStartup(TinyIoCContainer container, IPipelines pipelines)
         {
             base.ApplicationStartup(container, pipelines);
-            InitializePollingClients();
         }
 
         protected override void ConfigureApplicationContainer(TinyIoCContainer container)
@@ -62,6 +57,12 @@ namespace Drey.Configuration
             container.Register<Services.IGlobalSettingsService, Services.GlobalSettingsService>();
 
             container.Register<IEventBus>(_eventBus);
+
+            container.Register<ServiceModel.IServicesManager, ServiceModel.ServicesManager>().AsSingleton();
+
+            _servicesManager = container.Resolve<ServiceModel.IServicesManager>();
+
+            _servicesManager.Start();
         }
 
         protected override NancyInternalConfiguration InternalConfiguration
@@ -94,29 +95,6 @@ namespace Drey.Configuration
         protected override IEnumerable<Type> ViewEngines
         {
             get { yield return typeof(RazorViewEngine); }
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            _eventBus.Unsubscribe(this);
-
-            if (!disposing) { return; }
-        }
-
-        public void Handle(Infrastructure.Events.RecycleApp message)
-        {
-            InitializePollingClients();
-        }
-
-        private void InitializePollingClients()
-        {
-            var globalSettingsService = ApplicationContainer.Resolve<Services.IGlobalSettingsService>();
-            if (globalSettingsService.HasValidSettings())
-            {
-                var registeredPackagesPoller = ApplicationContainer.Resolve<ServiceModel.RegisteredPackagesPollingClient>();
-                var pollingCollection = ApplicationContainer.Resolve<ServiceModel.PollingClientCollection>();
-                pollingCollection.Add(registeredPackagesPoller);
-            }
         }
     }
 }

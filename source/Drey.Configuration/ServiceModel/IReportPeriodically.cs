@@ -3,8 +3,9 @@ using Microsoft.AspNet.SignalR.Client;
 
 namespace Drey.Configuration.ServiceModel
 {
-    interface IReportPeriodically
+    public interface IReportPeriodically
     {
         void Start(IHubConnectionManager hubConnectionManager, IHubProxy runtimeHubProxy);
+        void Stop();
     }
 }

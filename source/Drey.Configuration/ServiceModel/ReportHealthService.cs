@@ -50,6 +50,11 @@ namespace Drey.Configuration.ServiceModel
             _reportHealthTrigger.Start();
         }
 
+        public void Stop()
+        {
+            _reportHealthTrigger.Stop();
+        }
+
         /// <summary>
         /// Reports to the broker the current health information of this client.
         /// </summary>

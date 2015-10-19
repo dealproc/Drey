@@ -12,5 +12,7 @@ namespace Drey.Nut
 
         void Startup(INutConfiguration configurationManager);
         void Shutdown();
+
+        Action<INutConfiguration> ConfigureLogging { get; set; }
     }
 }

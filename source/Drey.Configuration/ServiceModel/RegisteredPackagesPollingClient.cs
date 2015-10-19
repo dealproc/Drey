@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Drey.Configuration.ServiceModel
 {
-    class RegisteredPackagesPollingClient : IPollingClient, IDisposable
+    public class RegisteredPackagesPollingClient : IPollingClient, IDisposable
     {
         static readonly ILog _Log = LogProvider.For<RegisteredPackagesPollingClient>();
 
