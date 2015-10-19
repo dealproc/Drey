@@ -1,6 +1,4 @@
-﻿using Drey.Logging;
-
-using System;
+﻿using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -10,9 +8,6 @@ namespace Drey.Nut
 {
     class ProxyBase : MarshalByRefObject
     {
-        static readonly ILog _Log = LogProvider.For<ProxyBase>();
-        protected ILog Log { get { return _Log; } }
-
         readonly string _pathToAppPackage;
 
         public ProxyBase(string pathToAppPackage)
@@ -34,8 +29,6 @@ namespace Drey.Nut
 
             Console.WriteLine("Attempting to resolve " + asmName);
 
-            Log.Info(() => "Attempting to resolve " + asmName);
-
             var searchPaths = (new[] 
             { 
                     Path.GetFullPath(_pathToAppPackage), 
@@ -43,15 +36,11 @@ namespace Drey.Nut
                     // Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) - trying to eliminate reflection whereever possible.
             });
 
-            Log.Debug(() => string.Format("Searching the following locations: {0}", searchPaths.Aggregate((s1, s2) => s1 + ";" + s2)));
-
             var resolvedDll = searchPaths
                 .Select(fullPath => Path.Combine(fullPath, asmName))
                 .Select(fullPath => File.Exists(fullPath) ? Assembly.LoadFrom(fullPath) : null)
                 .Where(asm => asm != null)
                 .FirstOrDefault();
-
-            Log.Trace(() => "Has Dll been resolved? " + (resolvedDll != null ? "Yes" : "No"));
 
             return resolvedDll;
         }
