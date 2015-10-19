@@ -1,7 +1,7 @@
-﻿using Nancy;
+﻿using Drey.Logging;
+using Nancy;
 using Nancy.ModelBinding;
 using Nancy.Validation;
-
 using System;
 using System.IO;
 using System.Linq;
@@ -11,6 +11,8 @@ namespace Drey.Configuration.Modules
 {
     public class SetupModule : NancyModule
     {
+        static readonly ILog _log = LogProvider.For<SetupModule>();
+
         readonly Services.IGlobalSettingsService _globalSettingsService;
 
         public SetupModule(Services.IGlobalSettingsService globalSettingsService)
@@ -30,11 +32,13 @@ namespace Drey.Configuration.Modules
 
         private dynamic GetIndex(dynamic arg)
         {
+            _log.Debug("Index has been accessed.");
             return View["index", new Services.ViewModels.GlobalSettingsPmo()];
         }
 
         private dynamic CommitSettings(dynamic arg)
         {
+            _log.Debug("Committing Settings.");
             var settingsPmo = this.BindAndValidate<Services.ViewModels.GlobalSettingsPmo>();
 
             if (Request.Files.Any())
@@ -60,11 +64,13 @@ namespace Drey.Configuration.Modules
 
         private dynamic UpdateClientCertificate(dynamic arg)
         {
+            _log.Debug("Attempting to update Client Certificate.");
             return Negotiate.WithView("ClientCertificate");
         }
 
         private dynamic SaveNewClientCertificate(dynamic arg)
         {
+            _log.Debug("Updating new Client Certificate.");
             if (!Request.Files.Any())
             {
                 ModelValidationResult.Errors.Add(string.Empty, "File did not upload.");
@@ -95,11 +101,13 @@ namespace Drey.Configuration.Modules
 
         private dynamic UpdateServerUrl(dynamic arg)
         {
+            _log.Debug("Attempting to update Server Url.");
             return Negotiate.WithView("ServerUrl").WithModel(new Services.ViewModels.ServerHostnamePmo { CurrentHostname = _globalSettingsService.GetServerHostname() });
         }
 
         private dynamic SaveNewServerUrl(dynamic arg)
         {
+            _log.Debug("Updating Server Url.");
             var model = this.BindAndValidate<Services.ViewModels.ServerHostnamePmo>();
 
             if (ModelValidationResult.IsValid)
