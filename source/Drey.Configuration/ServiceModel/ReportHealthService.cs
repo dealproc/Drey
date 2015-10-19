@@ -68,16 +68,19 @@ namespace Drey.Configuration.ServiceModel
                 return;
             }
 
+            _log.Debug("Resolving local IP addresses on all networks.");
             var na = System.Net.Dns.GetHostAddresses(System.Net.Dns.GetHostName())
                 .Where(ha => ha.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
                 .Select(x => x.ToString())
                 .ToArray();
 
+            _log.Debug("Resolving human readable OS name.");
             var osFriendlyName = (from x in new ManagementObjectSearcher("SELECT * FROM Win32_OperatingSystem")
                                   .Get()
                                   .OfType<ManagementObject>()
                                   select x.GetPropertyValue("Caption")).First();
 
+            _log.Debug("Building environment information to report to broker.");
             var ei = new DomainModel.EnvironmentInfo
             {
                 Is64BitOperatingSystem = Environment.Is64BitOperatingSystem,
@@ -93,6 +96,8 @@ namespace Drey.Configuration.ServiceModel
                 RegisteredDbFactories = _registeredDbFactories,
                 InstalledFrameworks = _frameworkInfo
             };
+
+            _log.Debug("Returning environment information to broker.");
             _runtimeHubProxy.Invoke("ReportHealth", ei);
         }
 

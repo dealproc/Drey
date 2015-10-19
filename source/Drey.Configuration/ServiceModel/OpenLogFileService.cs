@@ -3,6 +3,7 @@ using Drey.Utilities;
 
 using System.IO;
 using System.IO.Compression;
+using System.Threading.Tasks;
 
 namespace Drey.Configuration.ServiceModel
 {
@@ -14,7 +15,7 @@ namespace Drey.Configuration.ServiceModel
         {
             _configurationManager = configurationManager;
         }
-        protected override async System.Threading.Tasks.Task<DomainModel.Response<byte[]>> ProcessAsync(DomainModel.Request<DomainModel.FileDownloadOptions> request)
+        protected override async Task<DomainModel.Response<byte[]>> ProcessAsync(DomainModel.Request<DomainModel.FileDownloadOptions> request)
         {
             var relativePath = request.Message.RelativeOrAbsolutePath;
 

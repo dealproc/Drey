@@ -13,7 +13,7 @@ namespace Drey.Configuration.ServiceModel
 {
     class ReleasesPollingClient : IPollingClient, IDisposable
     {
-        static readonly ILog _Log = LogProvider.For<ReleasesPollingClient>();
+        static readonly ILog _log = LogProvider.For<ReleasesPollingClient>();
 
         /// <summary>
         /// The delay, in milliseconds, between queries to the known-packages endpoint to see if updates are available.
@@ -70,6 +70,7 @@ namespace Drey.Configuration.ServiceModel
         /// <param name="ct">The ct.</param>
         public void Start(CancellationToken ct)
         {
+            _log.Info("Releases Polling Client is starting.");
             _ct = ct;
             _pollingClientTask = new Task(executePollingLoop, ct);
             _pollingClientTask.Start();
@@ -124,10 +125,10 @@ namespace Drey.Configuration.ServiceModel
                 }
                 catch (Exception ex)
                 {
-                    _Log.ErrorException("Unknown issue occurred", ex);
+                    _log.ErrorException("Unknown issue occurred", ex);
                 }
 
-                _Log.DebugFormat("Waiting {0} seconds before checking for new releases.", DELAY_TIME_SEC);
+                _log.DebugFormat("Waiting {0} seconds before checking for new releases.", DELAY_TIME_SEC);
                 try
                 {
                     await Task.Delay(TimeSpan.FromSeconds(DELAY_TIME_SEC), _ct);
@@ -142,6 +143,7 @@ namespace Drey.Configuration.ServiceModel
         private async Task DownloadAndExtractRelease(HttpClient webClient, DataModel.Release releaseToDownload)
         {
             // download latest, based on package id and version (storage in {hordebasedir}\packages
+            _log.DebugFormat("Downloading release {version} of {pacakgeId} from server.", releaseToDownload.Version, releaseToDownload.Id);
             var fileResult = await webClient.GetAsync("/.well-known/releases/" + releaseToDownload.Id + "/" + releaseToDownload.Version);
 
             fileResult.EnsureSuccessStatusCode();
@@ -159,15 +161,17 @@ namespace Drey.Configuration.ServiceModel
 
             if (!Directory.Exists(destinationFolder))
             {
+                _log.TraceFormat("Creating '{destination}'", destinationFolder);
                 Directory.CreateDirectory(destinationFolder);
             }
 
             if (File.Exists(destinationFileNameAndPath))
             {
+                _log.Trace("Package exists.  Removing existing package before we store the latest downloaded file.");
                 File.Delete(destinationFileNameAndPath);
             }
 
-            _Log.InfoFormat("File will be stored at: '{0}'", destinationFileNameAndPath);
+            _log.InfoFormat("File will be stored at: '{0}'", destinationFileNameAndPath);
 
             using (var fStream = File.OpenWrite(destinationFileNameAndPath))
             {

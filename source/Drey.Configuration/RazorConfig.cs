@@ -1,11 +1,13 @@
-﻿using Nancy.ViewEngines.Razor;
-
+﻿using Drey.Logging;
+using Nancy.ViewEngines.Razor;
 using System.Collections.Generic;
 
 namespace Drey.Configuration
 {
     public class RazorConfig : IRazorConfiguration
     {
+        static ILog _log = LogProvider.For<RazorConfig>();
+
         public bool AutoIncludeModelNamespace
         {
             get { return true; }
@@ -13,6 +15,8 @@ namespace Drey.Configuration
 
         public IEnumerable<string> GetAssemblyNames()
         {
+            _log.Trace("GetAssemblyNames() has been accessed.");
+
             yield return "Drey";
             yield return "Drey.Configuration";
             yield return "Nancy.Validation.DataAnnotations";
@@ -21,6 +25,8 @@ namespace Drey.Configuration
 
         public IEnumerable<string> GetDefaultNamespaces()
         {
+            _log.Trace("GetDefaultNamespaces() has been accessed.");
+
             yield return "Nancy.Validation";
             yield return "Nancy.ViewEngines";
             yield return "Nancy.ViewEngines.Razor";

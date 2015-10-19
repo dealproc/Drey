@@ -11,7 +11,7 @@ namespace Drey.Configuration.ServiceModel
 {
     public class RegisteredPackagesPollingClient : IPollingClient, IDisposable
     {
-        static readonly ILog _Log = LogProvider.For<RegisteredPackagesPollingClient>();
+        static readonly ILog _log = LogProvider.For<RegisteredPackagesPollingClient>();
 
         const int DELAY_TIME_MS = 60;
 
@@ -65,6 +65,8 @@ namespace Drey.Configuration.ServiceModel
         /// <param name="ct">The ct.</param>
         public void Start(CancellationToken ct)
         {
+            _log.Info("Observing for new registered packages to install.");
+
             _ct = ct;
             _pollingClientTask = new Task(executeLoop, _ct);
             _pollingClientTask.Start();
@@ -72,6 +74,7 @@ namespace Drey.Configuration.ServiceModel
             var packages = _packageService.GetPackages();
             foreach (var pkg in packages)
             {
+                _log.TraceFormat("Creating a release monitor for {packageId}.", pkg.Id);
                 _pollingClients.Add(CreateReleasesMonitor(pkg.Id));
             }
         }
@@ -106,18 +109,18 @@ namespace Drey.Configuration.ServiceModel
                 }
                 catch (HttpRequestException)
                 {
-                    _Log.Info("Package server could not be contacted.");
+                    _log.Info("Package server could not be contacted.");
                     Pause();
                     continue;
                 }
                 catch (Exception exc)
                 {
-                    _Log.ErrorException("While discovering new packages", exc);
+                    _log.ErrorException("While discovering new packages", exc);
                     Pause();
                     continue;
                 }
 
-                _Log.InfoFormat("Waiting {0} seconds before re-checking for new releases.", DELAY_TIME_MS);
+                _log.InfoFormat("Waiting {0} seconds before re-checking for new releases.", DELAY_TIME_MS);
                 Pause();
             }
         }

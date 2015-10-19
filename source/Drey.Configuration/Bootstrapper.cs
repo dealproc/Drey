@@ -1,4 +1,5 @@
 ﻿using Drey.Configuration.Repositories.SQLiteRepositories;
+using Drey.Logging;
 using Drey.Nut;
 
 using Nancy;
@@ -18,14 +19,17 @@ namespace Drey.Configuration
 {
     public class Bootstrapper : DefaultNancyBootstrapper
     {
+        static readonly ILog _log = LogProvider.For<Bootstrapper>();
+
         readonly INutConfiguration _configurationManager;
         readonly Assembly ThisAssembly;
         readonly IEventBus _eventBus;
         ServiceModel.IServicesManager _servicesManager;
 
-        public Bootstrapper(INutConfiguration configurationManager, IEventBus eventBus)
-            : base()
+        public Bootstrapper(INutConfiguration configurationManager, IEventBus eventBus) : base()
         {
+            _log.Trace("Bootstrapper has been constructed for Drey.Configuration.");
+
             _configurationManager = configurationManager;
             _eventBus = eventBus;
 
@@ -41,6 +45,8 @@ namespace Drey.Configuration
 
         protected override void ConfigureApplicationContainer(TinyIoCContainer container)
         {
+            _log.Debug("Configuration of the application container has happened.");
+
             base.ConfigureApplicationContainer(container);
 
             // we need to manually register the data annotations registrations because we are
@@ -82,6 +88,7 @@ namespace Drey.Configuration
 
         protected override void ConfigureConventions(NancyConventions conventions)
         {
+            _log.Trace("Conventions are being set for resolving embedded assets.");
             if (!ResourceViewLocationProvider.RootNamespaces.ContainsKey(ThisAssembly))
             {
                 ResourceViewLocationProvider.RootNamespaces.Add(ThisAssembly, this.GetType().Namespace + ".Views");
