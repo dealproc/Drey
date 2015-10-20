@@ -73,6 +73,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Drey.nuspec" />
+    <None Include="drey.targets" />
+    <None Include="uninstall.ps1" />
+    <None Include="install.ps1" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

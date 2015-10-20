@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<package >
+<package>
   <metadata>
     <id>Drey</id>
     <version>$version$</version>
@@ -15,6 +15,12 @@
   </metadata>
   <files>
     <file src="bin\$configuration$\**\*.*" target="lib\net451\" />
+
     <file src=".\..\..\package\drey.configuration.$version$.nupkg" target="build\" />
+    <file src=".\..\Drey.Runtime\bin\$configuration$\**\*.*" target="build\" />
+    <file src=".\drey.targets" target="build\" />
+
+    <file src=".\install.ps1" target="tools\" />
+    <file src=".\uninstall.ps1" target="tools\" />
   </files>
 </package>

@@ -1,0 +1,69 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Project ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <UsingTask TaskName="RemovePackageVersion"
+             TaskFactory="CodeTaskFactory"
+             AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v12.0.dll">
+    <ParameterGroup>
+      <Filename ParameterType="System.String" Required="true" />
+      <PackageName ParameterType="System.String" Output="true" />
+    </ParameterGroup>
+    <Task>
+      <Using Namespace="System" />
+      <Using Namespace="System.Text.RegularExpressions" />
+      <Code Type="Fragment" Language="cs">
+        <![CDATA[
+          string pattern = @".(\d+).(\d+).(\d+).(\d+)";
+          Regex rgx = new Regex(pattern);
+          PackageName = rgx.Replace(Filename, "");
+        ]]>
+      </Code>
+    </Task>
+  </UsingTask>
+
+  <ItemGroup>
+    <RuntimeFiles Include="$(MSBuildThisFileDirectory)*.*" Exclude="$(MSBuildThisFileDirectory)*.nupkg;$(MSBuildThisFileDirectory)*.targets;" />
+    <ConfigurationPackages Include="$(MSBuildThisFileDirectory)*.nupkg" />
+  </ItemGroup>
+
+
+  <Target Name="CleanRuntimeEnvironment">
+    <RemoveDir Directories="$(SolutionDir)\Runtime" />
+  </Target>
+
+  <Target Name="InstallNugetPackages"
+          Inputs="@(ConfigurationPackages)"
+          Outputs="@(ConfigurationPackages -> '%(Filename)')">
+    <RemovePackageVersion Filename="%(ConfigurationPackages.Filename)">
+      <Output TaskParameter="PackageName" ItemName="PackageId" />
+    </RemovePackageVersion>
+    <Message Text="@(PackageId)" />
+    <Exec Command="$(SolutionDir).nuget\nuget.exe install @(PackageId) -Source &quot;$(MSBuildThisFileDirectory.TrimEnd('\'))&quot; -OutputDirectory &quot;$(SolutionDir)Runtime\Horde&quot; -Verbosity detailed" />
+    <ItemGroup>
+      <ExtraNugetPackages Include="$(SolutionDir)Runtime\Horde\**\*.nupkg" />
+    </ItemGroup>
+    <Delete Files="@(ExtraNugetPackages)" />
+  </Target>
+
+  <Target Name="CreateRuntimeEnvironment"
+          DependsOnTargets="InstallNugetPackages"
+          Inputs="@(RuntimeFiles)"
+          Outputs="@(RuntimeFiles -> '$(SolutionDir)Runtime\%(Filename)%(Extension)')">
+    <Copy SourceFiles="@(RuntimeFiles)"
+          DestinationFiles="@(RuntimeFiles -> '$(SolutionDir)Runtime\%(Filename)%(Extension)')" />
+  </Target>
+
+  <PropertyGroup>
+    <CleanDependsOn>
+      $(CleanDependsOn);
+      CleanRuntimeEnvironment;
+    </CleanDependsOn>
+    <BuildDependsOn>
+      $(BuildDependsOn);
+      CreateRuntimeEnvironment;
+    </BuildDependsOn>
+    <PostBuildEventDependsOn>
+      $(PostBuildEventDependsOn);
+      CreateRuntimeEnvironment;
+    </PostBuildEventDependsOn>
+  </PropertyGroup>
+</Project>

@@ -6,7 +6,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Version Condition=" '$(BuildNumber)' == '' ">1.0.0.0</Version>
     <Version Condition=" '$(BuildNumber)' != '' ">$(BuildNumber)</Version>
-    <OutputPath Condition=" '$(PackagePath)' == '' ">$(MSBuildThisFileDirectory)\package</OutputPath>
+    <OutputPath Condition=" '$(PackagePath)' == '' ">$(MSBuildThisFileDirectory)package</OutputPath>
     <OutputPath Condition=" '$(PackagePath)' != '' ">$(PackagePath)</OutputPath>
   </PropertyGroup>
   
@@ -24,7 +24,7 @@
     <Message Text="%(NuspecFiles.Identity)" />
 
     <Exec WorkingDirectory="$(MSBuildThisFileDirectory)"
-          Command=".nuget\nuget.exe pack %(NuspecFiles.Identity) -NoDefaultExcludes -NoPackageAnalysis -OutputDirectory &quot;$(OutputPath)&quot; -Version $(Version) -Properties &quot;configuration=$(Configuration)&quot;" />
+          Command=".nuget\nuget.exe pack %(NuspecFiles.Identity) -NoDefaultExcludes -NoPackageAnalysis -OutputDirectory &quot;$(OutputPath)&quot; -Version $(Version) -Properties &quot;configuration=$(Configuration)&quot; -Verbosity detailed" />
   </Target>
 
   <Target Name="Publish">
