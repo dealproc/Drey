@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Drey.Server.Hubs
 {
-    [HubName("Runtime")]
+    [HubName("Runtime"), Authorize]
     public class RuntimeHub : Hub<DomainModel.IRuntimeClient>
     {
         readonly IEventBus _eventBus;

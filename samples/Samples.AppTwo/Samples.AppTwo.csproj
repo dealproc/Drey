@@ -57,7 +57,13 @@
   <Import Project="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.targets" />
   <Target Name="BeforeBuild">
     <RemoveDir Directories="$(OutputPath)" />
+    <RemoveDir Directories="$(SolutionDir)\Runtime\hoarde\$(RootNamespace).$(Version)" />
   </Target>
   <Target Name="AfterBuild">
+    <MakeDir Directories="$(SolutionDir)\Runtime\hoarde\$(RootNamespace).$(Version)" />
+    <ItemGroup>
+      <BinDirectoryFiles Include="$(OutputPath)**\*.*" Exclude="**\Drey.dll;**\Drey.pdb" />
+    </ItemGroup>
+    <Copy SourceFiles="@(BinDirectoryFiles)" DestinationFiles="@(BinDirectoryFiles->'$(SolutionDir)\Runtime\hoarde\$(RootNamespace).$(Version)\%(RecursiveDir)%(Filename)%(Extension)')" />
   </Target>
 </Project>

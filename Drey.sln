@@ -45,6 +45,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Drey.Configuration.Tests", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Drey.DomainModel", "source\Drey.DomainModel\Drey.DomainModel.csproj", "{424B2437-2F2E-414C-A353-AA8BBBC6E052}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Drey.Runtime", "source\Drey.Runtime\Drey.Runtime.csproj", "{A4246177-6CAC-4A54-8704-304AB1357562}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -91,6 +93,10 @@ Global
 		{424B2437-2F2E-414C-A353-AA8BBBC6E052}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{424B2437-2F2E-414C-A353-AA8BBBC6E052}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{424B2437-2F2E-414C-A353-AA8BBBC6E052}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A4246177-6CAC-4A54-8704-304AB1357562}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A4246177-6CAC-4A54-8704-304AB1357562}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A4246177-6CAC-4A54-8704-304AB1357562}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A4246177-6CAC-4A54-8704-304AB1357562}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -100,5 +106,6 @@ Global
 		{0F6D533D-5CA0-4DCD-A83C-D2303AF96698} = {0769F612-7ECF-40CA-9E9C-FD5E3C6B1760}
 		{E7B67ADF-F02E-4FF9-A1D1-DE25844B906B} = {0769F612-7ECF-40CA-9E9C-FD5E3C6B1760}
 		{A34546DE-ED68-4FF5-9FDF-F741CC589368} = {0769F612-7ECF-40CA-9E9C-FD5E3C6B1760}
+		{A4246177-6CAC-4A54-8704-304AB1357562} = {F478FEE7-BD56-4D53-BA03-D8372C84EA09}
 	EndGlobalSection
 EndGlobal

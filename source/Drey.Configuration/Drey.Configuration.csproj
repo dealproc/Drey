@@ -234,14 +234,14 @@
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <Target Name="BeforeBuild">
     <RemoveDir Directories="$(OutputPath)" />
-    <RemoveDir Directories="$(SolutionDir)\ProgramData\hoarde\drey.configuration.$(Version)" />
+    <RemoveDir Directories="$(SolutionDir)\Runtime\hoarde\drey.configuration.$(Version)" />
   </Target>
   <Target Name="AfterBuild" DependsOnTargets="CopySQLiteInteropFiles">
-    <MakeDir Directories="$(SolutionDir)\ProgramData\hoarde\drey.configuration.$(Version)" />
+    <MakeDir Directories="$(SolutionDir)\Runtime\hoarde\drey.configuration.$(Version)" />
     <ItemGroup>
       <BinDirectoryFiles Include="$(OutputPath)**\*.*" Exclude="**\Drey.dll;**\Drey.pdb" />
     </ItemGroup>
-    <Copy SourceFiles="@(BinDirectoryFiles)" DestinationFiles="@(BinDirectoryFiles->'$(SolutionDir)\ProgramData\hoarde\drey.configuration.$(Version)\%(RecursiveDir)%(Filename)%(Extension)')" />
+    <Copy SourceFiles="@(BinDirectoryFiles)" DestinationFiles="@(BinDirectoryFiles->'$(SolutionDir)\Runtime\hoarde\drey.configuration.$(Version)\%(RecursiveDir)%(Filename)%(Extension)')" />
   </Target>
   <Import Project="..\..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets" Condition="Exists('..\..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" />
   <Import Project="..\..\packages\System.Data.SQLite.Core.1.0.98.0\build\net451\System.Data.SQLite.Core.targets" Condition="Exists('..\..\packages\System.Data.SQLite.Core.1.0.98.0\build\net451\System.Data.SQLite.Core.targets')" />
