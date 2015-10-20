@@ -37,19 +37,28 @@
       <Output TaskParameter="PackageName" ItemName="PackageId" />
     </RemovePackageVersion>
     <Message Text="@(PackageId)" />
-    <Exec Command="$(SolutionDir).nuget\nuget.exe install @(PackageId) -Source &quot;$(MSBuildThisFileDirectory.TrimEnd('\'))&quot; -OutputDirectory &quot;$(SolutionDir)Runtime\Horde&quot; -Verbosity detailed" />
+    <Exec Command="$(SolutionDir).nuget\nuget.exe install @(PackageId) -Source &quot;$(MSBuildThisFileDirectory.TrimEnd('\'))&quot; -OutputDirectory &quot;$(SolutionDir)Runtime\Hoarde&quot; -Verbosity detailed" />
     <ItemGroup>
-      <ExtraNugetPackages Include="$(SolutionDir)Runtime\Horde\**\*.nupkg" />
+      <ExtraNugetPackages Include="$(SolutionDir)Runtime\Hoarde\**\*.nupkg" />
     </ItemGroup>
     <Delete Files="@(ExtraNugetPackages)" />
   </Target>
 
+  <Target Name="CreateHoardeApp">
+    <ItemGroup>
+      <AppFiles Include="$(ProjectDir)$(OutputPath)**/*.*" Exclude="$(ProjectDir)$(OutputPath)**/Drey.dll;$(ProjectDir)$(OutputPath)**/Drey.pdb;" />
+    </ItemGroup>
+    <Copy SourceFiles="@(AppFiles)"
+          DestinationFiles="@(AppFiles -> '$(SolutionDir)Runtime\Hoarde\$(MSBuildProjectName).1.0.0.0\%(RecursiveDir)%(Filename)%(Extension)')" />
+  </Target>
+
   <Target Name="CreateRuntimeEnvironment"
-          DependsOnTargets="InstallNugetPackages"
+          DependsOnTargets="InstallNugetPackages;"
           Inputs="@(RuntimeFiles)"
           Outputs="@(RuntimeFiles -> '$(SolutionDir)Runtime\%(Filename)%(Extension)')">
     <Copy SourceFiles="@(RuntimeFiles)"
           DestinationFiles="@(RuntimeFiles -> '$(SolutionDir)Runtime\%(Filename)%(Extension)')" />
+    <CallTarget Targets="CreateHoardeApp" />
   </Target>
 
   <PropertyGroup>
