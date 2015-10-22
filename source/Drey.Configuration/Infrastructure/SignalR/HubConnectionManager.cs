@@ -153,9 +153,9 @@ namespace Drey.Configuration.Infrastructure
             {
                 await _hubConnection.Start();
             }
-            catch (Exception)
+            catch (Exception exc)
             {
-                //NOTE: Unable to connect...again.
+                _log.ErrorException(exc.Message, exc);
             }
         }
 

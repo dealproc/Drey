@@ -47,6 +47,9 @@
     <Compile Include="AppConfigApplicationSettings.cs" />
     <Compile Include="AppConfigConnectionStrings.cs" />
     <Compile Include="App_Packages\LibLog.4.2\LibLog.cs" />
+    <Compile Include="CertificateValidation\AuthorityIssuedServerCertificateValidation.cs" />
+    <Compile Include="CertificateValidation\ICertificateValidation.cs" />
+    <Compile Include="CertificateValidation\SelfSignedServerCertificateValidation.cs" />
     <Compile Include="DreyConstants.cs" />
     <Compile Include="Extensions\AssemblyExtensions.cs" />
     <Compile Include="Extensions\EnumerableExtensions.cs" />

@@ -49,6 +49,18 @@ namespace Drey.Configuration
         {
             base.Startup(configurationManager);
 
+            Drey.CertificateValidation.ICertificateValidation certValidation = null;
+            switch (configurationManager.Mode)
+            {
+                case ExecutionMode.Development:
+                    certValidation = new Drey.CertificateValidation.SelfSignedServerCertificateValidation(configurationManager.ApplicationSettings["server.sslthumbprint"]);
+                    break;
+                default: 
+                    certValidation = new Drey.CertificateValidation.AuthorityIssuedServerCertificateValidation();
+                    break;
+            }
+            certValidation.Initialize();
+
             MigrationManager.Migrate(configurationManager);
 
             _eventBus = new EventBus();

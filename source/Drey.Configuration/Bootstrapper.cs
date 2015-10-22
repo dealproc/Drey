@@ -59,6 +59,19 @@ namespace Drey.Configuration
             container.Register<INutConfiguration>(_configurationManager);
 
             container.Register<Repositories.IGlobalSettingsRepository, GlobalSettingsRepository>();
+            switch (_configurationManager.Mode)
+            {
+                case ExecutionMode.Development:
+                    container.Register<Repositories.IPackageRepository, Repositories.OnDisk.OnDiskPackageRepository>();
+                    break;
+                case ExecutionMode.Production:
+                    container.Register<Repositories.IPackageRepository, Repositories.SQLiteRepositories.PackageRepository>();
+                    break;
+                default:
+                    container.Register<Repositories.IPackageRepository, Repositories.SQLiteRepositories.PackageRepository>();
+                    _log.WarnFormat("Unknown execution mode '{mode}'.  Registered Sqlite Repository.", _configurationManager.Mode);
+                    break;
+            }
 
             container.Register<Services.IGlobalSettingsService, Services.GlobalSettingsService>();
 
