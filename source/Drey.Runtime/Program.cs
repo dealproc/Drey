@@ -59,7 +59,7 @@ namespace Drey.Runtime
 
         public HordeServiceWrapper()
         {
-            _Control = new HordeServiceControl();
+            _Control = new HordeServiceControl(ExecutionMode.Development);
         }
         public bool Start(HostControl hostControl)
         {

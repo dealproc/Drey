@@ -8,5 +8,6 @@
         string WorkingDirectory { get; }
         string HordeBaseDirectory { get; }
         string LogsDirectory { get; }
+        ExecutionMode Mode { get; }
     }
 }

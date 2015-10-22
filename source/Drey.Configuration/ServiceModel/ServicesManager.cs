@@ -1,5 +1,6 @@
 ﻿using Drey.Configuration.Infrastructure;
 using Drey.Logging;
+using Drey.Nut;
 
 using Microsoft.AspNet.SignalR.Client;
 
@@ -18,10 +19,15 @@ namespace Drey.Configuration.ServiceModel
     {
         ILog _log;
 
+        readonly INutConfiguration _configurationManager;
         readonly IEventBus _eventBus;
         readonly IEnumerable<IRemoteInvocationService> _remoteInvokedServices;
         readonly IEnumerable<IReportPeriodically> _pushServices;
         readonly Services.IGlobalSettingsService _globalSettings;
+        readonly Repositories.IPackageRepository _packageRepository;
+        readonly Repositories.IConnectionStringRepository _connectionStringsRepository;
+        readonly Repositories.IPackageSettingRepository _packageSettingsRepository;
+
 
         IHubConnectionManager _hubConnectionManager;
         IHubProxy _runtimeHubProxy;
@@ -32,15 +38,19 @@ namespace Drey.Configuration.ServiceModel
         Func<RegisteredPackagesPollingClient> _packagesPollerFactory;
         Func<PollingClientCollection> _pollingCollectionFactory;
 
+
         bool _disposed = false;
 
 
 
-        public ServicesManager(IEventBus eventBus, IEnumerable<IRemoteInvocationService> remoteInvokedServices, IEnumerable<IReportPeriodically> pushServices,
-            Services.IGlobalSettingsService globalSettings, Func<RegisteredPackagesPollingClient> packagesPollerFactory, Func<PollingClientCollection> pollingCollectionFactory)
+        public ServicesManager(INutConfiguration configurationManager, IEventBus eventBus, IEnumerable<IRemoteInvocationService> remoteInvokedServices,
+            IEnumerable<IReportPeriodically> pushServices, Services.IGlobalSettingsService globalSettings, Func<RegisteredPackagesPollingClient> packagesPollerFactory,
+            Func<PollingClientCollection> pollingCollectionFactory, Repositories.IPackageRepository packageRepository, Repositories.IConnectionStringRepository connectionStringsRepository,
+            Repositories.IPackageSettingRepository packageSettingsRepository)
         {
             _log = LogProvider.For<ServicesManager>();
 
+            _configurationManager = configurationManager;
             _eventBus = eventBus;
             _remoteInvokedServices = remoteInvokedServices;
             _pushServices = pushServices;
@@ -48,6 +58,10 @@ namespace Drey.Configuration.ServiceModel
 
             _packagesPollerFactory = packagesPollerFactory;
             _pollingCollectionFactory = pollingCollectionFactory;
+
+            _packageRepository = packageRepository;
+            _connectionStringsRepository = connectionStringsRepository;
+            _packageSettingsRepository = packageSettingsRepository;
 
             _eventBus.Subscribe(this);
         }
@@ -139,11 +153,24 @@ namespace Drey.Configuration.ServiceModel
                 _registeredPackagesPoller = null;
             }
 
-            if (_globalSettings.HasValidSettings())
+            if (_globalSettings.HasValidSettings() && _configurationManager.Mode == ExecutionMode.Production)
             {
+                // We need to have valid settings AND we need to be in production mode to start the polling agent(s)
                 _registeredPackagesPoller = _packagesPollerFactory.Invoke();
                 _pollingCollection = _pollingCollectionFactory.Invoke();
                 _pollingCollection.Add(_registeredPackagesPoller);
+            }
+            else
+            {
+                // Just discover the packages from the hdd's hoarde directory and start 'em up.
+                _packageRepository.GetPackages().Apply(p =>
+                    _eventBus.Publish(new ShellRequestArgs
+                    {
+                        ActionToTake = ShellAction.Startup,
+                        PackageId = p.Id,
+                        Version = string.Empty,
+                        ConfigurationManager = new Drey.Configuration.Infrastructure.ConfigurationManagement.DbConfigurationSettings(_configurationManager, _packageSettingsRepository, _connectionStringsRepository, p.Id)
+                    }));
             }
         }
 

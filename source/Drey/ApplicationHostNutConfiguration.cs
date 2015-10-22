@@ -47,6 +47,8 @@ namespace Drey
         }
         public string LogsDirectory { get { return Path.Combine(WorkingDirectory, "Logs").NormalizePathSeparator(); } }
 
+        public ExecutionMode Mode { get; set; }
+
         [SecurityPermission(SecurityAction.Demand, Flags = SecurityPermissionFlag.Infrastructure)]
         public override object InitializeLifetimeService()
         {

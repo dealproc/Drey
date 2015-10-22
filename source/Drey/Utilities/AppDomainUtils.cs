@@ -18,6 +18,7 @@ namespace Drey.Utilities
 
             var setup = new AppDomainSetup();
             setup.ApplicationBase = AppDomain.CurrentDomain.SetupInformation.ApplicationBase;
+            setup.ConfigurationFile = AppDomain.CurrentDomain.SetupInformation.ConfigurationFile;
             var adEvidence = AppDomain.CurrentDomain.Evidence;
 
             var domain = AppDomain.CreateDomain(domainName, adEvidence, setup);

@@ -17,13 +17,13 @@ namespace Drey.Nut
         /// <param name="assemblyPath">The assembly path.</param>
         /// <param name="config">The configuration.</param>
         /// <returns></returns>
-        public Tuple<AppDomain, IShell> Create(string assemblyPath, INutConfiguration config)
+        public Tuple<AppDomain, IShell> Create(string assemblyPath, INutConfiguration config, EventHandler<ShellRequestArgs> shellRequestHandler)
         {
             if (string.IsNullOrWhiteSpace(assemblyPath)) { return null; }
 
             _Log.TraceFormat("Loading app from '{0}'", assemblyPath);
 
-            var pathToAssembly = Utilities.PathUtilities.ResolvePath(assemblyPath);
+            var pathToAssembly = Utilities.PathUtilities.MapPath(assemblyPath);
             var discoverStartupType = typeof(DiscoverStartupDllProxy);
             var startupProxyType = typeof(StartupProxy);
             var discoveryDomain = Utilities.AppDomainUtils.CreateDomain(Guid.NewGuid().ToString());
@@ -66,6 +66,7 @@ namespace Drey.Nut
             domain.AssemblyResolve += domainProxy.ResolveAssemblyInDomain;
             var appShell = (IShell)domainProxy.Build(entryDllAndType.Item1, entryDllAndType.Item2);
             appShell.ConfigureLogging = HordeServiceControl.ConfigureLogging;
+            appShell.OnShellRequest += shellRequestHandler;
 
             _Log.Info("Registering default app settings.");
 

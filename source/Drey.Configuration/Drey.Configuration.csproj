@@ -108,8 +108,6 @@
     <Compile Include="Bootstrapper.cs" />
     <Compile Include="DataModel\Package.cs" />
     <Compile Include="DataModel\Release.cs" />
-    <Compile Include="Extensions\AssemblyExtensions.cs" />
-    <Compile Include="Extensions\EnumerableExtensions.cs" />
     <Compile Include="Infrastructure\Events\RecycleApp.cs" />
     <Compile Include="Infrastructure\Events\ReEstablishMonitoring.cs" />
     <Compile Include="Infrastructure\IHandle.cs" />
@@ -137,6 +135,7 @@
     <Compile Include="Repositories\IGlobalSettingsRepository.cs" />
     <Compile Include="Repositories\IPackageRepository.cs" />
     <Compile Include="Repositories\IPackageSettingRepository.cs" />
+    <Compile Include="Repositories\OnDisk\OnDiskPackageRepository.cs" />
     <Compile Include="Repositories\SQLiteRepositories\ConnectionStringRepository.cs" />
     <Compile Include="Repositories\SQLiteRepositories\GlobalSettingsRepository.cs" />
     <Compile Include="Repositories\SQLiteRepositories\PackageRepository.cs" />

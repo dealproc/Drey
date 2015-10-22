@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Drey.Extensions;
+
 using System.IO;
+using System.Reflection;
 
 namespace Drey.Utilities
 {
@@ -12,16 +14,15 @@ namespace Drey.Utilities
         /// <param name="relativePath">The relative path.</param>
         /// <param name="includePathSeparator">if set to <c>true</c> [include path separator].</param>
         /// <returns></returns>
-        public static string ResolvePath(string relativePath, bool includePathSeparator = true)
+        public static string MapPath(string relativePath, bool includePathSeparator = true)
         {
             var respondWith = relativePath;
 
-            if (respondWith.StartsWith("~/"))
+            if (respondWith.StartsWith(DreyConstants.RelativeUrlMarker))
             {
 
-                //var dir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase.Remove(0, 8)) + Path.DirectorySeparatorChar.ToString();
-                var dir = Path.GetDirectoryName(Environment.CurrentDirectory) + Path.DirectorySeparatorChar.ToString();
-                respondWith = respondWith.Replace("~/", dir);
+                var dir = Assembly.GetExecutingAssembly().GetDirectoryLocation();
+                respondWith = respondWith.Replace(DreyConstants.RelativeUrlMarker, dir);
             }
 
             if (!respondWith.EndsWith(Path.DirectorySeparatorChar.ToString()) && includePathSeparator)

@@ -14,6 +14,8 @@ namespace Drey.Configuration.Repositories.SQLiteRepositories
 
         INutConfiguration _configurationManager;
 
+        Func<INutConfiguration, string> ConnectionStringBuilder = (config) => string.Format(CONNECTION_STRING_FORMAT, PathUtilities.MapPath(Path.Combine(config.WorkingDirectory, CONFIG_FILE_NAME), false));
+
         public SqlRepository(INutConfiguration configurationManager)
         {
             _configurationManager = configurationManager;
@@ -27,7 +29,7 @@ namespace Drey.Configuration.Repositories.SQLiteRepositories
         {
             using (var cn = System.Data.SQLite.SQLiteFactory.Instance.CreateConnection())
             {
-                cn.ConnectionString = string.Format(CONNECTION_STRING_FORMAT, Path.Combine(_configurationManager.WorkingDirectory, CONFIG_FILE_NAME).NormalizePathSeparator());
+                cn.ConnectionString = ConnectionStringBuilder.Invoke(_configurationManager);
                 cn.Open();
 
                 work(cn);
@@ -44,7 +46,7 @@ namespace Drey.Configuration.Repositories.SQLiteRepositories
         {
             using (var cn = System.Data.SQLite.SQLiteFactory.Instance.CreateConnection())
             {
-                cn.ConnectionString = string.Format(CONNECTION_STRING_FORMAT, Path.Combine(_configurationManager.WorkingDirectory, CONFIG_FILE_NAME).NormalizePathSeparator());
+                cn.ConnectionString = ConnectionStringBuilder.Invoke(_configurationManager);
                 cn.Open();
 
                 return work(cn);

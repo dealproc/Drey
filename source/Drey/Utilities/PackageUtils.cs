@@ -14,9 +14,9 @@ namespace Drey.Utilities
         /// <returns></returns>
         public static string DiscoverPackage(string packageId, string hordeDirectory, string specificVersion = "Latest")
         {
-            var configPath = Utilities.PathUtilities.ResolvePath(hordeDirectory);
+            var configPath = Utilities.PathUtilities.MapPath(hordeDirectory);
 
-            var versionFolders = Directory.GetDirectories(hordeDirectory, packageId + "*").Select(dir => (new DirectoryInfo(dir)).Name);
+            var versionFolders = Directory.GetDirectories(configPath, packageId + "*").Select(dir => (new DirectoryInfo(dir)).Name);
             Version latestVersion;
 
             if (specificVersion.Equals("Latest"))
@@ -31,7 +31,7 @@ namespace Drey.Utilities
                 latestVersion = new Version(specificVersion);
             }
 
-            return Path.Combine(hordeDirectory, string.Format("{0}.{1}", packageId, latestVersion.ToString()));
+            return Path.Combine(configPath, string.Format("{0}.{1}", packageId, latestVersion.ToString()));
         }
     }
 }

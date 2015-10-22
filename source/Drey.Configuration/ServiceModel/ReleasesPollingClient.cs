@@ -34,7 +34,7 @@ namespace Drey.Configuration.ServiceModel
         bool _disposed = false;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ReleasesPollingClient"/> class.
+        /// Initializes a new instance of the <see cref="ReleasesPollingClient" /> class.
         /// </summary>
         /// <param name="configurationManager">The configuration manager.</param>
         /// <param name="globalSettingsService">The global settings service.</param>
@@ -187,7 +187,7 @@ namespace Drey.Configuration.ServiceModel
 
         private Infrastructure.ConfigurationManagement.DbConfigurationSettings CreateConfigurationManager()
         {
-            return new Drey.Configuration.Infrastructure.ConfigurationManagement.DbConfigurationSettings(_configurationManager.ApplicationSettings, _packageSettingsRepository, _connectionStringsRepository, _packageId);
+            return new Drey.Configuration.Infrastructure.ConfigurationManagement.DbConfigurationSettings(_configurationManager, _packageSettingsRepository, _connectionStringsRepository, _packageId);
         }
 
         public void Dispose()

@@ -45,7 +45,7 @@ namespace Drey.Nut {
         /// </summary>
         /// <param name="configurationManager">The configuration manager.</param>
         public virtual void Startup(INutConfiguration configurationManager) {
-            Log.TraceFormat("{packageName} is starting.", this.Id);
+            Log.InfoFormat("{packageName} is starting in {mode}.", this.Id, configurationManager.Mode);
             ConfigurationManager = configurationManager;
             ConfigureLogging(configurationManager);
         }

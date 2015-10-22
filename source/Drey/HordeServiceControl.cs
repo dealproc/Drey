@@ -23,13 +23,15 @@ namespace Drey
         readonly ShellFactory _appFactory;
         readonly INutConfiguration _nutConfiguration;
         readonly List<Tuple<AppDomain, IShell>> _appInstances;
+        readonly ExecutionMode _executionMode;
 
-        public HordeServiceControl()
+        public HordeServiceControl(ExecutionMode mode = ExecutionMode.Production)
         {
             _log = LogProvider.For<HordeServiceControl>();
             _appFactory = new ShellFactory();
-            _nutConfiguration = new ApplicationHostNutConfiguration();
+            _nutConfiguration = new ApplicationHostNutConfiguration { Mode = mode };
             _appInstances = new List<Tuple<AppDomain, IShell>>();
+            _executionMode = mode;
         }
 
         /// <summary>
@@ -109,7 +111,7 @@ namespace Drey
                 :
                 Utilities.PackageUtils.DiscoverPackage(id, _nutConfiguration.HordeBaseDirectory, version);
 
-            var shell = _appFactory.Create(packageDir, configurationManager);
+            var shell = _appFactory.Create(packageDir, configurationManager, ShellRequestHandler);
             if (shell == null)
             {
                 _log.Fatal("Did not create the configuration console.  app exiting.");
@@ -117,7 +119,6 @@ namespace Drey
             }
 
             _log.Info("Configuration shell created.  Starting to listen for events.");
-            shell.Item2.OnShellRequest += ShellRequestHandler;
             _appInstances.Add(shell);
             return true;
         }

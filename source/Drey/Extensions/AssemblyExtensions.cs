@@ -1,13 +1,14 @@
-﻿using System.Reflection;
+﻿using System.IO;
+using System.Reflection;
 
-namespace Drey.Configuration.Extensions
+namespace Drey.Extensions
 {
     public static class AssemblyExtensions
     {
         public static string GetDirectoryLocation(this Assembly asm)
         {
             var fullDirectoryPath = asm.CodeBase;
-            return fullDirectoryPath.Remove(0, 8);
+            return Path.GetDirectoryName(fullDirectoryPath.Remove(0, 8)) + Path.DirectorySeparatorChar.ToString();
         }
     }
 }

@@ -30,7 +30,7 @@ namespace Drey.Configuration.Repositories.SQLiteRepositories
         /// <returns></returns>
         public IEnumerable<DataModel.Package> GetPackages()
         {
-            return Execute(cn => cn.Query<DataModel.Package>("SELECT Id, Min(Title) as Title FROM Releases GROUP BY Id"));
+            return Execute(cn => cn.Query<DataModel.Package>("SELECT Id, Min(Title) as Title, true as AutoUpdates FROM Releases GROUP BY Id"));
         }
 
         /// <summary>

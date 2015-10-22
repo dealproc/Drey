@@ -10,7 +10,7 @@ namespace Drey.Configuration.Infrastructure.ConfigurationManagement
     public class DbConfigurationSettings : MarshalByRefObject, Drey.Nut.INutConfiguration
     {
         readonly string _packageId;
-        readonly IApplicationSettings _runtimeApplicationSettings;
+        readonly INutConfiguration _hostApplicationConfiguration;
         readonly IGlobalSettingsRepository _globalSettingsRepository;
         readonly IApplicationSettings _applicationSettingsService;
         readonly IConnectionStrings _connectionStringsService;
@@ -22,12 +22,12 @@ namespace Drey.Configuration.Infrastructure.ConfigurationManagement
         /// <param name="packageSettingRepository">The package setting repository.</param>
         /// <param name="connectionStringsRepository">The connection strings repository.</param>
         /// <param name="packageId">The package identifier.</param>
-        public DbConfigurationSettings(IApplicationSettings runtimeApplicationSettings,
+        public DbConfigurationSettings(INutConfiguration hostApplicationConfiguration,
             IPackageSettingRepository packageSettingRepository,
             IConnectionStringRepository connectionStringsRepository,
             string packageId)
         {
-            _runtimeApplicationSettings = runtimeApplicationSettings;
+            _hostApplicationConfiguration = hostApplicationConfiguration;
             _packageId = packageId;
 
             _globalSettingsRepository = new Repositories.SQLiteRepositories.GlobalSettingsRepository(this);
@@ -61,17 +61,25 @@ namespace Drey.Configuration.Infrastructure.ConfigurationManagement
 
         public string WorkingDirectory
         {
-            get { return _runtimeApplicationSettings["WorkingDirectory"].NormalizePathSeparator(); }
+            get
+            {
+                var settings = _hostApplicationConfiguration.ApplicationSettings;
+                var dir = settings["WorkingDirectory"].NormalizePathSeparator();
+                return dir;
+            }
         }
 
         /// <summary>
         /// Gets the horde base directory.
         /// </summary>
-        public string HordeBaseDirectory
-        {
-            get { return Path.Combine(WorkingDirectory, "Hoarde").NormalizePathSeparator(); }
-        }
+        public string HordeBaseDirectory { get { return Path.Combine(WorkingDirectory, "Hoarde").NormalizePathSeparator(); } }
 
         public string LogsDirectory { get { return Path.Combine(WorkingDirectory, "Logs").NormalizePathSeparator(); } }
+
+
+        public ExecutionMode Mode
+        {
+            get { return _hostApplicationConfiguration.Mode; }
+        }
     }
 }
