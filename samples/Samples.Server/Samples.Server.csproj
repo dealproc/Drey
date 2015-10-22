@@ -124,6 +124,7 @@
     <Compile Include="ClientCertificateAuthentication\ClientCertificateAuthenticationHandler.cs" />
     <Compile Include="ClientCertificateAuthentication\ClientCertificateAuthenticationMiddleware.cs" />
     <Compile Include="ClientCertificateAuthentication\ClientCertificateAuthenticationOptions.cs" />
+    <Compile Include="Infrastructure\SampleClientRegistry.cs" />
     <Compile Include="Modules\HomeModule.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

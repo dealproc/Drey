@@ -101,6 +101,7 @@ namespace Samples.Server
             cb.RegisterType<Drey.Server.Services.PackageService>().AsImplementedInterfaces();
             cb.RegisterType<Services.ClientHealthService>().AsImplementedInterfaces();
             cb.RegisterType<Services.GroupMembershipService>().AsImplementedInterfaces();
+            cb.RegisterType<Infrastructure.SampleClientRegistry>().AsImplementedInterfaces().SingleInstance();
 
             var serverASM = Assembly.LoadFrom(Path.Combine(Environment.CurrentDirectory, "Drey.Server.dll"));
 

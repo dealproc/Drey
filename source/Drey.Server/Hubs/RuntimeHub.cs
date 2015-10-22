@@ -25,11 +25,11 @@ namespace Drey.Server.Hubs
 
         public override Task OnConnected()
         {
-            return _groupMembershipService.Join(ConnectedAs, Context.ConnectionId, base.OnConnected());
+            return _groupMembershipService.Join(this, ConnectedAs, Context.ConnectionId, base.OnConnected());
         }
         public override Task OnDisconnected(bool stopCalled)
         {
-            return _groupMembershipService.Leave(ConnectedAs, Context.ConnectionId, base.OnDisconnected(stopCalled));
+            return _groupMembershipService.Leave(this, ConnectedAs, Context.ConnectionId, base.OnDisconnected(stopCalled));
         }
 
         public void EndListLogFiles(DomainModel.Response<IEnumerable<string>> completed)

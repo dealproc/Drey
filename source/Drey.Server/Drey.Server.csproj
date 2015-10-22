@@ -82,6 +82,7 @@
     <Compile Include="Extensions\TaskExtensions.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Hubs\RuntimeHub.cs" />
+    <Compile Include="Infrastructure\IClientRegistry.cs" />
     <Compile Include="Models\FileDownload.cs" />
     <Compile Include="Models\Package.cs" />
     <Compile Include="Models\Release.cs" />

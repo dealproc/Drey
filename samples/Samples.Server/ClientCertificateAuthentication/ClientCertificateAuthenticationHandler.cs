@@ -39,7 +39,7 @@ namespace Samples.Server
         {
             return Task.FromResult(new Claim[] {
                 new Claim(ClaimTypes.Thumbprint, cert.Thumbprint),
-                new Claim(ClaimTypes.Name, cert.SubjectName.Name),
+                new Claim(ClaimTypes.Name, cert.Thumbprint),
                 new Claim(ClaimTypes.NameIdentifier, cert.Thumbprint),
                 new Claim(Drey.Server.ServerConstants.ClaimTypes.Scope, Drey.Server.ServerConstants.Scopes.Admin)
             }.AsEnumerable());

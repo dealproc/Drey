@@ -197,6 +197,17 @@ namespace Drey.Configuration.ServiceModel
                 _registeredPackagesPoller = null;
             }
 
+            if (_runtimeHubProxy != null)
+            {
+                _runtimeHubProxy = null;
+            }
+
+            if (_hubConnectionManager != null)
+            {
+                _hubConnectionManager.Dispose();
+                _hubConnectionManager = null;
+            }
+
             if (!disposing || _disposed) { return; }
         }
     }

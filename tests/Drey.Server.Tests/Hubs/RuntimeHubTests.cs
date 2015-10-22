@@ -33,28 +33,28 @@ namespace Drey.Server.Tests.Hubs
         [Fact]
         public async Task GroupMembershipService_Joined_Called_With_OnConnected_Async()
         {
-            A.CallTo(() => _groupMembershipService.Join(A<ClaimsPrincipal>.Ignored, A<string>.Ignored, A<Task>.Ignored))
+            A.CallTo(() => _groupMembershipService.Join(A<IHub>.Ignored, A<ClaimsPrincipal>.Ignored, A<string>.Ignored, A<Task>.Ignored))
                 .Returns(Task.FromResult<object>(null));
             var sut = new Server.Hubs.RuntimeHub(_eventBus, _clientHealthService, _groupMembershipService);
             sut.Context = new HubCallerContext(_request, Guid.NewGuid().ToString().ToLower());
 
             await sut.OnConnected();
 
-            A.CallTo(() => _groupMembershipService.Join(A<ClaimsPrincipal>.Ignored, A<string>.Ignored, A<Task>.Ignored))
+            A.CallTo(() => _groupMembershipService.Join(A<IHub>.Ignored, A<ClaimsPrincipal>.Ignored, A<string>.Ignored, A<Task>.Ignored))
                 .MustHaveHappened(Repeated.Exactly.Once);
         }
 
         [Fact]
         public async Task GroupMembershipService_Leave_Called_With_OnDisconnected_Async()
         {
-            A.CallTo(() => _groupMembershipService.Join(A<ClaimsPrincipal>.Ignored, A<string>.Ignored, A<Task>.Ignored))
+            A.CallTo(() => _groupMembershipService.Join(A<IHub>.Ignored, A<ClaimsPrincipal>.Ignored, A<string>.Ignored, A<Task>.Ignored))
                 .Returns(Task.FromResult<object>(null));
             var sut = new Server.Hubs.RuntimeHub(_eventBus, _clientHealthService, _groupMembershipService);
             sut.Context = new HubCallerContext(_request, Guid.NewGuid().ToString().ToLower());
 
             await sut.OnDisconnected(true);
 
-            A.CallTo(() => _groupMembershipService.Leave(A<ClaimsPrincipal>.Ignored, A<string>.Ignored, A<Task>.Ignored))
+            A.CallTo(() => _groupMembershipService.Leave(A<IHub>.Ignored, A<ClaimsPrincipal>.Ignored, A<string>.Ignored, A<Task>.Ignored))
                 .MustHaveHappened(Repeated.Exactly.Once);
         }
 
