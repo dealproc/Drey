@@ -32,8 +32,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.Owin, Version=2.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Microsoft.Owin.2.0.1\lib\net45\Microsoft.Owin.dll</HintPath>
+    <Reference Include="Microsoft.Owin, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.Owin.3.0.1\lib\net45\Microsoft.Owin.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Nancy, Version=1.3.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -65,16 +65,13 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="Drey.Server.NancyFx.nuspec" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Drey.DomainModel\Drey.DomainModel.csproj">
       <Project>{424b2437-2f2e-414c-a353-aa8bbbc6e052}</Project>
       <Name>Drey.DomainModel</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Drey.Runtime\Drey.Runtime.csproj">
-      <Project>{a4246177-6cac-4a54-8704-304ab1357562}</Project>
-      <Name>Drey.Runtime</Name>
     </ProjectReference>
     <ProjectReference Include="..\Drey.Server.Core\Drey.Server.Core.csproj">
       <Project>{beb7292d-69ec-49f2-878c-c04ff16a72a2}</Project>

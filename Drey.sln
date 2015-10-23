@@ -45,7 +45,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Drey.Server.Hubs", "source\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Drey.Server.NancyFx", "source\Drey.Server.NancyFx\Drey.Server.NancyFx.csproj", "{778EB32E-0BB0-494E-85FC-423B87A6B66F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Drey.Server.WebApi", "Drey.Server.WebApi\Drey.Server.WebApi.csproj", "{B1D8FCB8-B123-4B8F-923E-2E407C6E3EFF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Drey.Server.WebApi", "source\Drey.Server.WebApi\Drey.Server.WebApi.csproj", "{B1D8FCB8-B123-4B8F-923E-2E407C6E3EFF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,18 +1,25 @@
 <?xml version="1.0"?>
 <package >
   <metadata>
-    <id>$id$</id>
+    <id>Drey.Server.NancyFx</id>
     <version>$version$</version>
-    <title>$title$</title>
-    <authors>$author$</authors>
-    <owners>$author$</owners>
-    <licenseUrl>http://LICENSE_URL_HERE_OR_DELETE_THIS_LINE</licenseUrl>
-    <projectUrl>http://PROJECT_URL_HERE_OR_DELETE_THIS_LINE</projectUrl>
-    <iconUrl>http://ICON_URL_HERE_OR_DELETE_THIS_LINE</iconUrl>
+    <title>Drey Server - NancyFx Modules</title>
+    <authors>Richard A. Bennett</authors>
+    <owners>Richard A. Bennett</owners>
+    <licenseUrl>https://github.com/dealproc/Drey/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/dealproc/Drey/</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>$description$</description>
-    <releaseNotes>Summary of changes made in this release of the package.</releaseNotes>
-    <copyright>Copyright 2015</copyright>
-    <tags>Tag1 Tag2</tags>
+    <description>NancyFx modules to support communication with the client console.</description>
+    <dependencies>
+      <dependency id="Drey.Server.Core" version="$version$" />
+
+      <dependency id="Microsoft.Owin" version="3.0.1" />
+      <dependency id="Nancy" version="1.3.0" />
+      <dependency id="Nancy.MSOwinSecurity" version="1.0.1" />
+      <dependency id="Owin" version="1.0" />
+    </dependencies>
   </metadata>
+  <files>
+    <file src="bin\$configuration$\Drey.Server.NancyFx.dll" target="lib\net451" />
+  </files>
 </package>

@@ -1,18 +1,23 @@
 <?xml version="1.0"?>
 <package >
   <metadata>
-    <id>$id$</id>
+    <id>Drey.Server.WebApi</id>
     <version>$version$</version>
-    <title>$title$</title>
-    <authors>$author$</authors>
-    <owners>$author$</owners>
-    <licenseUrl>http://LICENSE_URL_HERE_OR_DELETE_THIS_LINE</licenseUrl>
-    <projectUrl>http://PROJECT_URL_HERE_OR_DELETE_THIS_LINE</projectUrl>
-    <iconUrl>http://ICON_URL_HERE_OR_DELETE_THIS_LINE</iconUrl>
+    <title>Drey Server - Web Api Controllers</title>
+    <authors>Richard A. Bennett</authors>
+    <owners>Richard A. Bennett</owners>
+    <licenseUrl>https://github.com/dealproc/Drey/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/dealproc/Drey/</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>$description$</description>
-    <releaseNotes>Summary of changes made in this release of the package.</releaseNotes>
-    <copyright>Copyright 2015</copyright>
-    <tags>Tag1 Tag2</tags>
+    <description>Web Api controllers to support communication with the client console.</description>
+    <dependencies>
+      <dependency id="Drey.Server.Core" version="$version$" />
+      <dependency id="Microsoft.AspNet.WebApi.Client" version="5.2.3" />
+      <dependency id="Microsoft.AspNet.WebApi.Core" version="5.2.3" />
+      <dependency id="Newtonsoft.Json" version="7.0.1" />
+    </dependencies>
   </metadata>
+  <files>
+    <file src="bin\$configuration$\Drey.Server.WebApi.dll" target="lib\net451" />
+  </files>
 </package>

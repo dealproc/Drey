@@ -67,6 +67,7 @@
     <Compile Include="Utilities.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Drey.Server.Core.nuspec" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

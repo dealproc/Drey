@@ -24,7 +24,7 @@
     <Message Text="%(NuspecFiles.Identity)" />
 
     <Exec WorkingDirectory="$(MSBuildThisFileDirectory)"
-          Command=".nuget\nuget.exe pack %(NuspecFiles.Identity) -NoDefaultExcludes -NoPackageAnalysis -OutputDirectory &quot;$(OutputPath)&quot; -Version $(Version) -Properties &quot;configuration=$(Configuration)&quot; -Verbosity detailed" />
+          Command=".nuget\nuget.exe pack %(NuspecFiles.Identity) -IncludeReferencedProjects -NoDefaultExcludes -NoPackageAnalysis -OutputDirectory &quot;$(OutputPath)&quot; -Version $(Version) -Properties &quot;configuration=$(Configuration)&quot; -Verbosity detailed" />
   </Target>
 
   <Target Name="Publish">
