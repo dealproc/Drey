@@ -6,9 +6,9 @@ namespace Samples.Server.Modules
 {
     public class HomeModule : NancyModule
     {
-        readonly Drey.Server.Infrastructure.IClientRegistry _clientRegistry;
+        readonly Drey.Server.Infrastructure.IClientRegistry<string> _clientRegistry;
 
-        public HomeModule(Drey.Server.Infrastructure.IClientRegistry clientRegistry) : base("/")
+        public HomeModule(Drey.Server.Infrastructure.IClientRegistry<string> clientRegistry) : base("/")
         {
             _clientRegistry = clientRegistry;
 

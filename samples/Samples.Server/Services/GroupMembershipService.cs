@@ -12,9 +12,9 @@ namespace Samples.Server.Services
     {
         static readonly ILog _log = LogProvider.For<GroupMembershipService>();
 
-        readonly IClientRegistry _clientRegistry;
+        readonly IClientRegistry<string> _clientRegistry;
 
-        public GroupMembershipService(IClientRegistry clientRegistry)
+        public GroupMembershipService(IClientRegistry<string> clientRegistry)
         {
             _clientRegistry = clientRegistry;
         }

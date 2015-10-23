@@ -2,5 +2,5 @@
 
 namespace Drey.Server.Infrastructure
 {
-    public interface IClientRegistry : IDictionary<string, string> { }
+    public interface IClientRegistry<TValue> : IDictionary<string, TValue> { }
 }
