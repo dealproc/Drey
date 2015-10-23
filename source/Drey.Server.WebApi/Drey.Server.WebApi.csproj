@@ -61,15 +61,15 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\source\Drey.DomainModel\Drey.DomainModel.csproj">
+    <ProjectReference Include="..\Drey.DomainModel\Drey.DomainModel.csproj">
       <Project>{424b2437-2f2e-414c-a353-aa8bbbc6e052}</Project>
       <Name>Drey.DomainModel</Name>
     </ProjectReference>
-    <ProjectReference Include="..\source\Drey.Server.Core\Drey.Server.Core.csproj">
+    <ProjectReference Include="..\Drey.Server.Core\Drey.Server.Core.csproj">
       <Project>{beb7292d-69ec-49f2-878c-c04ff16a72a2}</Project>
       <Name>Drey.Server.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\source\Drey.Server.Hubs\Drey.Server.Hubs.csproj">
+    <ProjectReference Include="..\Drey.Server.Hubs\Drey.Server.Hubs.csproj">
       <Project>{99bcb85b-a0fd-496e-b362-3aa60d296fb9}</Project>
       <Name>Drey.Server.Hubs</Name>
     </ProjectReference>
