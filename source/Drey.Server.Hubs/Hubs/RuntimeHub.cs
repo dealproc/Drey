@@ -8,17 +8,17 @@ using System.Threading.Tasks;
 namespace Drey.Server.Hubs
 {
     [HubName("Runtime"), Authorize]
-    public class RuntimeHub : Hub<DomainModel.IRuntimeClient>
+    public class RuntimeHub : Hub<IRuntimeClient>
     {
         readonly IEventBus _eventBus;
         readonly Services.IClientHealthService _clientHealthService;
         readonly Services.IGroupMembershipService _groupMembershipService;
-        readonly IHubContext<DomainModel.IRuntimeClient> _runtimeHubContext;
+        readonly IHubContext<IRuntimeClient> _runtimeHubContext;
 
         ClaimsPrincipal ConnectedAs { get { return (ClaimsPrincipal)Context.User; } }
 
         public RuntimeHub(IEventBus eventBus, Services.IClientHealthService clientHealthService, Services.IGroupMembershipService groupMembershipService,
-            IHubContext<DomainModel.IRuntimeClient> runtimeHubContext)
+            IHubContext<IRuntimeClient> runtimeHubContext)
         {
             _eventBus = eventBus;
             _clientHealthService = clientHealthService;

@@ -141,9 +141,17 @@
       <Project>{424b2437-2f2e-414c-a353-aa8bbbc6e052}</Project>
       <Name>Drey.DomainModel</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\source\Drey.Server\Drey.Server.csproj">
-      <Project>{2e3619db-2b50-46e7-a8b2-22b89fc6e1bd}</Project>
-      <Name>Drey.Server</Name>
+    <ProjectReference Include="..\..\source\Drey.Server.Core\Drey.Server.Core.csproj">
+      <Project>{beb7292d-69ec-49f2-878c-c04ff16a72a2}</Project>
+      <Name>Drey.Server.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\source\Drey.Server.Hubs\Drey.Server.Hubs.csproj">
+      <Project>{99bcb85b-a0fd-496e-b362-3aa60d296fb9}</Project>
+      <Name>Drey.Server.Hubs</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\source\Drey.Server.NancyFx\Drey.Server.NancyFx.csproj">
+      <Project>{778eb32e-0bb0-494e-85fc-423b87a6b66f}</Project>
+      <Name>Drey.Server.NancyFx</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

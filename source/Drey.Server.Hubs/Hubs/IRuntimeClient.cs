@@ -1,4 +1,5 @@
-﻿namespace Drey.DomainModel
+﻿using Drey.DomainModel;
+namespace Drey.Server.Hubs
 {
     public interface IRuntimeClient
     {

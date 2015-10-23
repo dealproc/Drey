@@ -17,16 +17,16 @@ namespace Drey.Server.Tests.Directors
     public class OpenLogFileDirectorTests
     {
         IEventBus _eventBus;
-        DomainModel.IRuntimeClient _runtimeClient;
-        IHubContext<DomainModel.IRuntimeClient> _runtimeClientContext;
-        IHubConnectionContext<DomainModel.IRuntimeClient> _runtimeClientConnectionContext;
+        Server.Hubs.IRuntimeClient _runtimeClient;
+        IHubContext<Server.Hubs.IRuntimeClient> _runtimeClientContext;
+        IHubConnectionContext<Server.Hubs.IRuntimeClient> _runtimeClientConnectionContext;
 
         public OpenLogFileDirectorTests()
         {
             _eventBus = A.Fake<IEventBus>();
-            _runtimeClient = A.Fake<DomainModel.IRuntimeClient>();
-            _runtimeClientConnectionContext = A.Fake<IHubConnectionContext<DomainModel.IRuntimeClient>>();
-            _runtimeClientContext = A.Fake<IHubContext<DomainModel.IRuntimeClient>>();
+            _runtimeClient = A.Fake<Server.Hubs.IRuntimeClient>();
+            _runtimeClientConnectionContext = A.Fake<IHubConnectionContext<Server.Hubs.IRuntimeClient>>();
+            _runtimeClientContext = A.Fake<IHubContext<Server.Hubs.IRuntimeClient>>();
 
             A.CallTo(() => _runtimeClientContext.Clients).Returns(_runtimeClientConnectionContext);
             A.CallTo(() => _runtimeClientConnectionContext.Group(A<string>.Ignored, A<string[]>.Ignored)).Returns(_runtimeClient);

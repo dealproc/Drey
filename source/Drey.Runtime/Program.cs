@@ -34,7 +34,7 @@ namespace Drey.Runtime
                 LogManager.ReconfigExistingLoggers();
             };
             HordeServiceControl.ConfigureLogging(new ApplicationHostNutConfiguration());
-
+            
             return (int)HostFactory.Run(f =>
             {
                 f.SetDisplayName("Drey Runtime Environment");

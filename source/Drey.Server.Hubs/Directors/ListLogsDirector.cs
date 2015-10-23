@@ -6,7 +6,7 @@ namespace Drey.Server.Directors
 {
     public class ListLogsDirector : Director<DomainModel.Request<DomainModel.Empty>, DomainModel.Response<IEnumerable<string>>>, IListLogsDirector
     {
-        public ListLogsDirector(IEventBus eventBus, IHubContext<DomainModel.IRuntimeClient> runtimeClientContext, int timeoutInSeconds = 30)
+        public ListLogsDirector(IEventBus eventBus, IHubContext<Hubs.IRuntimeClient> runtimeClientContext, int timeoutInSeconds = 30)
             : base(eventBus, runtimeClientContext, timeoutInSeconds) { }
 
         public override void Initiate(string clientId, Drey.DomainModel.Request<Drey.DomainModel.Empty> message)

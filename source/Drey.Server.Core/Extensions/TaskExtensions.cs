@@ -2,7 +2,7 @@
 
 namespace Drey.Server.Extensions
 {
-    static class TaskExtensions
+    public static class TaskExtensions
     {
         public static Task<dynamic> AsDynamicTask<T>(this Task<T> task)
         {

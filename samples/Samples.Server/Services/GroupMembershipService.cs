@@ -19,7 +19,7 @@ namespace Samples.Server.Services
             _clientRegistry = clientRegistry;
         }
 
-        public Task Join(IHubContext<Drey.DomainModel.IRuntimeClient> hubContext, ClaimsPrincipal principal, string connectionId, Task onConnected)
+        public Task Join(IHubContext<Drey.Server.Hubs.IRuntimeClient> hubContext, ClaimsPrincipal principal, string connectionId, Task onConnected)
         {
             _log.Info("Joining groups.");
 
@@ -29,7 +29,7 @@ namespace Samples.Server.Services
             return onConnected;
         }
 
-        public Task Leave(IHubContext<Drey.DomainModel.IRuntimeClient> hubContext, ClaimsPrincipal principal, string connectionId, Task onDisconnected)
+        public Task Leave(IHubContext<Drey.Server.Hubs.IRuntimeClient> hubContext, ClaimsPrincipal principal, string connectionId, Task onDisconnected)
         {
             _log.Info("Leaving groups.");
 

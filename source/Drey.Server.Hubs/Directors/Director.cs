@@ -18,13 +18,13 @@ namespace Drey.Server.Directors
         bool _disposed = false;
 
         readonly IEventBus _eventBus;
-        protected IHubContext<DomainModel.IRuntimeClient> RuntimeClientContext { get; private set; }
+        protected IHubContext<Hubs.IRuntimeClient> RuntimeClientContext { get; private set; }
         
         readonly Timer _responseTimeout;
         readonly TaskCompletionSource<TResponse> _responseCompletion;
         readonly Stopwatch _stopWatch = new Stopwatch();
 
-        public Director(IEventBus eventBus, IHubContext<DomainModel.IRuntimeClient> runtimeClientContext, int timeoutInSeconds = 30)
+        public Director(IEventBus eventBus, IHubContext<Hubs.IRuntimeClient> runtimeClientContext, int timeoutInSeconds = 30)
         {
             _eventBus = eventBus;
             RuntimeClientContext = runtimeClientContext;

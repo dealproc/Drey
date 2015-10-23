@@ -110,13 +110,22 @@ namespace Drey.Server.Services
         /// <param name="version">The version.</param>
         /// <returns></returns>
         /// <exception cref="System.IO.FileNotFoundException">Package id/version does not exist.</exception>
-        public async Task DeleteAsync(string id, string version)
+        public Task DeleteAsync(string id, string version)
         {
-            var releaseInfo = await _releaseStore.GetAsync(id, version);
-            if (releaseInfo == null) { throw new FileNotFoundException("Package id/version does not exist."); }
+            var returnValue = _releaseStore.GetAsync(id, version)
+                .ContinueWith(releaseTaskResult =>
+                {
+                    var releaseInfo = releaseTaskResult.Result;
 
-            await _releaseStore.DeleteAsync(id, version);
-            await _fileService.DeleteAsync(releaseInfo.RelativeUri);
+                    if (releaseInfo == null) { throw new FileNotFoundException("Package id/version does not exist."); }
+
+                    return Task.WhenAll(
+                        _releaseStore.DeleteAsync(id, version), 
+                        _fileService.DeleteAsync(releaseInfo.RelativeUri)
+                    );
+                }).Unwrap();
+
+            return returnValue;
         }
     }
 }

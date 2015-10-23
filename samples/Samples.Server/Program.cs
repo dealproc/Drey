@@ -68,7 +68,7 @@ namespace Samples.Server
                     // hack-ish way to get the IConnectionManager into the Autofac Container.
                     var cb = new ContainerBuilder();
                     cb.RegisterInstance<IConnectionManager>(hubConfig.Resolver.Resolve<IConnectionManager>());
-                    cb.Register<IHubContext<Drey.DomainModel.IRuntimeClient>>((ctx) => ctx.Resolve<IConnectionManager>().GetHubContext<Drey.DomainModel.IRuntimeClient>("Runtime"));
+                    cb.Register<IHubContext<Drey.Server.Hubs.IRuntimeClient>>((ctx) => ctx.Resolve<IConnectionManager>().GetHubContext<Drey.Server.Hubs.IRuntimeClient>("Runtime"));
                     cb.Update(_container);
 
                     app.MapSignalR(hubConfig);
@@ -103,7 +103,7 @@ namespace Samples.Server
             cb.RegisterType<Services.GroupMembershipService>().AsImplementedInterfaces();
             cb.RegisterType<Infrastructure.SampleClientRegistry>().AsImplementedInterfaces().SingleInstance();
 
-            var serverASM = Assembly.LoadFrom(Path.Combine(Environment.CurrentDirectory, "Drey.Server.dll"));
+            var serverASM = Assembly.LoadFrom(Path.Combine(Environment.CurrentDirectory, "Drey.Server.Hubs.dll"));
 
             cb.RegisterAssemblyTypes(serverASM)
                 .Where(t => t.Name.EndsWith("Director"))

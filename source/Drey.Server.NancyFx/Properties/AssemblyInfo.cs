@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Drey.Server")]
-[assembly: AssemblyDescription("Drey - Server APIs used to distribute packages to clients")]
+[assembly: AssemblyTitle("Drey.Server.NancyFx")]
+[assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("AcademyOne, Inc")]
-[assembly: AssemblyProduct("Drey.Server")]
+[assembly: AssemblyCompany("")]
+[assembly: AssemblyProduct("Drey.Server.NancyFx")]
 [assembly: AssemblyCopyright("Copyright ©  2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("595abd54-9a23-460a-91ca-65663e74591b")]
+[assembly: Guid("5bf69dba-3def-4358-9e27-e27b197a3ae0")]
 
 // Version information for an assembly consists of the following four values:
 //
@@ -34,5 +34,3 @@ using System.Runtime.InteropServices;
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
-[assembly: AssemblyInformationalVersion("1.0.0.0")]
-[assembly: Nancy.IncludeInNancyAssemblyScanning]
