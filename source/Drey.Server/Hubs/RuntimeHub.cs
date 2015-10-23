@@ -13,23 +13,26 @@ namespace Drey.Server.Hubs
         readonly IEventBus _eventBus;
         readonly Services.IClientHealthService _clientHealthService;
         readonly Services.IGroupMembershipService _groupMembershipService;
+        readonly IHubContext<DomainModel.IRuntimeClient> _runtimeHubContext;
 
         ClaimsPrincipal ConnectedAs { get { return (ClaimsPrincipal)Context.User; } }
 
-        public RuntimeHub(IEventBus eventBus, Services.IClientHealthService clientHealthService, Services.IGroupMembershipService groupMembershipService)
+        public RuntimeHub(IEventBus eventBus, Services.IClientHealthService clientHealthService, Services.IGroupMembershipService groupMembershipService,
+            IHubContext<DomainModel.IRuntimeClient> runtimeHubContext)
         {
             _eventBus = eventBus;
             _clientHealthService = clientHealthService;
             _groupMembershipService = groupMembershipService;
+            _runtimeHubContext = runtimeHubContext;
         }
 
         public override Task OnConnected()
         {
-            return _groupMembershipService.Join(this, ConnectedAs, Context.ConnectionId, base.OnConnected());
+            return _groupMembershipService.Join(_runtimeHubContext, ConnectedAs, Context.ConnectionId, base.OnConnected());
         }
         public override Task OnDisconnected(bool stopCalled)
         {
-            return _groupMembershipService.Leave(this, ConnectedAs, Context.ConnectionId, base.OnDisconnected(stopCalled));
+            return _groupMembershipService.Leave(_runtimeHubContext, ConnectedAs, Context.ConnectionId, base.OnDisconnected(stopCalled));
         }
 
         public void EndListLogFiles(DomainModel.Response<IEnumerable<string>> completed)

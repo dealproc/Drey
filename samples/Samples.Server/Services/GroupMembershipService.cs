@@ -1,8 +1,9 @@
 ﻿using Drey.Server.Infrastructure;
 using Drey.Server.Logging;
 
-using Microsoft.AspNet.SignalR.Hubs;
+using Microsoft.AspNet.SignalR;
 
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Samples.Server.Services
@@ -18,21 +19,21 @@ namespace Samples.Server.Services
             _clientRegistry = clientRegistry;
         }
 
-        public Task Join(IHub hub, System.Security.Claims.ClaimsPrincipal principal, string connectionId, Task onConnected)
+        public Task Join(IHubContext<Drey.DomainModel.IRuntimeClient> hubContext, ClaimsPrincipal principal, string connectionId, Task onConnected)
         {
             _log.Info("Joining groups.");
 
-            hub.Groups.Add(connectionId, principal.Identity.Name);
+            hubContext.Groups.Add(connectionId, principal.Identity.Name);
             _clientRegistry.Add(connectionId, principal.Identity.Name);
 
             return onConnected;
         }
 
-        public Task Leave(IHub hub, System.Security.Claims.ClaimsPrincipal principal, string connectionId, Task onDisconnected)
+        public Task Leave(IHubContext<Drey.DomainModel.IRuntimeClient> hubContext, ClaimsPrincipal principal, string connectionId, Task onDisconnected)
         {
             _log.Info("Leaving groups.");
 
-            //hub.Groups.Remove(connectionId, principal.Identity.Name);
+            //hubContext.Groups.Remove(connectionId, principal.Identity.Name);
             _clientRegistry.Remove(connectionId);
 
             return onDisconnected;
