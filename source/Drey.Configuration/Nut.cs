@@ -48,18 +48,19 @@ namespace Drey.Configuration
         public override void Startup(INutConfiguration configurationManager)
         {
             base.Startup(configurationManager);
+            configurationManager.CertificateValidator.Initialize();
 
-            Drey.CertificateValidation.ICertificateValidation certValidation = null;
-            switch (configurationManager.Mode)
-            {
-                case ExecutionMode.Development:
-                    certValidation = new Drey.CertificateValidation.SelfSignedServerCertificateValidation(configurationManager.ApplicationSettings["server.sslthumbprint"]);
-                    break;
-                default: 
-                    certValidation = new Drey.CertificateValidation.AuthorityIssuedServerCertificateValidation();
-                    break;
-            }
-            certValidation.Initialize();
+            //Drey.CertificateValidation.ICertificateValidation certValidation = null;
+            //switch (configurationManager.Mode)
+            //{
+            //    case ExecutionMode.Development:
+            //        certValidation = new Drey.CertificateValidation.SelfSignedServerCertificateValidation(configurationManager.ApplicationSettings["server.sslthumbprint"]);
+            //        break;
+            //    default: 
+            //        certValidation = new Drey.CertificateValidation.AuthorityIssuedServerCertificateValidation();
+            //        break;
+            //}
+            //certValidation.Initialize();
 
             MigrationManager.Migrate(configurationManager);
 

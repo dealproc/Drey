@@ -76,6 +76,10 @@ namespace Drey.Configuration.Infrastructure.ConfigurationManagement
 
         public string LogsDirectory { get { return Path.Combine(WorkingDirectory, "Logs").NormalizePathSeparator(); } }
 
+        public CertificateValidation.ICertificateValidation CertificateValidator
+        {
+            get { return _hostApplicationConfiguration.CertificateValidator; }
+        }
 
         public ExecutionMode Mode
         {

@@ -49,6 +49,19 @@ namespace Drey
 
         public ExecutionMode Mode { get; set; }
 
+        public CertificateValidation.ICertificateValidation CertificateValidator
+        {
+            get 
+            {
+                var thumbprint = ApplicationSettings["server.sslthumbprint"] ?? string.Empty;
+                if (string.IsNullOrWhiteSpace(thumbprint))
+                {
+                    return new CertificateValidation.AuthorityIssuedServerCertificateValidation();
+                }
+                return new CertificateValidation.SelfSignedServerCertificateValidation(thumbprint);
+            }
+        }
+
         [SecurityPermission(SecurityAction.Demand, Flags = SecurityPermissionFlag.Infrastructure)]
         public override object InitializeLifetimeService()
         {

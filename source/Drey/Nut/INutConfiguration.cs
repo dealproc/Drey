@@ -1,4 +1,5 @@
-﻿namespace Drey.Nut
+﻿using Drey.CertificateValidation;
+namespace Drey.Nut
 {
     public interface INutConfiguration
     {
@@ -9,5 +10,6 @@
         string HordeBaseDirectory { get; }
         string LogsDirectory { get; }
         ExecutionMode Mode { get; }
+        ICertificateValidation CertificateValidator { get; }
     }
 }
