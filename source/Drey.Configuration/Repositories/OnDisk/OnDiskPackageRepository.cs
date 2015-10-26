@@ -8,7 +8,7 @@ namespace Drey.Configuration.Repositories.OnDisk
 {
     public class OnDiskPackageRepository : IPackageRepository
     {
-        static Regex VERSION_PARSER = new Regex(@"(\d+)(.(\d+)?)(.(\d+)?)(.(\d+)?)", RegexOptions.Compiled);
+        static Regex VERSION_PARSER = new Regex(@"(\d+).(\d+)(.(\d+)?)(.(\d+)?)", RegexOptions.Compiled);
 
         readonly Drey.Nut.INutConfiguration _configurationManager;
 
@@ -27,7 +27,7 @@ namespace Drey.Configuration.Repositories.OnDisk
 
                 if (versionMatches.Success)
                 {
-                    var matchedVersion = versionMatches.Groups[0];
+                    var matchedVersion = versionMatches.Groups[versionMatches.Groups.Count - 1];
                     version = matchedVersion.Value;
                 }
 
