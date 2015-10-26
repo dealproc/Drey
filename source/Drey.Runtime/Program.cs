@@ -23,7 +23,7 @@ namespace Drey.Runtime
                 nlogConfig.AddTarget("console", consoleTarget);
 
                 // Step 3. Set target properties 
-                consoleTarget.Layout = "${message}";
+                consoleTarget.Layout = @"${appdomain:format={1\}}${message}";
 
                 // Step 4. Define rules
                 var rule1 = new LoggingRule("*", NLog.LogLevel.Debug, consoleTarget);

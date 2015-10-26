@@ -163,7 +163,8 @@ namespace Drey.Configuration.ServiceModel
             else
             {
                 // Just discover the packages from the hdd's hoarde directory and start 'em up.
-                _packageRepository.GetPackages().Apply(p =>
+                var packagesToStartup = _packageRepository.GetPackages();
+                packagesToStartup.Apply(p =>
                     _eventBus.Publish(new ShellRequestArgs
                     {
                         ActionToTake = ShellAction.Startup,

@@ -1,4 +1,5 @@
 ﻿using Drey.Configuration.Repositories;
+using Drey.Logging;
 using Drey.Nut;
 using Drey.Utilities;
 
@@ -9,6 +10,8 @@ namespace Drey.Configuration.Infrastructure.ConfigurationManagement
 {
     public class DbConfigurationSettings : MarshalByRefObject, Drey.Nut.INutConfiguration
     {
+        static readonly ILog _log = LogProvider.For<DbConfigurationSettings>();
+
         readonly string _packageId;
         readonly INutConfiguration _hostApplicationConfiguration;
         readonly IGlobalSettingsRepository _globalSettingsRepository;
@@ -61,12 +64,7 @@ namespace Drey.Configuration.Infrastructure.ConfigurationManagement
 
         public string WorkingDirectory
         {
-            get
-            {
-                var settings = _hostApplicationConfiguration.ApplicationSettings;
-                var dir = settings["WorkingDirectory"].NormalizePathSeparator();
-                return dir;
-            }
+            get { return _hostApplicationConfiguration.WorkingDirectory; }
         }
 
         /// <summary>

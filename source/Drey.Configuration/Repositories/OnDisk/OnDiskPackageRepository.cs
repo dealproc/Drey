@@ -27,7 +27,7 @@ namespace Drey.Configuration.Repositories.OnDisk
 
                 if (versionMatches.Success)
                 {
-                    var matchedVersion = versionMatches.Groups[versionMatches.Groups.Count - 1];
+                    var matchedVersion = versionMatches.Groups[0];
                     version = matchedVersion.Value;
                 }
 
@@ -48,7 +48,7 @@ namespace Drey.Configuration.Repositories.OnDisk
                     Tags = string.Empty
                 };
             })
-            .Where(r => r.Id != DreyConstants.ConfigurationPackageName);
+            .Where(r => !r.Id.Equals(DreyConstants.ConfigurationPackageName, StringComparison.OrdinalIgnoreCase));
         }
 
         public IEnumerable<DataModel.Package> GetPackages()
