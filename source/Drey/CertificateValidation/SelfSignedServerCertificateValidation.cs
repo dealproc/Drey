@@ -7,9 +7,7 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace Drey.CertificateValidation
 {
-    /// <summary>
-    /// 
-    /// </summary>
+    [Serializable]
     public class SelfSignedServerCertificateValidation : ICertificateValidation
     {
         static ILog _log = LogProvider.For<SelfSignedServerCertificateValidation>();

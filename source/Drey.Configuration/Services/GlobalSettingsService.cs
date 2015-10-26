@@ -46,7 +46,7 @@ namespace Drey.Configuration.Services
         /// <returns></returns>
         public string GetServerHostname()
         {
-            return _globalSettingsRepository.GetSetting("ServerHostname");
+            return _globalSettingsRepository.GetSetting(DreyConstants.ServerHostname);
         }
 
         /// <summary>
@@ -57,7 +57,7 @@ namespace Drey.Configuration.Services
         {
             try
             {
-                byte[] buffer = Convert.FromBase64String(_globalSettingsRepository.GetSetting("SSLPfx"));
+                byte[] buffer = Convert.FromBase64String(_globalSettingsRepository.GetSetting(DreyConstants.ClientCertificate));
 
                 if (buffer == null || buffer.Length == 0) { return null; }
 
@@ -81,7 +81,7 @@ namespace Drey.Configuration.Services
         public void UpdateServerHostname(string serverHostName)
         {
             if (string.IsNullOrWhiteSpace(serverHostName)) { throw new ArgumentNullException(serverHostName); }
-            _globalSettingsRepository.SaveSetting("ServerHostname", serverHostName);
+            _globalSettingsRepository.SaveSetting(DreyConstants.ServerHostname, serverHostName);
         }
 
         /// <summary>
@@ -92,7 +92,7 @@ namespace Drey.Configuration.Services
         public void UpdateSSLCertificate(byte[] cert)
         {
             if (cert == null) { throw new ArgumentNullException("cert"); }
-            _globalSettingsRepository.SaveSetting("SSLPfx", Convert.ToBase64String(cert));
+            _globalSettingsRepository.SaveSetting(DreyConstants.ClientCertificate, Convert.ToBase64String(cert));
         }
 
         /// <summary>
