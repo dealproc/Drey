@@ -76,5 +76,21 @@ namespace Drey.Configuration.Repositories.SQLiteRepositories
                 cn.Execute(@"UPDATE PackageSettings SET PackageId = @packageId, Key = @key, Value = @value, UpdatedOn = @updatedOn, WHERE ID = @id;", parms);
             });
         }
+
+        public void Store(DataModel.PackageSetting model)
+        {
+            Execute(cn =>
+            {
+                var parms = new { id = model.Id, packageId = model.PackageId, key = model.Key, Value = model.Value, createdOn = DateTime.Now, updatedOn = DateTime.Now };
+                
+                if (model.Id == 0) // assume insert.
+                {
+                    cn.Execute(@"INSERT INTO PackageSettings (PackageId, Key, Value, CreatedOn, UpdatedOn) VALUES(@packageId, @key, @value, @createdOn, @updatedOn);", parms);
+                    return;
+                }
+
+                cn.Execute(@"UPDATE PackageSettings SET PackageId = @packageId, Key = @key, Value = @value, UpdatedOn = @updatedOn, WHERE ID = @id;", parms);
+            });
+        }
     }
 }

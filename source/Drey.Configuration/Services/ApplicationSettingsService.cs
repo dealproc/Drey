@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Drey.Configuration.Services
 {
@@ -34,9 +35,16 @@ namespace Drey.Configuration.Services
             get { return _packageSettingsRepository.ByKey(_packageId, key); }
         }
 
-        public void Register(IEnumerable<string> keys)
+        public bool Exists(string key)
         {
-            throw new NotImplementedException();
+            return _packageSettingsRepository.All().Any(setting => setting.PackageId == _packageId && setting.Key == key);
+        }
+
+        public void Register(string key, string value = "")
+        {
+            var dataModel = _packageSettingsRepository.Get(_packageId, key) ?? new DataModel.PackageSetting { PackageId = _packageId, Key = key };
+            dataModel.Value = value;
+            _packageSettingsRepository.Store(dataModel);
         }
     }
 }

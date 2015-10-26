@@ -38,5 +38,7 @@ namespace Drey.Configuration.Repositories
         /// </summary>
         /// <param name="model">The model.</param>
         void Store(Services.ViewModels.ConnectionStringPmo model);
+
+        void Store(DataModel.PackageConnectionString model);
     }
 }

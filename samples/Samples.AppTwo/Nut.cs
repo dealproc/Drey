@@ -6,6 +6,7 @@ using System.Linq;
 
 namespace Samples.AppTwo
 {
+    [Serializable]
     public class Nut : ShellBase, IDisposable
     {
         public override void Startup(INutConfiguration configurationManager)

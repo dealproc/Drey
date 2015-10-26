@@ -68,10 +68,6 @@ namespace Drey.Nut
             appShell.ConfigureLogging = HordeServiceControl.ConfigureLogging;
             appShell.OnShellRequest += shellRequestHandler;
 
-            _Log.Info("Registering default app settings.");
-
-            _Log.Info("Registering default connection string(s).");
-
             _Log.Info("Running app startup routine.");
             appShell.Startup(config);
             _Log.Info("App startup routine finished.");

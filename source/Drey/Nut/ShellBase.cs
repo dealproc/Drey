@@ -48,6 +48,18 @@ namespace Drey.Nut {
             Log.InfoFormat("{packageName} is starting in {mode}.", this.Id, configurationManager.Mode);
             ConfigurationManager = configurationManager;
             ConfigureLogging(configurationManager);
+
+            _Log.Info("Registering default app settings.");
+            AppSettingDefaults.Apply((DefaultAppSetting setting) =>
+            {
+                if (!configurationManager.ApplicationSettings.Exists(setting.Key)) { configurationManager.ApplicationSettings.Register(setting.Key, setting.Value); }
+            });
+
+            _Log.Info("Registering default connection string(s).");
+            ConnectionStringDefaults.Apply((DefaultConnectionString connStr) =>
+            {
+                if (!configurationManager.ConnectionStrings.Exists(connStr.Name)) { configurationManager.ConnectionStrings.Register(connStr.Name, connStr.ConnectionString, connStr.ProviderName); }
+            });
         }
 
         /// <summary>

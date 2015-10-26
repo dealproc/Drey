@@ -7,6 +7,7 @@ using System.Threading;
 
 namespace Samples.AppOne
 {
+    [Serializable]
     public class Nut : ShellBase, IDisposable
     {
         public override void Startup(INutConfiguration configurationManager)
@@ -35,8 +36,10 @@ namespace Samples.AppOne
         {
             get
             {
-                yield return new DefaultAppSetting { Key = "Setting.One", Value = string.Empty };
-                yield return new DefaultAppSetting { Key = "Setting.Two", Value = string.Empty };
+                return new DefaultAppSetting[] {
+                    new DefaultAppSetting { Key = "Setting.One", Value = string.Empty },
+                    new DefaultAppSetting { Key = "Setting.Two", Value = string.Empty },
+                };
             }
         }
 

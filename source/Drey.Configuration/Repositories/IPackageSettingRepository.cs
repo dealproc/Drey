@@ -26,7 +26,7 @@ namespace Drey.Configuration.Repositories
         DataModel.PackageSetting Get(string packageId, string key);
         
         /// <summary>
-        /// Bies the key.
+        /// Retrieves a stored setting by its Package Id and Key.
         /// </summary>
         /// <param name="packageId">The package identifier.</param>
         /// <param name="key">The key.</param>
@@ -38,5 +38,7 @@ namespace Drey.Configuration.Repositories
         /// </summary>
         /// <param name="model">The model.</param>
         void Store(Services.ViewModels.AppSettingPmo model);
+
+        void Store(DataModel.PackageSetting model);
     }
 }

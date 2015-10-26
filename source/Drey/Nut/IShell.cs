@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Drey.Nut
@@ -7,6 +8,8 @@ namespace Drey.Nut
     {
         string Id { get; }
         bool RequiresConfigurationStorage { get; }
+        IEnumerable<DefaultAppSetting> AppSettingDefaults { get; }
+        IEnumerable<DefaultConnectionString> ConnectionStringDefaults { get; }
 
         event EventHandler<ShellRequestArgs> OnShellRequest;
 

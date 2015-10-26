@@ -12,6 +12,7 @@ using System.Reflection;
 
 namespace Drey.Configuration
 {
+    [Serializable]
     public class Nut : ShellBase, IHandle<ShellRequestArgs>, IDisposable
     {
         IEventBus _eventBus;

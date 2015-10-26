@@ -4,6 +4,7 @@ namespace Drey.Nut
     public interface IApplicationSettings
     {
         string this[string key] { get; }
-        void Register(IEnumerable<string> keys);
+        bool Exists(string key);
+        void Register(string key, string value = "");
     }
 }

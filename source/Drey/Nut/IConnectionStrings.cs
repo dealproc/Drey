@@ -4,6 +4,7 @@ namespace Drey.Nut
     public interface IConnectionStrings
     {
         string this[string key] { get; }
-        void Register(IEnumerable<string> keys);
+        bool Exists(string name);
+        void Register(string name, string connectionString, string providerName = "");
     }
 }

@@ -82,5 +82,27 @@ namespace Drey.Configuration.Repositories.SQLiteRepositories
 
             Execute(cn => cn.Execute(@"UPDATE ConnectionStrings SET PackageId = @packageId, Name = @name, ConnectionString = @connectionString, ProviderName = @providerName, UpdatedOn = @updatedOn WHERE Id = @id", parms));
         }
+
+        public void Store(DataModel.PackageConnectionString model)
+        {
+            var parms = new
+            {
+                id = model.Id,
+                packageId = model.PackageId,
+                name = model.Name,
+                connectionString = model.ConnectionString,
+                providerName = model.ProviderName,
+                createdOn = DateTime.Now,
+                updatedOn = DateTime.Now
+            };
+
+            if (model.Id == 0)
+            {
+                Execute(cn => cn.Execute(@"INSERT INTO ConnectionStrings (PackageId, Name, ConnectionString, ProviderName, CreatedOn, UpdatedOn) VALUES (@packageId, @name, @connectionString, @providerName, @createdOn, @updatedOn);", parms));
+                return;
+            }
+
+            Execute(cn => cn.Execute(@"UPDATE ConnectionStrings SET PackageId = @packageId, Name = @name, ConnectionString = @connectionString, ProviderName = @providerName, UpdatedOn = @updatedOn WHERE Id = @id", parms));
+        }
     }
 }
