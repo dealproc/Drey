@@ -4,6 +4,7 @@ using Drey.Nut;
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Drey.Configuration.Repositories.SQLiteRepositories
 {
@@ -21,7 +22,7 @@ namespace Drey.Configuration.Repositories.SQLiteRepositories
         /// <returns></returns>
         public IEnumerable<DataModel.Release> All()
         {
-            return Execute(cn => cn.Query<DataModel.Release>("SELECT * FROM Releases"));
+            return Execute(cn => cn.Query<DataModel.Release>("SELECT * FROM Releases")).Where(r => !r.Id.Equals(DreyConstants.ConfigurationPackageName, StringComparison.OrdinalIgnoreCase));
         }
 
         /// <summary>
@@ -30,7 +31,7 @@ namespace Drey.Configuration.Repositories.SQLiteRepositories
         /// <returns></returns>
         public IEnumerable<DataModel.Package> GetPackages()
         {
-            return Execute(cn => cn.Query<DataModel.Package>("SELECT Id, Min(Title) as Title, true as AutoUpdates FROM Releases GROUP BY Id"));
+            return Execute(cn => cn.Query<DataModel.Package>("SELECT Id, Min(Title) as Title, true as AutoUpdates FROM Releases GROUP BY Id")).Where(r => !r.Id.Equals(DreyConstants.ConfigurationPackageName, StringComparison.OrdinalIgnoreCase));
         }
 
         /// <summary>

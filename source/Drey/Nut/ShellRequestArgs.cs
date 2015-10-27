@@ -17,12 +17,12 @@ namespace Drey.Nut
         /// Gets or sets the configuration manager.
         /// </summary>
         public INutConfiguration ConfigurationManager { get; set; }
-        
+
         /// <summary>
         /// Gets or sets the package identifier.
         /// </summary>
         public string PackageId { get; set; }
-        
+
         /// <summary>
         /// Gets or sets the version.
         /// </summary>

@@ -73,7 +73,7 @@ namespace Drey.Configuration
 
         private void BuildApp()
         {
-            _eventBus.Subscribe(this);
+            _eventBus.Subscribe(this, this.Id);
 
             var startupUri = string.Format("http://localhost:{0}/", ConfigurationManager.ApplicationSettings["drey.configuration.consoleport"]);
             var host = new NancyHost(new Bootstrapper(ConfigurationManager, _eventBus), new[] { new Uri(startupUri) });
