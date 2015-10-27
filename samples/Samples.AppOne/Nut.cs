@@ -1,8 +1,8 @@
-﻿using Drey.Nut;
+﻿using Drey.Logging;
+using Drey.Nut;
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 
 namespace Samples.AppOne
@@ -10,15 +10,17 @@ namespace Samples.AppOne
     [Serializable]
     public class Nut : ShellBase, IDisposable
     {
+        static ILog _log = LogProvider.For<Nut>();
+
         public override void Startup(INutConfiguration configurationManager)
         {
             base.Startup(configurationManager);
-            Console.WriteLine("Samples - App One Online");
+            _log.Info("Samples - App One Online");
         }
 
         public override void Shutdown()
         {
-            Console.WriteLine("Shutting down after 2 second delay");
+            _log.Info("Shutting down after 2 second delay");
             Thread.Sleep(2000);
         }
 
@@ -53,7 +55,7 @@ namespace Samples.AppOne
 
         protected override void Dispose(bool disposing)
         {
-            Console.WriteLine("Samples - App One Torn Down");
+            _log.Info("Samples - App One Torn Down");
             base.Dispose(disposing);
         }
     }

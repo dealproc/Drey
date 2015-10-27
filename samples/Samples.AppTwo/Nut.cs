@@ -1,4 +1,5 @@
-﻿using Drey.Nut;
+﻿using Drey.Logging;
+using Drey.Nut;
 
 using System;
 using System.Collections.Generic;
@@ -9,10 +10,12 @@ namespace Samples.AppTwo
     [Serializable]
     public class Nut : ShellBase, IDisposable
     {
+        static ILog _log = LogProvider.For<Nut>();
+
         public override void Startup(INutConfiguration configurationManager)
         {
             base.Startup(configurationManager);
-            Console.WriteLine("Samples - App Two Online");
+            _log.Info("Samples - App Two Online");
         }
 
         public override string Id
@@ -37,7 +40,7 @@ namespace Samples.AppTwo
 
         protected override void Dispose(bool disposing)
         {
-            Console.WriteLine("Samples - App Two Torn Down");
+            _log.Info("Samples - App Two Torn Down");
             base.Dispose(disposing);
         }
     }

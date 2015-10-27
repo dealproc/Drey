@@ -11,17 +11,22 @@ namespace Drey
     /// </summary>
     public class ControlPanelServiceControl : MarshalByRefObject
     {
-        public static Action<INutConfiguration> ConfigureLogging = (config) => { };
-
         readonly ILog _log;
         readonly ShellFactory _appFactory;
         readonly INutConfiguration _nutConfiguration;
         readonly ExecutionMode _executionMode;
+        readonly Action<INutConfiguration> _configureLogging;
 
         Tuple<AppDomain, IShell> _console;
 
-        public ControlPanelServiceControl(ExecutionMode mode = ExecutionMode.Production)
+        public ControlPanelServiceControl(ExecutionMode mode = ExecutionMode.Production, Action<INutConfiguration> configureLogging = null)
         {
+            if (configureLogging != null)
+            {
+                _configureLogging = configureLogging;
+                _configureLogging.Invoke(_nutConfiguration);
+            }
+
             _log = LogProvider.For<ControlPanelServiceControl>();
             _appFactory = new ShellFactory();
             _nutConfiguration = new ApplicationHostNutConfiguration { Mode = mode };
@@ -84,7 +89,7 @@ namespace Drey
         private bool StartupConsole()
         {
             string packageDir = Utilities.PackageUtils.DiscoverPackage(DreyConstants.ConfigurationPackageName, _nutConfiguration.HoardeBaseDirectory);
-            var shell = _appFactory.Create(packageDir, ShellRequestHandler);
+            var shell = _appFactory.Create(packageDir, ShellRequestHandler, _configureLogging);
             shell.Item2.Startup(_nutConfiguration);
             return true;
         }

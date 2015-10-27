@@ -14,16 +14,18 @@ namespace Drey.Configuration.ServiceModel
         readonly IEventBus _eventBus;
         readonly ShellFactory _appFactory;
         readonly INutConfiguration _configurationManager;
+        readonly Action<INutConfiguration> _configureLogging;
 
         ConcurrentDictionary<Guid, Tuple<AppDomain, IShell>> _apps;
         EventHandler<ShellRequestArgs> _shellRequestHandler;
 
-        public HoardeManager(IEventBus eventBus, INutConfiguration configurationManager, EventHandler<ShellRequestArgs> shellRequestHandler)
+        public HoardeManager(IEventBus eventBus, INutConfiguration configurationManager, EventHandler<ShellRequestArgs> shellRequestHandler, Action<INutConfiguration> configureLogging)
         {
             _eventBus = eventBus;
             _appFactory = new ShellFactory();
             _configurationManager = configurationManager;
             _shellRequestHandler = shellRequestHandler;
+            _configureLogging = configureLogging;
 
             _apps = new ConcurrentDictionary<Guid, Tuple<AppDomain, IShell>>();
 
@@ -32,7 +34,7 @@ namespace Drey.Configuration.ServiceModel
 
         public void Handle(ShellRequestArgs e)
         {
-            _log.InfoFormat("'Shell Request' Event Received: {0}", e);
+            _log.InfoFormat("'Shell Request' Event Received: {packageId} | {event}", e.PackageId, e.ActionToTake);
 
             switch (e.ActionToTake)
             {
@@ -67,7 +69,7 @@ namespace Drey.Configuration.ServiceModel
                 :
                 Utilities.PackageUtils.DiscoverPackage(id, _configurationManager.HoardeBaseDirectory, version);
 
-            var shell = _appFactory.Create(packageDir, _shellRequestHandler);
+            var shell = _appFactory.Create(packageDir, _shellRequestHandler, _configureLogging);
             if (shell == null)
             {
                 _log.Fatal("Did not create the configuration console.  app exiting.");

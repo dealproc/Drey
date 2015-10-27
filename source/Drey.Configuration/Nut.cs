@@ -55,7 +55,7 @@ namespace Drey.Configuration
             MigrationManager.Migrate(configurationManager);
 
             _eventBus = new EventBus();
-            _hoardeManager = new ServiceModel.HoardeManager(_eventBus, configurationManager, ShellRequestHandler);
+            _hoardeManager = new ServiceModel.HoardeManager(_eventBus, configurationManager, ShellRequestHandler, this.ConfigureLogging);
 
             BuildApp();
         }

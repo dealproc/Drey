@@ -53,7 +53,10 @@ namespace Drey.Nut
         {
             Log.InfoFormat("{packageName} is starting in {mode}.", this.Id, configurationManager.Mode);
             ConfigurationManager = configurationManager;
-            ConfigureLogging(configurationManager);
+            if (ConfigureLogging != null)
+            {
+                ConfigureLogging(configurationManager);
+            }
 
             _Log.Info("Registering default app settings.");
             AppSettingDefaults.Apply((DefaultAppSetting setting) =>

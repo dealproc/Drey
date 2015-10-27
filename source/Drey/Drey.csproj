@@ -55,7 +55,6 @@
     <Compile Include="Extensions\AssemblyExtensions.cs" />
     <Compile Include="Extensions\EnumerableExtensions.cs" />
     <Compile Include="GlobalSuppressions.cs" />
-    <Compile Include="HordeServiceControl.cs" />
     <Compile Include="ApplicationHostNutConfiguration.cs" />
     <Compile Include="Nut\DefaultAppSetting.cs" />
     <Compile Include="Nut\DefaultConnectionString.cs" />
