@@ -19,7 +19,7 @@ namespace Drey.Configuration.Repositories.OnDisk
 
         public IEnumerable<DataModel.Release> All()
         {
-            DirectoryInfo dir = new DirectoryInfo(Drey.Utilities.PathUtilities.MapPath(_configurationManager.HordeBaseDirectory));
+            DirectoryInfo dir = new DirectoryInfo(Drey.Utilities.PathUtilities.MapPath(_configurationManager.HoardeBaseDirectory));
             return dir.EnumerateDirectories("*", SearchOption.TopDirectoryOnly).Select(x =>
             {
                 string version = "";

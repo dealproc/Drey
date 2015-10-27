@@ -67,6 +67,7 @@ namespace Drey.Nut
             var appShell = (IShell)domainProxy.Build(entryDllAndType.Item1, entryDllAndType.Item2);
             appShell.ConfigureLogging = HordeServiceControl.ConfigureLogging;
             appShell.OnShellRequest += shellRequestHandler;
+            appShell.ShellRequestHandler = shellRequestHandler;
             
             return new Tuple<AppDomain, IShell>(domain, appShell);
         }

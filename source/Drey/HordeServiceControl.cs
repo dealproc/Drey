@@ -108,9 +108,9 @@ namespace Drey
         {
             string packageDir = string.IsNullOrWhiteSpace(version)
                 ?
-                Utilities.PackageUtils.DiscoverPackage(id, _nutConfiguration.HordeBaseDirectory)
+                Utilities.PackageUtils.DiscoverPackage(id, _nutConfiguration.HoardeBaseDirectory)
                 :
-                Utilities.PackageUtils.DiscoverPackage(id, _nutConfiguration.HordeBaseDirectory, version);
+                Utilities.PackageUtils.DiscoverPackage(id, _nutConfiguration.HoardeBaseDirectory, version);
 
             var shell = _appFactory.Create(packageDir, ShellRequestHandler);
             if (shell == null)

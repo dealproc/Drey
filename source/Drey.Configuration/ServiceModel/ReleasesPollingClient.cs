@@ -182,7 +182,7 @@ namespace Drey.Configuration.ServiceModel
             var zipFileInfo = new FileInfo(fileName);
             var zipFolderName = zipFileInfo.Name;
             zipFolderName = zipFolderName.Substring(0, zipFolderName.Length - zipFileInfo.Extension.Length);
-            pkg.ExtractContents(new NuGet.PhysicalFileSystem(_configurationManager.HordeBaseDirectory), zipFolderName);
+            pkg.ExtractContents(new NuGet.PhysicalFileSystem(_configurationManager.HoardeBaseDirectory), zipFolderName);
         }
 
         private Infrastructure.ConfigurationManagement.DbConfigurationSettings CreateConfigurationManager()

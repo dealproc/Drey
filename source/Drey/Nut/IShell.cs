@@ -12,6 +12,7 @@ namespace Drey.Nut
         IEnumerable<DefaultConnectionString> ConnectionStringDefaults { get; }
 
         event EventHandler<ShellRequestArgs> OnShellRequest;
+        EventHandler<ShellRequestArgs> ShellRequestHandler { get; set; }
 
         void Startup(INutConfiguration configurationManager);
         void Shutdown();

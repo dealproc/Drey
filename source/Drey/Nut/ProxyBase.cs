@@ -33,7 +33,6 @@ namespace Drey.Nut
             { 
                     Path.GetFullPath(_pathToAppPackage), 
                     Path.GetDirectoryName(Environment.CurrentDirectory),
-                    // Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) - trying to eliminate reflection whereever possible.
             });
 
             var resolvedDll = searchPaths

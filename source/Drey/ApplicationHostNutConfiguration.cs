@@ -41,7 +41,7 @@ namespace Drey
         {
             get { return _applicationSettings["WorkingDirectory"].NormalizePathSeparator(); }
         }
-        public string HordeBaseDirectory
+        public string HoardeBaseDirectory
         {
             get { return Path.Combine(WorkingDirectory, "Hoarde").NormalizePathSeparator(); }
         }

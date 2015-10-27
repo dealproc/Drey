@@ -54,29 +54,36 @@ namespace Drey
         /// <param name="e">The e.</param>
         void ShellRequestHandler(object sender, ShellRequestArgs e)
         {
-            _log.InfoFormat("'Shell Request' Event Received: {0}", e);
-
-            switch (e.ActionToTake)
+            if (e.PackageId.Equals(DreyConstants.ConfigurationPackageName, StringComparison.OrdinalIgnoreCase))
             {
-                case ShellAction.Startup:
-                    _log.Warn("Seems odd to get a startup call here.  Should investigate.");
-                    break;
-                case ShellAction.Shutdown:
-                    ShutdownConsole();
-                    break;
-                case ShellAction.Restart:
-                    ShutdownConsole();
-                    StartupConsole();
-                    break;
-                default:
-                    _log.ErrorFormat("Received an unknown action: {0}", e.ActionToTake);
-                    break;
+                _log.InfoFormat("'Shell Request' Event Received: {0}", e);
+
+                switch (e.ActionToTake)
+                {
+                    case ShellAction.Startup:
+                        _log.Warn("Seems odd to get a startup call here.  Should investigate.");
+                        break;
+                    case ShellAction.Shutdown:
+                        ShutdownConsole();
+                        break;
+                    case ShellAction.Restart:
+                        ShutdownConsole();
+                        StartupConsole();
+                        break;
+                    default:
+                        _log.ErrorFormat("Received an unknown action: {0}", e.ActionToTake);
+                        break;
+                }
+
+                return;
             }
+
+            _console.Item2.ShellRequestHandler(sender, e);
         }
 
         private bool StartupConsole()
         {
-            string packageDir = Utilities.PackageUtils.DiscoverPackage(DreyConstants.ConfigurationPackageName, _nutConfiguration.HordeBaseDirectory);
+            string packageDir = Utilities.PackageUtils.DiscoverPackage(DreyConstants.ConfigurationPackageName, _nutConfiguration.HoardeBaseDirectory);
             var shell = _appFactory.Create(packageDir, ShellRequestHandler);
             shell.Item2.Startup(_nutConfiguration);
             return true;

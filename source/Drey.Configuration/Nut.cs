@@ -17,6 +17,7 @@ namespace Drey.Configuration
     {
         IEventBus _eventBus;
         IDisposable _webApp;
+        ServiceModel.HoardeManager _hoardeManager;
 
         /// <summary>
         /// Gets the version of the dll for display on the web console.
@@ -54,6 +55,7 @@ namespace Drey.Configuration
             MigrationManager.Migrate(configurationManager);
 
             _eventBus = new EventBus();
+            _hoardeManager = new ServiceModel.HoardeManager(_eventBus, configurationManager, ShellRequestHandler);
 
             BuildApp();
         }
@@ -68,15 +70,20 @@ namespace Drey.Configuration
 
         public void Handle(ShellRequestArgs message)
         {
-            EmitShellRequest(message);
+            if (message.PackageId.Equals(this.Id, StringComparison.OrdinalIgnoreCase))
+            {
+                EmitShellRequest(message);
+                return;
+            }
+            _hoardeManager.Handle(message);
         }
 
         private void BuildApp()
         {
-            _eventBus.Subscribe(this, this.Id);
+            _eventBus.Subscribe(this);
 
             var startupUri = string.Format("http://localhost:{0}/", ConfigurationManager.ApplicationSettings["drey.configuration.consoleport"]);
-            var host = new NancyHost(new Bootstrapper(ConfigurationManager, _eventBus), new[] { new Uri(startupUri) });
+            var host = new NancyHost(new Bootstrapper(_hoardeManager, _eventBus, ConfigurationManager), new[] { new Uri(startupUri) });
             host.Start();
 
             _webApp = host;
@@ -85,7 +92,7 @@ namespace Drey.Configuration
         protected override void Dispose(bool disposing)
         {
             Log.Trace("Disposing Drey Configuration host.");
-            
+
             base.Dispose(disposing);
 
             if (!disposing) { return; }

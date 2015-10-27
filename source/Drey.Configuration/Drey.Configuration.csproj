@@ -141,6 +141,7 @@
     <Compile Include="Repositories\SQLiteRepositories\PackageRepository.cs" />
     <Compile Include="Repositories\SQLiteRepositories\PackageSettingRepository.cs" />
     <Compile Include="Repositories\SQLiteRepositories\SqlRepository.cs" />
+    <Compile Include="ServiceModel\HoardeManager.cs" />
     <Compile Include="ServiceModel\IPollingClient.cs" />
     <Compile Include="ServiceModel\IRemoteInvocationService.cs" />
     <Compile Include="ServiceModel\ListLogsService.cs" />

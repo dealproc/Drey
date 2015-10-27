@@ -70,7 +70,7 @@ namespace Drey.Configuration.Infrastructure.ConfigurationManagement
         /// <summary>
         /// Gets the horde base directory.
         /// </summary>
-        public string HordeBaseDirectory { get { return Path.Combine(WorkingDirectory, "Hoarde").NormalizePathSeparator(); } }
+        public string HoardeBaseDirectory { get { return Path.Combine(WorkingDirectory, "Hoarde").NormalizePathSeparator(); } }
 
         public string LogsDirectory { get { return Path.Combine(WorkingDirectory, "Logs").NormalizePathSeparator(); } }
 

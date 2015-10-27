@@ -7,7 +7,7 @@ namespace Drey.Nut
         IApplicationSettings ApplicationSettings { get; }
         IConnectionStrings ConnectionStrings { get; }
         string WorkingDirectory { get; }
-        string HordeBaseDirectory { get; }
+        string HoardeBaseDirectory { get; }
         string LogsDirectory { get; }
         ExecutionMode Mode { get; }
         ICertificateValidation CertificateValidator { get; }

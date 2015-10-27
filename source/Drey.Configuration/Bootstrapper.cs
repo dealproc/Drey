@@ -25,13 +25,15 @@ namespace Drey.Configuration
         readonly Assembly ThisAssembly;
         readonly IEventBus _eventBus;
         ServiceModel.IServicesManager _servicesManager;
+        ServiceModel.HoardeManager _hoardeManager;
 
-        public Bootstrapper(INutConfiguration configurationManager, IEventBus eventBus) : base()
+        public Bootstrapper(ServiceModel.HoardeManager hoardeManager, IEventBus eventBus, INutConfiguration configurationManager) : base()
         {
             _log.Trace("Bootstrapper has been constructed for Drey.Configuration.");
 
-            _configurationManager = configurationManager;
+            _hoardeManager = hoardeManager;
             _eventBus = eventBus;
+            _configurationManager = configurationManager;
 
             ThisAssembly = this.GetType().Assembly;
 
@@ -49,14 +51,16 @@ namespace Drey.Configuration
 
             base.ConfigureApplicationContainer(container);
 
+            container.Register<IEventBus>(_eventBus);
+            container.Register<ServiceModel.HoardeManager>(_hoardeManager);
+            container.Register<INutConfiguration>(_configurationManager);
+
             // we need to manually register the data annotations registrations because we are
             // loading the *.dlls in a dedicated app domain.
             container.Register(new DataAnnotationsRegistrations());
 
             container.Register<ServiceModel.PollingClientCollection>().AsSingleton();
             container.Register<ServiceModel.RegisteredPackagesPollingClient>().AsSingleton();
-
-            container.Register<INutConfiguration>(_configurationManager);
 
             container.Register<Repositories.IGlobalSettingsRepository, GlobalSettingsRepository>();
             switch (_configurationManager.Mode)
@@ -75,11 +79,10 @@ namespace Drey.Configuration
 
             container.Register<Services.IGlobalSettingsService, Services.GlobalSettingsService>();
 
-            container.Register<IEventBus>(_eventBus);
-
             container.Register<ServiceModel.IServicesManager, ServiceModel.ServicesManager>().AsSingleton();
 
             _servicesManager = container.Resolve<ServiceModel.IServicesManager>();
+            _hoardeManager = container.Resolve<ServiceModel.HoardeManager>();
 
             _servicesManager.Start();
         }

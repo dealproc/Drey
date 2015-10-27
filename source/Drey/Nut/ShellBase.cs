@@ -43,6 +43,7 @@ namespace Drey.Nut
         /// Occurs when this shell needs the runtime to perform an operation on the shell's behalf.
         /// </summary>
         public event EventHandler<ShellRequestArgs> OnShellRequest;
+        public EventHandler<ShellRequestArgs> ShellRequestHandler { get; set; }
 
         /// <summary>
         /// The startup routine for the applet.  Think of this like `static main(string args[]) { ... }`.
