@@ -50,6 +50,7 @@
     <Compile Include="CertificateValidation\AuthorityIssuedServerCertificateValidation.cs" />
     <Compile Include="CertificateValidation\ICertificateValidation.cs" />
     <Compile Include="CertificateValidation\SelfSignedServerCertificateValidation.cs" />
+    <Compile Include="ControlPanelServiceControl.cs" />
     <Compile Include="DreyConstants.cs" />
     <Compile Include="Extensions\AssemblyExtensions.cs" />
     <Compile Include="Extensions\EnumerableExtensions.cs" />
