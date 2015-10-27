@@ -7,7 +7,7 @@ using System.IO;
 
 namespace Drey.Configuration.Repositories.SQLiteRepositories
 {
-    public class SqlRepository
+    public class SqlRepository : MarshalByRefObject
     {
         const string CONNECTION_STRING_FORMAT = "Data Source={0};Version=3;";
         const string CONFIG_FILE_NAME = "config.db3";

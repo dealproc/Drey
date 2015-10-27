@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 
 namespace Drey.Configuration.Repositories.OnDisk
 {
-    public class OnDiskPackageRepository : IPackageRepository
+    public class OnDiskPackageRepository : MarshalByRefObject, IPackageRepository
     {
         static Regex VERSION_PARSER = new Regex(@"(\d+).(\d+)(.(\d+)?)(.(\d+)?)", RegexOptions.Compiled);
 
