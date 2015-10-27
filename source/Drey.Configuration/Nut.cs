@@ -51,26 +51,19 @@ namespace Drey.Configuration
             base.Startup(configurationManager);
             configurationManager.CertificateValidator.Initialize();
 
-            //Drey.CertificateValidation.ICertificateValidation certValidation = null;
-            //switch (configurationManager.Mode)
-            //{
-            //    case ExecutionMode.Development:
-            //        certValidation = new Drey.CertificateValidation.SelfSignedServerCertificateValidation(configurationManager.ApplicationSettings["server.sslthumbprint"]);
-            //        break;
-            //    default: 
-            //        certValidation = new Drey.CertificateValidation.AuthorityIssuedServerCertificateValidation();
-            //        break;
-            //}
-            //certValidation.Initialize();
-
             MigrationManager.Migrate(configurationManager);
 
             _eventBus = new EventBus();
 
             BuildApp();
+        }
 
-            var startupUri = string.Format("http://localhost:{0}/", ConfigurationManager.ApplicationSettings["drey.configuration.consoleport"]);
-            Process.Start(startupUri);
+        public override void Shutdown()
+        {
+            base.Shutdown();
+
+            _webApp.Dispose();
+            _webApp = null;
         }
 
         public void Handle(ShellRequestArgs message)

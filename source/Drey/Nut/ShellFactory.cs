@@ -17,7 +17,7 @@ namespace Drey.Nut
         /// <param name="assemblyPath">The assembly path.</param>
         /// <param name="config">The configuration.</param>
         /// <returns></returns>
-        public Tuple<AppDomain, IShell> Create(string assemblyPath, INutConfiguration config, EventHandler<ShellRequestArgs> shellRequestHandler)
+        public Tuple<AppDomain, IShell> Create(string assemblyPath, EventHandler<ShellRequestArgs> shellRequestHandler)
         {
             if (string.IsNullOrWhiteSpace(assemblyPath)) { return null; }
 
@@ -67,11 +67,7 @@ namespace Drey.Nut
             var appShell = (IShell)domainProxy.Build(entryDllAndType.Item1, entryDllAndType.Item2);
             appShell.ConfigureLogging = HordeServiceControl.ConfigureLogging;
             appShell.OnShellRequest += shellRequestHandler;
-
-            _Log.Info("Running app startup routine.");
-            appShell.Startup(config);
-            _Log.Info("App startup routine finished.");
-
+            
             return new Tuple<AppDomain, IShell>(domain, appShell);
         }
 

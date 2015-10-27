@@ -2,7 +2,7 @@
 using Drey.Nut;
 
 using System;
-using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Linq;
 using System.Security.Permissions;
 
@@ -22,15 +22,15 @@ namespace Drey
         readonly ILog _log;
         readonly ShellFactory _appFactory;
         readonly INutConfiguration _nutConfiguration;
-        readonly List<Tuple<AppDomain, IShell>> _appInstances;
         readonly ExecutionMode _executionMode;
+
+        ConcurrentDictionary<Guid, Tuple<AppDomain, IShell>> _appInstances;
 
         public HordeServiceControl(ExecutionMode mode = ExecutionMode.Production)
         {
             _log = LogProvider.For<HordeServiceControl>();
             _appFactory = new ShellFactory();
             _nutConfiguration = new ApplicationHostNutConfiguration { Mode = mode };
-            _appInstances = new List<Tuple<AppDomain, IShell>>();
             _executionMode = mode;
         }
 
@@ -40,6 +40,7 @@ namespace Drey
         /// <returns></returns>
         public bool Start()
         {
+            _appInstances = new ConcurrentDictionary<Guid, Tuple<AppDomain, IShell>>();
             ConfigureLogging(_nutConfiguration);
             _log.Info("Runtime is starting.");
             return StartupInstance(_nutConfiguration, DreyConstants.ConfigurationPackageName, string.Empty);
@@ -53,9 +54,9 @@ namespace Drey
         {
             _log.Info("Runtime is shutting down.");
 
-            var packageIds = _appInstances.Select(x => x.Item2.Id).ToArray();
+            var packageIds = _appInstances.Select(x => x.Value.Item2.Id).ToArray();
             packageIds.Apply(ShutdownInstance);
-            _appInstances.Clear();
+            _appInstances = null;
 
             return true;
         }
@@ -111,15 +112,19 @@ namespace Drey
                 :
                 Utilities.PackageUtils.DiscoverPackage(id, _nutConfiguration.HordeBaseDirectory, version);
 
-            var shell = _appFactory.Create(packageDir, configurationManager, ShellRequestHandler);
+            var shell = _appFactory.Create(packageDir, ShellRequestHandler);
             if (shell == null)
             {
                 _log.Fatal("Did not create the configuration console.  app exiting.");
                 return false;
             }
 
+            _appInstances.TryAdd(Guid.NewGuid(), shell);
+
+            _log.InfoFormat("Starting {app}", shell.Item2.Id);
+            shell.Item2.Startup(configurationManager);
+
             _log.Info("Configuration shell created.  Starting to listen for events.");
-            _appInstances.Add(shell);
             return true;
         }
 
@@ -129,19 +134,31 @@ namespace Drey
         /// <param name="id">The identifier.</param>
         void ShutdownInstance(string id)
         {
-            var instancesToShutdown = _appInstances.Where(i => i.Item2.Id == id).ToArray();
-            instancesToShutdown.Apply(i =>
+            _log.DebugFormat("Attempting to remove {id}", id);
+
+            var instancesToShutdown = _appInstances.Where(i => i.Value.Item2.Id == id).Select(x => x.Key).ToArray();
+            foreach (var key in instancesToShutdown)
             {
+                var instance = _appInstances[key];
+                Tuple<AppDomain, IShell> removed;
                 try
                 {
-                    i.Item2.Shutdown();
-                    AppDomain.Unload(i.Item1);
+                    instance.Item2.Shutdown();
+                    AppDomain.Unload(instance.Item1);
+                }
+                catch (CannotUnloadAppDomainException ex)
+                {
+                    _log.WarnException("Could not unload app domain.", ex);
+                }
+                catch (AppDomainUnloadedException ex)
+                {
+                    _log.WarnException("failure to unload app domain?", ex);
                 }
                 finally
                 {
-                    _appInstances.Remove(i);
+                    _appInstances.TryRemove(key, out removed);
                 }
-            });
+            }
         }
     }
 }

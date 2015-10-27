@@ -84,6 +84,8 @@ namespace Drey.Configuration.ServiceModel
 
         public bool Stop()
         {
+            _log.Info("Drey.Runtime is shutting down.");
+
             _pushServices.Apply(x => x.Stop());
             _runtimeHubProxy = null;
             _hubConnectionManager.Stop();
