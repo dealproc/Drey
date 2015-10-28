@@ -3,6 +3,7 @@ using Drey.Nut;
 
 using System;
 using System.Security.Permissions;
+using System.Threading.Tasks;
 
 namespace Drey
 {
@@ -18,6 +19,8 @@ namespace Drey
         readonly Action<INutConfiguration> _configureLogging;
 
         Tuple<AppDomain, IShell> _console;
+
+        Task _restartConsoleTask;
 
         public ControlPanelServiceControl(ExecutionMode mode = ExecutionMode.Production, Action<INutConfiguration> configureLogging = null)
         {
@@ -40,6 +43,7 @@ namespace Drey
 
         public bool Stop()
         {
+            ShutdownConsole();
             return true;
         }
 
@@ -59,6 +63,7 @@ namespace Drey
         /// <param name="e">The e.</param>
         void ShellRequestHandler(object sender, ShellRequestArgs e)
         {
+            // right now, the shutdown command is working as expected, but cannot seem to trigger a restart.
             if (e.PackageId.Equals(DreyConstants.ConfigurationPackageName, StringComparison.OrdinalIgnoreCase))
             {
                 _log.InfoFormat("Control Panel 'Shell Request' Event Received: {0}", e);
@@ -72,8 +77,8 @@ namespace Drey
                         ShutdownConsole();
                         break;
                     case ShellAction.Restart:
+                        _restartConsoleTask.Start();
                         ShutdownConsole();
-                        StartupConsole();
                         break;
                     default:
                         _log.ErrorFormat("Received an unknown action: {0}", e.ActionToTake);
@@ -88,17 +93,27 @@ namespace Drey
 
         private bool StartupConsole()
         {
+            _log.Info("Console is starting up.");
             string packageDir = Utilities.PackageUtils.DiscoverPackage(DreyConstants.ConfigurationPackageName, _nutConfiguration.HoardeBaseDirectory);
-            var shell = _appFactory.Create(packageDir, ShellRequestHandler, _configureLogging);
-            shell.Item2.Startup(_nutConfiguration);
+            _console = _appFactory.Create(packageDir, ShellRequestHandler, _configureLogging);
+            _console.Item2.Startup(_nutConfiguration);
+
+            if (_restartConsoleTask == null)
+            {
+                _restartConsoleTask = new Task(ObserveConsoleFinalizationAndRestart);
+            }
+
             return true;
         }
 
         void ShutdownConsole()
         {
+            _log.Info("Console is shutting down.");
+
             try
             {
                 _console.Item2.Shutdown();
+                _log.Debug("Unloading console app domain.");
                 AppDomain.Unload(_console.Item1);
             }
             catch (CannotUnloadAppDomainException ex)
@@ -113,6 +128,27 @@ namespace Drey
             {
                 _console = null;
             }
+
+            _log.Info("Console has shutdown.");
+        }
+
+        void ObserveConsoleFinalizationAndRestart()
+        {
+            _log.Info("Waiting for console to shutdown so it can be restarted.");
+            bool restartIssued = false;
+
+            while (!restartIssued)
+            {
+                Task.Delay(TimeSpan.FromSeconds(5)).Wait();
+                if (_console == null)
+                {
+                    _restartConsoleTask = null;
+                    _log.Info("Console has completed its shutdown process... restarting.");
+                    StartupConsole();
+                    restartIssued = true;
+                }
+            }
+
         }
     }
 }

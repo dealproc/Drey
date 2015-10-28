@@ -87,7 +87,7 @@ namespace Drey.Configuration.ServiceModel
             _log.Info("Drey.Runtime is shutting down.");
 
             var packages = _packageRepository.GetPackages();
-            packages.Apply(p=>
+            packages.Apply(p =>
             {
                 _eventBus.Publish(new ShellRequestArgs
                 {
@@ -102,6 +102,15 @@ namespace Drey.Configuration.ServiceModel
             _runtimeHubProxy = null;
             _hubConnectionManager.Stop();
             _hubConnectionManager = null;
+
+            _eventBus.Publish(new ShellRequestArgs
+            {
+                ActionToTake = ShellAction.Restart,
+                PackageId = DreyConstants.ConfigurationPackageName,
+                Version = string.Empty,
+                ConfigurationManager = null
+            });
+
             return true;
         }
 

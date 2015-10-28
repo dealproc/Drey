@@ -62,7 +62,7 @@ namespace Drey.Configuration
 
         public override void Shutdown()
         {
-            base.Shutdown();
+            Log.InfoFormat("{id} is shutting down.", this.Id);
 
             _webApp.Dispose();
             _webApp = null;
