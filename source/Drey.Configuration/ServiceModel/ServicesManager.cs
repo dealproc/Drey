@@ -6,6 +6,7 @@ using Microsoft.AspNet.SignalR.Client;
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Drey.Configuration.ServiceModel
@@ -98,10 +99,18 @@ namespace Drey.Configuration.ServiceModel
                 });
             });
 
-            _pushServices.Apply(x => x.Stop());
+            if (_pushServices.Any())
+            {
+                _pushServices.Apply(x => x.Stop());
+            }
+
             _runtimeHubProxy = null;
-            _hubConnectionManager.Stop();
-            _hubConnectionManager = null;
+
+            if (_hubConnectionManager != null)
+            {
+                _hubConnectionManager.Stop();
+                _hubConnectionManager = null;
+            }
 
             _eventBus.Publish(new ShellRequestArgs
             {
