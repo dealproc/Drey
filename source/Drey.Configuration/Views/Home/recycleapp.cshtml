@@ -1,0 +1,26 @@
+﻿@inherits NancyRazorViewBase<IEnumerable<Drey.Configuration.DataModel.Release>>
+@{
+    ViewBag.Title = "Recycle Environment";
+    //var faBase = "fa fa-fw fa-3x";
+}
+
+<p class="lead">Recycling Hosting environment.</p>
+
+<p>By pressing `confirm`, you will be restarting the hosting environment, as well as any running applications within the environment.</p>
+
+<p>Current applications:</p>
+
+<ul class="">
+    @foreach (Drey.Configuration.DataModel.Release pkg in Model)
+    {
+        <li>@pkg.Title - @pkg.Description</li>
+    }
+</ul>
+
+<form method="post">
+    @Html.AntiForgeryToken()
+    <div>
+        <button type="submit" value="Confirm" class="btn btn-primary">Confirm</button>
+        <a href="~/" class="btn btn-default">Cancel</a>
+    </div>
+</form>

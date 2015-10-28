@@ -23,7 +23,7 @@ namespace Drey.Runtime
             nlogConfig.AddTarget("console", consoleTarget);
 
             // Step 3. Set target properties 
-            consoleTarget.Layout = @"${appdomain:format={1\}} - ${message} ${onexception: ${exception:format=ToString} | ${stacktrace:format=raw} }";
+            consoleTarget.Layout = @"${appdomain:format={0\}-{1\}} - ${message} ${onexception: ${exception:format=ToString} | ${stacktrace:format=raw} }";
 
             // Step 4. Define rules
             var rule1 = new LoggingRule("*", NLog.LogLevel.Debug, consoleTarget);
@@ -66,7 +66,6 @@ namespace Drey.Runtime
         public bool Start(HostControl hostControl)
         {
             _Log.Info("Starting Hoarde Service");
-            _Log.ErrorException("Test Exception", new Exception("Test Exception String"));
             return _control.Start();
         }
 

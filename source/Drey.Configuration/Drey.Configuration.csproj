@@ -109,7 +109,6 @@
     <Compile Include="DataModel\Package.cs" />
     <Compile Include="DataModel\Release.cs" />
     <Compile Include="Infrastructure\Events\RecycleApp.cs" />
-    <Compile Include="Infrastructure\Events\ReEstablishMonitoring.cs" />
     <Compile Include="Infrastructure\IHandle.cs" />
     <Compile Include="Infrastructure\EventBus.cs" />
     <Compile Include="Infrastructure\Schema\0100\201508241409_Register_DreyConfigurationApp.cs" />
@@ -194,6 +193,7 @@
     <EmbeddedResource Include="Views\Applet\appSettingEditor.cshtml" />
     <EmbeddedResource Include="Views\Setup\ServerUrl.cshtml" />
     <EmbeddedResource Include="Views\Setup\ClientCertificate.cshtml" />
+    <EmbeddedResource Include="Views\Home\recycleapp.cshtml" />
     <None Include="Views\Web.config" />
     <None Include="web.config" />
   </ItemGroup>

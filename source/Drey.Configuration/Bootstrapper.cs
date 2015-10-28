@@ -43,6 +43,7 @@ namespace Drey.Configuration
         protected override void ApplicationStartup(TinyIoCContainer container, IPipelines pipelines)
         {
             base.ApplicationStartup(container, pipelines);
+            Nancy.Security.Csrf.Enable(pipelines);
         }
 
         protected override void ConfigureApplicationContainer(TinyIoCContainer container)
@@ -82,7 +83,6 @@ namespace Drey.Configuration
             container.Register<ServiceModel.IServicesManager, ServiceModel.ServicesManager>().AsSingleton();
 
             _servicesManager = container.Resolve<ServiceModel.IServicesManager>();
-            _hoardeManager = container.Resolve<ServiceModel.HoardeManager>();
 
             _servicesManager.Start();
         }

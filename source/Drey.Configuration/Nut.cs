@@ -73,9 +73,7 @@ namespace Drey.Configuration
             if (message.PackageId.Equals(this.Id, StringComparison.OrdinalIgnoreCase))
             {
                 EmitShellRequest(message);
-                return;
             }
-            _hoardeManager.Handle(message);
         }
 
         private void BuildApp()

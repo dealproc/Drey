@@ -10,12 +10,12 @@ using System.Threading.Tasks;
 
 namespace Drey.Configuration.ServiceModel
 {
-    public interface IServicesManager : IHandle<Infrastructure.Events.ReEstablishMonitoring>, IHandle<Infrastructure.Events.RecycleApp>
+    public interface IServicesManager : IHandle<Infrastructure.Events.RecycleApp>
     {
         bool Start();
         bool Stop();
     }
-    public class ServicesManager : IServicesManager, IDisposable
+    public class ServicesManager : IServicesManager, IHandle<Infrastructure.Events.RecycleApp>, IDisposable
     {
         ILog _log;
 
@@ -86,6 +86,18 @@ namespace Drey.Configuration.ServiceModel
         {
             _log.Info("Drey.Runtime is shutting down.");
 
+            var packages = _packageRepository.GetPackages();
+            packages.Apply(p=>
+            {
+                _eventBus.Publish(new ShellRequestArgs
+                {
+                    ActionToTake = ShellAction.Shutdown,
+                    PackageId = p.Id,
+                    Version = string.Empty,
+                    ConfigurationManager = null
+                });
+            });
+
             _pushServices.Apply(x => x.Stop());
             _runtimeHubProxy = null;
             _hubConnectionManager.Stop();
@@ -93,20 +105,21 @@ namespace Drey.Configuration.ServiceModel
             return true;
         }
 
-        public void Handle(Infrastructure.Events.ReEstablishMonitoring message)
+        public void Handle(Infrastructure.Events.RecycleApp message)
         {
             Stop();
             Start();
-            InitializePollingClients();
-        }
-
-        public void Handle(Infrastructure.Events.RecycleApp message)
-        {
-            InitializePollingClients();
         }
 
         private Task Connect()
         {
+            if (!_globalSettings.HasValidSettings())
+            {
+                var tsc = new TaskCompletionSource<object>();
+                tsc.SetException(new Exception("System has not been setup"));
+                return tsc.Task;
+            };
+
             var brokerUrl = _globalSettings.GetServerHostname();
 
             _log.Trace("Connecting to runtime hub.");
@@ -144,6 +157,9 @@ namespace Drey.Configuration.ServiceModel
 
         private void InitializePollingClients()
         {
+            _log.Info("Initializing Polling Clients...");
+            var packages = _packageRepository.GetPackages();
+
             if (_pollingCollection != null)
             {
                 _pollingCollection.Dispose();
@@ -165,8 +181,7 @@ namespace Drey.Configuration.ServiceModel
             else
             {
                 // Just discover the packages from the hdd's hoarde directory and start 'em up.
-                var packagesToStartup = _packageRepository.GetPackages();
-                packagesToStartup.Apply(p =>
+                packages.Apply(p =>
                     _eventBus.Publish(new ShellRequestArgs
                     {
                         ActionToTake = ShellAction.Startup,

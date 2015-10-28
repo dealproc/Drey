@@ -61,7 +61,7 @@ namespace Drey
         {
             if (e.PackageId.Equals(DreyConstants.ConfigurationPackageName, StringComparison.OrdinalIgnoreCase))
             {
-                _log.InfoFormat("'Shell Request' Event Received: {0}", e);
+                _log.InfoFormat("Control Panel 'Shell Request' Event Received: {0}", e);
 
                 switch (e.ActionToTake)
                 {
