@@ -23,6 +23,7 @@ namespace Drey.Server.Tests
 
             container.Register<Server.Directors.IListLogsDirector>(_testFixture.ListLogsDirector);
             container.Register<Server.Directors.IOpenLogFileDirector>(_testFixture.OpenLogFileDirector);
+            container.Register<Server.Directors.IRecycleClientDirector>(_testFixture.RecycleClientDirector);
         }
     }
 }

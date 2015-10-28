@@ -115,6 +115,7 @@
   <ItemGroup>
     <Compile Include="Directors\ListLogsDirectorTests.cs" />
     <Compile Include="Directors\OpenLogFileDirectorTests.cs" />
+    <Compile Include="Directors\RecycleClientDirectorTests.cs" />
     <Compile Include="Fixtures\ReleasesStorage.cs" />
     <Compile Include="Hubs\RuntimeHubTests.cs" />
     <Compile Include="Modules\LogsModulesTests.cs" />

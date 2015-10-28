@@ -24,17 +24,19 @@ namespace Drey.Server.Tests
 
         public Server.Directors.IListLogsDirector ListLogsDirector { get; private set; }
         public Server.Directors.IOpenLogFileDirector OpenLogFileDirector { get; private set; }
+        public Server.Directors.IRecycleClientDirector RecycleClientDirector { get; private set; }
 
         public ApiTestFixture()
         {
-            ListLogsDirector = A.Fake<Server.Directors.IListLogsDirector>(opts =>
-            {
-            });
+            ListLogsDirector = A.Fake<Server.Directors.IListLogsDirector>();
             A.CallTo(() => ListLogsDirector.PendingTask).Returns(DomainModel.Response<IEnumerable<string>>.Success(string.Empty, (new string[] { "one", "two" }).AsEnumerable()));
             A.CallTo(() => ListLogsDirector.Initiate(A<string>.Ignored, A<DomainModel.Request<DomainModel.Empty>>.Ignored)).DoesNothing();
 
             OpenLogFileDirector = A.Fake<Server.Directors.IOpenLogFileDirector>();
             A.CallTo(() => OpenLogFileDirector.PendingTask).Returns(DomainModel.Response<byte[]>.Success(string.Empty, new byte[10]));
+
+            RecycleClientDirector = A.Fake<Server.Directors.IRecycleClientDirector>();
+            A.CallTo(() => RecycleClientDirector.PendingTask).Returns(DomainModel.Response<DomainModel.Empty>.Success(string.Empty, new DomainModel.Empty()));
 
             _bootstrapper = new TestNancyBootstrapper(this);
             _browser = new Browser(_bootstrapper, defaults: to => to.Accept("application/json"));
