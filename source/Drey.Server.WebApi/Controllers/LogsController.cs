@@ -14,7 +14,7 @@ namespace Drey.Server.Controllers
             _director = director;
         }
 
-        [Route("/runtime/Logs/ListFiles/{clientId}")]
+        [HttpPost, Route("/runtime/Logs/ListFiles/{clientId}")]
         public async Task<IHttpActionResult> Post([FromUri]string clientId, [FromUri]string token)
         {
             var model = new DomainModel.Request<DomainModel.Empty> { Token = token, Message = new DomainModel.Empty() };

@@ -56,6 +56,7 @@
   <ItemGroup>
     <Compile Include="Controllers\LogsController.cs" />
     <Compile Include="Controllers\NugetUploadController.cs" />
+    <Compile Include="Controllers\RecycleClientController.cs" />
     <Compile Include="Controllers\ReleasesController.cs" />
     <Compile Include="FileActionResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

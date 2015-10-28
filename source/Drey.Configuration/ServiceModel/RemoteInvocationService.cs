@@ -31,7 +31,7 @@ namespace Drey.Configuration.ServiceModel
         public void SubscribeToEvents(IHubProxy runtimeHubProxy)
         {
             _runtimeHubProxy = runtimeHubProxy;
-            Log.TraceFormat("Subscribing to {event} which will invoke {remoteMethod} upon completion.", _eventName, _remoteMethodName);
+            Log.DebugFormat("Subscribing to {event} which will invoke {remoteMethod} upon completion.", _eventName, _remoteMethodName);
             _runtimeHubProxy.On<TRequest>(_eventName, (request) =>
             {
                 Task.Factory.StartNew(async () =>

@@ -5,5 +5,6 @@ namespace Drey.Server.Hubs
     {
         void BeginListLogFiles(Request<Empty> request);
         void BeginOpenLogFile(Request<FileDownloadOptions> request);
+        void BeginRecycleClient(Request<Empty> request);
     }
 }

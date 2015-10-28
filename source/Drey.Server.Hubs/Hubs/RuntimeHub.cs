@@ -51,6 +51,11 @@ namespace Drey.Server.Hubs
             _log.Debug("Client returned log file.");
             _eventBus.Publish(completed, completed.Token);
         }
+        public void EndRecycleClient(DomainModel.Response<DomainModel.Empty> completed)
+        {
+            _log.Debug("Client is recycling itself.");
+            _eventBus.Publish(completed, completed.Token);
+        }
 
         public Task ReportHealth(DomainModel.EnvironmentInfo info)
         {

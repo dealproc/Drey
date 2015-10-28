@@ -59,6 +59,7 @@
   <ItemGroup>
     <Compile Include="Modules\LogsModules.cs" />
     <Compile Include="Modules\NugetUploadModule.cs" />
+    <Compile Include="Modules\RecycleClientModule.cs" />
     <Compile Include="Modules\well-known\ReleasesModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServerErrorHandler.cs" />

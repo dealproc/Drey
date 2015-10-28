@@ -145,6 +145,7 @@
     <Compile Include="ServiceModel\IRemoteInvocationService.cs" />
     <Compile Include="ServiceModel\ListLogsService.cs" />
     <Compile Include="ServiceModel\OpenLogFileService.cs" />
+    <Compile Include="ServiceModel\RecycleClientService.cs" />
     <Compile Include="ServiceModel\RegisteredPackagesPollingClient.cs" />
     <Compile Include="ServiceModel\ReleasesPollingClient.cs" />
     <Compile Include="ServiceModel\PollingClientCollection.cs" />
