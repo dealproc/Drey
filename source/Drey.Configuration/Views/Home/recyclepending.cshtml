@@ -1,0 +1,54 @@
+﻿@inherits NancyRazorViewBase<IEnumerable<Drey.Configuration.DataModel.Release>>
+@{
+    ViewBag.Title = "Recycle Environment";
+    //var faBase = "fa fa-fw fa-3x";
+}
+
+<p class="lead">Runtime is Recycling</p>
+
+<p>The runtime is currently recycling.  This page will reload in <span id="secondsLeft"></span> seconds.</p>
+
+<div class="progress">
+    <div id="timeRemaining" class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="100" aria-valuemin="100" aria-valuemax="100" style="width: 100%;">
+        <span id="timeRemainingText" class="sr-only">15 seconds remaining.</span>
+    </div>
+</div>
+
+@section Scripts {
+    <script type="text/javascript">
+        $(function () {
+            var originalTimeoutInSeconds = 15,
+                timeoutInSeconds = 15;
+
+            var $secondsLeft = $("#secondsLeft"),
+                $progressBar = $("#timeRemaining"),
+                $progressBarText = $("#timeRemainingText");
+
+            function updateDisplay()
+            {
+                $secondsLeft.text(timeoutInSeconds);
+
+                var pctRemaining = Math.floor(((timeoutInSeconds / originalTimeoutInSeconds) * 100));
+                
+                $progressBar
+                    .attr("aria-valuenow", pctRemaining)
+                    .attr("style", "width: " + pctRemaining + "%;");
+
+                $progressBarText.text(timeoutInSeconds + " seconds remaining.");
+            }
+
+            var timeoutId = setInterval(function () {
+                timeoutInSeconds--;
+
+                if (timeoutInSeconds === 0) {
+                    clearInterval(timeoutId);
+                    window.location.reload('/');
+                } else {
+                    updateDisplay();
+                }
+            }, 1000);
+
+            updateDisplay();
+        })
+    </script>
+}

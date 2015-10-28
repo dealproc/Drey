@@ -194,6 +194,7 @@
     <EmbeddedResource Include="Views\Setup\ServerUrl.cshtml" />
     <EmbeddedResource Include="Views\Setup\ClientCertificate.cshtml" />
     <EmbeddedResource Include="Views\Home\recycleapp.cshtml" />
+    <EmbeddedResource Include="Views\Home\recyclepending.cshtml" />
     <None Include="Views\Web.config" />
     <None Include="web.config" />
   </ItemGroup>

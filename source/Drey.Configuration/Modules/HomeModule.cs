@@ -4,6 +4,9 @@ using Drey.Logging;
 using Nancy;
 using Nancy.Security;
 
+using System;
+using System.Threading.Tasks;
+
 namespace Drey.Configuration.Modules
 {
     public class HomeModule : BaseModule
@@ -29,8 +32,18 @@ namespace Drey.Configuration.Modules
             Post["/recycle"] = _ =>
             {
                 this.ValidateCsrfToken();
-                _eventBus.Publish(new Infrastructure.Events.RecycleApp());
-                return Response.AsRedirect("~/", Nancy.Responses.RedirectResponse.RedirectType.SeeOther);
+                Task.Factory.StartNew(() =>
+                {
+                    _log.Debug("Waiting one second");
+                    Task.Delay(TimeSpan.FromSeconds(1)).Wait();
+                    _log.Debug("Issuing recycle app command.");
+                    _eventBus.Publish(new Infrastructure.Events.RecycleApp());
+                });
+                return Response.AsRedirect("~/pending", Nancy.Responses.RedirectResponse.RedirectType.SeeOther);
+            };
+            Get["/pending"] = _ =>
+            {
+                return View["recyclepending"];
             };
         }
     }
