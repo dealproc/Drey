@@ -58,7 +58,7 @@ namespace Drey.Configuration.Modules
             if (ModelValidationResult.IsValid)
             {
                 _globalSettingsService.StoreSettings(settingsPmo);
-                return Response.AsRedirect("~/", Nancy.Responses.RedirectResponse.RedirectType.Permanent);
+                return Response.AsRedirect("~/pending", Nancy.Responses.RedirectResponse.RedirectType.SeeOther); // redirect here so the app domain can reinstantiate itself.
             }
 
             return View["index", settingsPmo];
@@ -70,6 +70,7 @@ namespace Drey.Configuration.Modules
             return Negotiate.WithView("ClientCertificate");
         }
 
+        // TODO: Restructure this to re-boot all loaded applets.
         private dynamic SaveNewClientCertificate(dynamic arg)
         {
             _log.Debug("Updating new Client Certificate.");
@@ -107,6 +108,7 @@ namespace Drey.Configuration.Modules
             return Negotiate.WithView("ServerUrl").WithModel(new Services.ViewModels.ServerHostnamePmo { CurrentHostname = _globalSettingsService.GetServerHostname() });
         }
 
+        // TODO: Restructure this to re-boot all loaded applets.
         private dynamic SaveNewServerUrl(dynamic arg)
         {
             _log.Debug("Updating Server Url.");
