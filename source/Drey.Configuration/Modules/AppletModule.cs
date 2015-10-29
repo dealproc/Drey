@@ -11,8 +11,7 @@ namespace Drey.Configuration.Modules
     {
         IPackageService _packageService;
 
-        public AppletModule(IGlobalSettingsService globalSettingsService, IPackageService packageService)
-            : base(globalSettingsService, "/applet/{id}")
+        public AppletModule(IEventBus eventBus, IGlobalSettingsService globalSettingsService, IPackageService packageService) : base(eventBus, globalSettingsService, "/applet/{id}", true)
         {
             _packageService = packageService;
 

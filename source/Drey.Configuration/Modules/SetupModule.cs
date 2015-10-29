@@ -11,17 +11,12 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace Drey.Configuration.Modules
 {
-    public class SetupModule : NancyModule
+    public class SetupModule : BaseModule
     {
         static readonly ILog _log = LogProvider.For<SetupModule>();
 
-        readonly Services.IGlobalSettingsService _globalSettingsService;
-
-        public SetupModule(Services.IGlobalSettingsService globalSettingsService)
-            : base("/Setup")
+        public SetupModule(IEventBus eventBus, Services.IGlobalSettingsService globalSettingsService) : base(eventBus, globalSettingsService, "/Setup", false)
         {
-            _globalSettingsService = globalSettingsService;
-
             Get["/"] = GetIndex;
             Post["/"] = CommitSettings;
 
@@ -57,8 +52,9 @@ namespace Drey.Configuration.Modules
 
             if (ModelValidationResult.IsValid)
             {
-                _globalSettingsService.StoreSettings(settingsPmo);
-                return Response.AsRedirect("~/pending", Nancy.Responses.RedirectResponse.RedirectType.SeeOther); // redirect here so the app domain can reinstantiate itself.
+                GlobalSettingsService.StoreSettings(settingsPmo);
+
+                return RestartAppDomains();
             }
 
             return View["index", settingsPmo];
@@ -90,9 +86,9 @@ namespace Drey.Configuration.Modules
                 }
 
                 var clientSslObj = new X509Certificate2(cert, (string)null);
-                _globalSettingsService.UpdateSSLCertificate(cert);
+                GlobalSettingsService.UpdateSSLCertificate(cert);
 
-                return Response.AsRedirect("~/");
+                return RestartAppDomains();
             }
             catch (Exception ex)
             {
@@ -105,7 +101,7 @@ namespace Drey.Configuration.Modules
         private dynamic UpdateServerUrl(dynamic arg)
         {
             _log.Debug("Attempting to update Server Url.");
-            return Negotiate.WithView("ServerUrl").WithModel(new Services.ViewModels.ServerHostnamePmo { CurrentHostname = _globalSettingsService.GetServerHostname() });
+            return Negotiate.WithView("ServerUrl").WithModel(new Services.ViewModels.ServerHostnamePmo { CurrentHostname = GlobalSettingsService.GetServerHostname() });
         }
 
         // TODO: Restructure this to re-boot all loaded applets.
@@ -116,11 +112,11 @@ namespace Drey.Configuration.Modules
 
             if (ModelValidationResult.IsValid)
             {
-                _globalSettingsService.UpdateServerHostname(model.NewHostname);
-                return Response.AsRedirect("~/");
+                GlobalSettingsService.UpdateServerHostname(model.NewHostname);
+                return RestartAppDomains();
             }
 
-            model.CurrentHostname = _globalSettingsService.GetServerHostname();
+            model.CurrentHostname = GlobalSettingsService.GetServerHostname();
             return Negotiate.WithView("ServerUrl").WithModel(model);
         }
     }
