@@ -10,7 +10,6 @@ namespace Drey.Configuration.Services
 {
     public class GlobalSettingsService : MarshalByRefObject, IGlobalSettingsService
     {
-        readonly IEventBus _eventBus;
         readonly IGlobalSettingsRepository _globalSettingsRepository;
 
         /// <summary>
@@ -18,9 +17,8 @@ namespace Drey.Configuration.Services
         /// </summary>
         /// <param name="eventBus">The event bus.</param>
         /// <param name="globalSettingsRepository">The global settings repository.</param>
-        public GlobalSettingsService(IEventBus eventBus, IGlobalSettingsRepository globalSettingsRepository)
+        public GlobalSettingsService(IGlobalSettingsRepository globalSettingsRepository)
         {
-            _eventBus = eventBus;
             _globalSettingsRepository = globalSettingsRepository;
         }
 
@@ -34,8 +32,6 @@ namespace Drey.Configuration.Services
         {
             UpdateServerHostname(settings.ServerHostname);
             UpdateSSLCertificate(settings.SSLPfx);
-
-            _eventBus.Publish(new Infrastructure.Events.RecycleApp());
 
             return true;
         }

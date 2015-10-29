@@ -1,27 +1,29 @@
 ﻿using Drey.Configuration.Repositories;
 using Drey.Configuration.Services;
+
 using FakeItEasy;
-using System;
-using Xunit;
+
 using Shouldly;
+
+using System;
 using System.Collections.Generic;
+
+using Xunit;
 
 namespace Drey.Configuration.Tests.Services
 {
     public class GlobalSettingsServiceTests
     {
-        IEventBus _eventBus;
         IGlobalSettingsRepository _globalSettingsRepository;
         IGlobalSettingsService _SUT;
 
         public GlobalSettingsServiceTests()
         {
-            _eventBus = A.Dummy<IEventBus>();
             _globalSettingsRepository = A.Fake<IGlobalSettingsRepository>(opts =>
             {
                 opts.Strict();
             });
-            _SUT = new GlobalSettingsService(_eventBus, _globalSettingsRepository);
+            _SUT = new GlobalSettingsService(_globalSettingsRepository);
         }
 
         [Fact]
