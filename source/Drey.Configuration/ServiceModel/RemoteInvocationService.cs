@@ -34,6 +34,7 @@ namespace Drey.Configuration.ServiceModel
             Log.DebugFormat("Subscribing to {event} which will invoke {remoteMethod} upon completion.", _eventName, _remoteMethodName);
             _runtimeHubProxy.On<TRequest>(_eventName, (request) =>
             {
+                Log.DebugFormat("Received {event} from server.", _eventName);
                 Task.Factory.StartNew(async () =>
                 {
                     TResponse response = default(TResponse);

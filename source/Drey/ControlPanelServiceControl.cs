@@ -24,6 +24,9 @@ namespace Drey
 
         public ControlPanelServiceControl(ExecutionMode mode = ExecutionMode.Production, Action<INutConfiguration> configureLogging = null)
         {
+            _nutConfiguration = new ApplicationHostNutConfiguration { Mode = mode };
+            _executionMode = mode;
+
             if (configureLogging != null)
             {
                 _configureLogging = configureLogging;
@@ -32,8 +35,6 @@ namespace Drey
 
             _log = LogProvider.For<ControlPanelServiceControl>();
             _appFactory = new ShellFactory();
-            _nutConfiguration = new ApplicationHostNutConfiguration { Mode = mode };
-            _executionMode = mode;
         }
 
         public bool Start()
