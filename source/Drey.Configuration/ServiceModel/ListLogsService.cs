@@ -1,7 +1,9 @@
-﻿using Drey.Nut;
+﻿using Drey.Logging;
+using Drey.Nut;
 
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Drey.Configuration.ServiceModel
@@ -18,7 +20,11 @@ namespace Drey.Configuration.ServiceModel
         {
             if (!Directory.Exists(_configurationManager.LogsDirectory)) { Directory.CreateDirectory(_configurationManager.LogsDirectory); }
 
+            Log.DebugFormat("Listing logs from {directory}.", _configurationManager.LogsDirectory);
+
             var files = Directory.EnumerateFiles(_configurationManager.LogsDirectory, "*.*", SearchOption.AllDirectories);
+
+            Log.DebugFormat("Found {count} logs.", files.Count());
 
             return Task.FromResult(DomainModel.Response<IEnumerable<string>>.Success(request.Token, files));
         }
