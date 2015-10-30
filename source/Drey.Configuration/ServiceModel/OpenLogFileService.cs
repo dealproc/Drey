@@ -24,7 +24,7 @@ namespace Drey.Configuration.ServiceModel
                 relativePath = relativePath.Substring(1);
             }
 
-            var logFile = Path.Combine(_configurationManager.LogsDirectory, relativePath).NormalizePathSeparator();
+            var logFile = Drey.Utilities.PathUtilities.MapPath(Path.Combine(_configurationManager.LogsDirectory, relativePath));
 
             if (File.Exists(logFile))
             {

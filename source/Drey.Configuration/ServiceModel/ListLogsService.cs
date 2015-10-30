@@ -20,7 +20,7 @@ namespace Drey.Configuration.ServiceModel
         {
             if (!Directory.Exists(_configurationManager.LogsDirectory)) { Directory.CreateDirectory(_configurationManager.LogsDirectory); }
 
-            Log.DebugFormat("Listing logs from {directory}.", _configurationManager.LogsDirectory);
+            Log.DebugFormat("Listing logs from {directory}.", Drey.Utilities.PathUtilities.MapPath(_configurationManager.LogsDirectory));
 
             var files = Directory.EnumerateFiles(_configurationManager.LogsDirectory, "*.*", SearchOption.AllDirectories);
 
