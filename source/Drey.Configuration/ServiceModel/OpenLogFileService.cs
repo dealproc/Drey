@@ -1,4 +1,5 @@
 ﻿using Drey.Nut;
+using Drey.Logging;
 using Drey.Utilities;
 
 using System.IO;
@@ -19,15 +20,21 @@ namespace Drey.Configuration.ServiceModel
         {
             var relativePath = request.Message.RelativeOrAbsolutePath;
 
-            while (relativePath.StartsWith("\\"))
+            Log.InfoFormat("Read Log File Request received for: '{relativePath}'", relativePath);
+
+            while (relativePath.StartsWith("\\") || relativePath.StartsWith("/"))
             {
                 relativePath = relativePath.Substring(1);
             }
 
+            Log.DebugFormat("After removing starting slash(es), relative path looks like '{relativePath}'", relativePath);
+
             var logFile = Drey.Utilities.PathUtilities.MapPath(Path.Combine(_configurationManager.LogsDirectory, relativePath));
+            Log.DebugFormat("Absolute path for log file is: {absoluteLogPath}", logFile);
 
             if (File.Exists(logFile))
             {
+                Log.Info("Log file found.  Compressing and returning to consumer.");
                 var ms = new MemoryStream();
 
                 using (var zip = new GZipStream(ms, CompressionLevel.Optimal))
@@ -38,6 +45,8 @@ namespace Drey.Configuration.ServiceModel
 
                 return DomainModel.Response<byte[]>.Success(request.Token, ms.ToArray());
             }
+
+            Log.Warn("Log file does not exist.");
             return DomainModel.Response<byte[]>.Failure(request.Token, "File does not exist.", 1M, default(byte[]));
 
         }
