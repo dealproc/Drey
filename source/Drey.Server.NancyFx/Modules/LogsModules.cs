@@ -15,11 +15,11 @@ namespace Drey.Server.Modules
 
         readonly Directors.IListLogsDirector _director;
 
-        public ListLogsModule(Directors.IListLogsDirector director) : base("/runtime")
+        public ListLogsModule(Directors.IListLogsDirector director) : base("/runtime/Logs")
         {
             _director = director;
 
-            Post["/Logs/ListFiles/{clientId}", runAsync: true] = ListLogFilesAsync;
+            Post["/ListFiles/{clientId}", runAsync: true] = ListLogFilesAsync;
         }
 
         private Task<dynamic> ListLogFilesAsync(dynamic arg, CancellationToken ct)
@@ -48,11 +48,11 @@ namespace Drey.Server.Modules
         
         readonly Directors.IOpenLogFileDirector _director;
 
-        public OpenLogFileModule(Directors.IOpenLogFileDirector director) : base("/runtime")
+        public OpenLogFileModule(Directors.IOpenLogFileDirector director) : base("/runtime/Logs")
         {
             _director = director;
 
-            Post["/Logs/OpenLog/{clientId}", runAsync: true] = OpenLogFileAsync;
+            Post["/OpenLog/{clientId}", runAsync: true] = OpenLogFileAsync;
         }
 
         private Task<dynamic> OpenLogFileAsync(dynamic arg, CancellationToken ct)

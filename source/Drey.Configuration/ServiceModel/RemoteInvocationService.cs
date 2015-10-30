@@ -49,6 +49,8 @@ namespace Drey.Configuration.ServiceModel
                     }
                     catch (Exception ex)
                     {
+                        Log.ErrorException("Exceptions occurred during ProcessAsync", ex);
+
                         // Bad juju, but a TResponse is a Response<TResponseMessage>, so this should be ok.
                         response = (TResponse)DomainModel.Response<TResponseMessage>.Failure(request.Token, ex, 1);
                     }
