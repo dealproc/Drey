@@ -18,11 +18,13 @@ namespace Drey.Configuration.ServiceModel
         }
         protected override Task<DomainModel.Response<IEnumerable<string>>> ProcessAsync(DomainModel.Request<DomainModel.Empty> request)
         {
-            if (!Directory.Exists(_configurationManager.LogsDirectory)) { Directory.CreateDirectory(_configurationManager.LogsDirectory); }
+            var absoluteLogsPath = Drey.Utilities.PathUtilities.MapPath(_configurationManager.LogsDirectory);
 
-            Log.DebugFormat("Listing logs from {directory}.", Drey.Utilities.PathUtilities.MapPath(_configurationManager.LogsDirectory));
+            if (!Directory.Exists(absoluteLogsPath)) { Directory.CreateDirectory(absoluteLogsPath); }
 
-            var files = Directory.EnumerateFiles(_configurationManager.LogsDirectory, "*.*", SearchOption.AllDirectories);
+            Log.DebugFormat("Listing logs from {directory}.", absoluteLogsPath);
+
+            var files = Directory.EnumerateFiles(absoluteLogsPath, "*.*", SearchOption.AllDirectories);
 
             Log.DebugFormat("Found {count} logs.", files.Count());
 
