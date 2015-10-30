@@ -60,14 +60,14 @@ namespace Drey.Server.Modules
             _log.Info("Attempting to open a log file from a client.");
             var model = this.Bind<DomainModel.Request<DomainModel.FileDownloadOptions>>();
 
-            _log.DebugFormat("Client id: {clientId} | token {token}", (string)arg.clientId, model.Token);
-
             if (string.IsNullOrWhiteSpace(model.Token))
             {
                 _log.Debug("Token was not present in request.");
                 var badRequest = new Nancy.Response { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = "Requests require a token querystring value to process." };
                 return Task.FromResult(badRequest).AsDynamicTask();
             }
+
+            _log.DebugFormat("Client id: {clientId} | token {token}", (string)arg.clientId, model.Token);
 
             _log.Info("Requesting log file from client.");
             _director.Initiate(arg.clientId, model);
