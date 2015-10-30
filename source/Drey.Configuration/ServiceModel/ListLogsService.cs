@@ -24,7 +24,7 @@ namespace Drey.Configuration.ServiceModel
 
             Log.DebugFormat("Listing logs from {directory}.", absoluteLogsPath);
 
-            var files = Directory.EnumerateFiles(absoluteLogsPath, "*.*", SearchOption.AllDirectories);
+            var files = Directory.EnumerateFiles(absoluteLogsPath, "*.*", SearchOption.AllDirectories).Select(file => file.Remove(0, absoluteLogsPath.Length));
 
             Log.DebugFormat("Found {count} logs.", files.Count());
 
