@@ -59,7 +59,7 @@ namespace Drey.Server.Modules
         {
             _log.Info("Attempting to open a log file from a client.");
 
-            string token = (string)this.Request.Query.token.ToString();
+            string token = (string)this.Request.Query["token"];
             string clientId = (string)arg.clientId;
 
             var model = this.Bind<DomainModel.FileDownloadOptions>();
