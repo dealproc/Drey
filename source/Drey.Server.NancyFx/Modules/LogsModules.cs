@@ -25,7 +25,7 @@ namespace Drey.Server.Modules
         private Task<dynamic> ListLogFilesAsync(dynamic arg, CancellationToken ct)
         {
             _log.Info("Attempting to list client logs.");
-            var model = this.Bind<DomainModel.Request<DomainModel.Empty>>();
+            var model = this.Bind<DomainModel.Request<DomainModel.Empty>>(); // TODO: dirty code... should be cleaned up to do the same as below.
 
             _log.DebugFormat("Client id: {clientId} | Token: {token}", (string)arg.clientId, model.Token);
 
@@ -58,19 +58,23 @@ namespace Drey.Server.Modules
         private Task<dynamic> OpenLogFileAsync(dynamic arg, CancellationToken ct)
         {
             _log.Info("Attempting to open a log file from a client.");
-            var model = this.Bind<DomainModel.Request<DomainModel.FileDownloadOptions>>();
 
-            if (string.IsNullOrWhiteSpace(model.Token))
+            string token = (string)this.Request.Query.token.ToString();
+            string clientId = (string)arg.clientId;
+
+            var model = this.Bind<DomainModel.FileDownloadOptions>();
+
+            if (string.IsNullOrWhiteSpace(token))
             {
                 _log.Debug("Token was not present in request.");
                 var badRequest = new Nancy.Response { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = "Requests require a token querystring value to process." };
                 return Task.FromResult(badRequest).AsDynamicTask();
             }
 
-            _log.DebugFormat("Client id: {clientId} | token {token}", (string)arg.clientId, model.Token);
+            _log.DebugFormat("Client id: {clientId} | token {token}", clientId, token);
 
             _log.Info("Requesting log file from client.");
-            _director.Initiate(arg.clientId, model);
+            _director.Initiate(clientId, new DomainModel.Request<DomainModel.FileDownloadOptions> { Token = token, Message = model });
             return _director.PendingTask.AsDynamicTask();
         }
     }
