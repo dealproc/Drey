@@ -73,7 +73,7 @@ namespace Drey.Configuration.Repositories.SQLiteRepositories
                     return;
                 }
 
-                cn.Execute(@"UPDATE PackageSettings SET PackageId = @packageId, Key = @key, Value = @value, UpdatedOn = @updatedOn, WHERE ID = @id;", parms);
+                cn.Execute(@"UPDATE PackageSettings SET PackageId = @packageId, Key = @key, Value = @value, UpdatedOn = @updatedOn WHERE ID = @id;", parms);
             });
         }
 
@@ -89,7 +89,7 @@ namespace Drey.Configuration.Repositories.SQLiteRepositories
                     return;
                 }
 
-                cn.Execute(@"UPDATE PackageSettings SET PackageId = @packageId, Key = @key, Value = @value, UpdatedOn = @updatedOn, WHERE ID = @id;", parms);
+                cn.Execute(@"UPDATE PackageSettings SET PackageId = @packageId, Key = @key, Value = @value, UpdatedOn = @updatedOn WHERE ID = @id;", parms);
             });
         }
     }
