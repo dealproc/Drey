@@ -74,6 +74,11 @@
     <Compile Include="Services\IGroupMembershipService.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
+    <None Include="Drey.Server.Hubs.nuspec" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\Drey.DomainModel\Drey.DomainModel.csproj">
       <Project>{424b2437-2f2e-414c-a353-aa8bbbc6e052}</Project>
       <Name>Drey.DomainModel</Name>
@@ -82,11 +87,6 @@
       <Project>{beb7292d-69ec-49f2-878c-c04ff16a72a2}</Project>
       <Name>Drey.Server.Core</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="app.config" />
-    <None Include="Drey.Server.Hubs.nuspec" />
-    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
