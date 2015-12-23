@@ -29,7 +29,7 @@ namespace Drey.Configuration.ServiceModel
 
             Log.DebugFormat("After removing starting slash(es), relative path looks like '{relativePath}'", relativePath);
 
-            var logFile = Drey.Utilities.PathUtilities.MapPath(Path.Combine(_configurationManager.LogsDirectory, relativePath));
+            var logFile = Path.Combine(Drey.Utilities.PathUtilities.MapPath(_configurationManager.LogsDirectory), relativePath);
             Log.DebugFormat("Absolute path for log file is: {absoluteLogPath}", logFile);
 
             if (File.Exists(logFile))
