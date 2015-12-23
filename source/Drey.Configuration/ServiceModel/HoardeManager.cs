@@ -107,7 +107,9 @@ namespace Drey.Configuration.ServiceModel
                 try
                 {
                     instance.Item2.Shutdown();
+                    _log.Debug("Shutdown has completed."); 
                     instance.Item2.Dispose();
+                    _log.Debug("Shell has been disposed.");
                     AppDomain.Unload(instance.Item1);
                 }
                 catch (CannotUnloadAppDomainException ex)
@@ -120,7 +122,14 @@ namespace Drey.Configuration.ServiceModel
                 }
                 finally
                 {
-                    _apps.TryRemove(key, out removed);
+                    if (_apps.TryRemove(key, out removed))
+                    {
+                        _log.Debug("App domain details have been removed from hoarde successfully.");
+                    }
+                    else
+                    {
+                        _log.Debug("Removal of app domain details from hoarde did not happen.");
+                    }
                 }
             }
         }
