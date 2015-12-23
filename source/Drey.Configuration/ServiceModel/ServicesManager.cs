@@ -28,6 +28,7 @@ namespace Drey.Configuration.ServiceModel
         readonly Repositories.IPackageRepository _packageRepository;
         readonly Repositories.IConnectionStringRepository _connectionStringsRepository;
         readonly Repositories.IPackageSettingRepository _packageSettingsRepository;
+        readonly HoardeManager _hoardeManager;
 
 
         IHubConnectionManager _hubConnectionManager;
@@ -47,7 +48,7 @@ namespace Drey.Configuration.ServiceModel
         public ServicesManager(INutConfiguration configurationManager, IEventBus eventBus, IEnumerable<IRemoteInvocationService> remoteInvokedServices,
             IEnumerable<IReportPeriodically> pushServices, Services.IGlobalSettingsService globalSettings, Func<RegisteredPackagesPollingClient> packagesPollerFactory,
             Func<PollingClientCollection> pollingCollectionFactory, Repositories.IPackageRepository packageRepository, Repositories.IConnectionStringRepository connectionStringsRepository,
-            Repositories.IPackageSettingRepository packageSettingsRepository)
+            Repositories.IPackageSettingRepository packageSettingsRepository, HoardeManager hoardeManager)
         {
             _log = LogProvider.For<ServicesManager>();
 
@@ -63,6 +64,8 @@ namespace Drey.Configuration.ServiceModel
             _packageRepository = packageRepository;
             _connectionStringsRepository = connectionStringsRepository;
             _packageSettingsRepository = packageSettingsRepository;
+
+            _hoardeManager = hoardeManager;
 
             _eventBus.Subscribe(this);
         }
@@ -87,10 +90,13 @@ namespace Drey.Configuration.ServiceModel
         {
             _log.Info("Drey.Runtime is shutting down.");
 
-            var packages = _packageRepository.GetPackages();
+            var packages = _packageRepository.GetPackages().Where(pkg => pkg.Id != DreyConstants.ConfigurationPackageName);
+            
             packages.Apply(p =>
             {
-                _eventBus.Publish(new ShellRequestArgs
+                // Had to refactor from using the event bus due to the event bus not
+                // respecting delays from the shutdown process of each package.
+                _hoardeManager.Handle(new ShellRequestArgs
                 {
                     ActionToTake = ShellAction.Shutdown,
                     PackageId = p.Id,
@@ -109,6 +115,7 @@ namespace Drey.Configuration.ServiceModel
             if (_hubConnectionManager != null)
             {
                 _hubConnectionManager.Stop();
+                _hubConnectionManager.Dispose();
                 _hubConnectionManager = null;
             }
 

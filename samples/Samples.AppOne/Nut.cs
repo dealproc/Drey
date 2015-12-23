@@ -20,8 +20,16 @@ namespace Samples.AppOne
 
         public override void Shutdown()
         {
-            _log.Info("Shutting down after 2 second delay");
-            Thread.Sleep(2000);
+            _log.Info("Shutting down after 1 second delay");
+            Thread.Sleep(1000);
+            _log.Info("Shutting down after 1 second delay");
+            Thread.Sleep(1000);
+            _log.Info("Shutting down after 1 second delay");
+            Thread.Sleep(1000);
+            _log.Info("Shutting down after 1 second delay");
+            Thread.Sleep(1000);
+            _log.Info("Shutting down after 1 second delay");
+            Thread.Sleep(1000);
         }
 
         public override string Id
