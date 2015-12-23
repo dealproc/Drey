@@ -115,6 +115,7 @@
     <Compile Include="Infrastructure\Schema\MigrationManager.cs" />
     <Compile Include="Infrastructure\SignalR\HubConnectionManager.cs" />
     <Compile Include="Infrastructure\SignalR\IHubConnectionManager.cs" />
+    <Compile Include="Infrastructure\SignalR\LibLogTraceWriter.cs" />
     <Compile Include="Modules\AppletModule.cs" />
     <Compile Include="Modules\BaseModule.cs" />
     <Compile Include="RazorConfig.cs" />

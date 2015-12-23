@@ -57,11 +57,13 @@ namespace Drey.Configuration.Infrastructure
         private HubConnectionManager(string url)
         {
             _hubConnection = new HubConnection(url);
+            _hubConnection.TraceWriter = new LibLogTraceWriter();
         }
 
         private HubConnectionManager(HubConnection hubConnection)
         {
             _hubConnection = hubConnection;
+            _hubConnection.TraceWriter = new LibLogTraceWriter();
         }
 
         ~HubConnectionManager()
