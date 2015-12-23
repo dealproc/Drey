@@ -1,10 +1,13 @@
 ﻿using Drey.Logging;
 using Drey.Nut;
+
 using NLog;
 using NLog.Config;
 using NLog.Targets;
+
 using System;
 using System.IO;
+
 using Topshelf;
 
 namespace Drey.Runtime
@@ -30,7 +33,7 @@ namespace Drey.Runtime
             fileTarget.Layout = "${longdate}|${level:uppercase=true}|${logger}|${message}|${exception:maxInnerExceptionLevel=4}";
 
             // Step 4. Define rules
-            var rule1 = new LoggingRule("*", NLog.LogLevel.Debug, consoleTarget);
+            var rule1 = new LoggingRule("*", NLog.LogLevel.Trace, consoleTarget);
             nlogConfig.LoggingRules.Add(rule1);
 
             var rule2 = new LoggingRule("*", NLog.LogLevel.Debug, fileTarget);
