@@ -1,12 +1,13 @@
 ﻿using Drey.Logging;
-
 using System;
 using System.Collections.Generic;
+using System.Runtime.Remoting;
+using System.Runtime.Remoting.Lifetime;
 using System.Security.Permissions;
 
 namespace Drey.Nut
 {
-    public abstract class ShellBase : MarshalByRefObject, IShell
+    public abstract class ShellBase : MarshalByRefObject, IShell, IDisposable
     {
         static ILog _Log = LogProvider.GetCurrentClassLogger();
         protected static ILog Log { get { return _Log; } }
@@ -14,6 +15,14 @@ namespace Drey.Nut
         public abstract string Id { get; }
         public abstract bool RequiresConfigurationStorage { get; }
         protected bool Disposed { get; private set; }
+
+        /// <summary>
+        /// Gets an enumeration of nested <see cref="MarshalByRefObject"/> objects.
+        /// </summary>
+        protected virtual IEnumerable<MarshalByRefObject> NestedMarshalByRefObjects
+        {
+            get { yield break; }
+        }
 
         public ShellBase()
         {
@@ -81,12 +90,18 @@ namespace Drey.Nut
         /// </summary>
         public void Dispose()
         {
+            GC.SuppressFinalize(this);
             Dispose(true);
         }
 
         [SecurityPermission(SecurityAction.Demand, Flags = SecurityPermissionFlag.Infrastructure)]
         public override object InitializeLifetimeService()
         {
+            //
+            // Returning null designates an infinite non-expiring lease.
+            // We must therefore ensure that RemotingServices.Disconnect() is called when
+            // it's no longer needed otherwise there will be a memory leak.
+            //
             return null;
         }
 
@@ -94,7 +109,19 @@ namespace Drey.Nut
         {
             if (!disposing || Disposed) { return; }
 
+            Disconnect();
+
             Disposed = true;
+        }
+
+        private void Disconnect()
+        {
+            RemotingServices.Disconnect(this);
+
+            foreach (var tmp in NestedMarshalByRefObjects)
+            {
+                RemotingServices.Disconnect(tmp);
+            }
         }
 
         /// <summary>

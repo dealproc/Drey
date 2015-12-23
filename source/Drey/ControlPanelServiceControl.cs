@@ -114,6 +114,7 @@ namespace Drey
             try
             {
                 _console.Item2.Shutdown();
+                _console.Item2.Dispose();
                 _log.Debug("Unloading console app domain.");
                 AppDomain.Unload(_console.Item1);
             }

@@ -107,6 +107,7 @@ namespace Drey.Configuration.ServiceModel
                 try
                 {
                     instance.Item2.Shutdown();
+                    instance.Item2.Dispose();
                     AppDomain.Unload(instance.Item1);
                 }
                 catch (CannotUnloadAppDomainException ex)
