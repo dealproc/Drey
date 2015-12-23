@@ -191,19 +191,18 @@ namespace Drey.Configuration.ServiceModel
         public void Dispose()
         {
             Dispose(true);
-            _disposed = true;
-
             GC.SuppressFinalize(this);
         }
         protected virtual void Dispose(bool disposing)
         {
+            if (!disposing || _disposed) { return; }
+
             if (_reportHealthTrigger != null)
             {
                 _reportHealthTrigger.Dispose();
                 _reportHealthTrigger = null;
             }
-
-            if (!disposing || _disposed) { return; }
+            _disposed = true;
         }
     }
 }

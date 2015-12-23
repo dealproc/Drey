@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace Drey.Configuration.ServiceModel
 {
-    public class HoardeManager : MarshalByRefObject, IHandle<ShellRequestArgs>
+    public class HoardeManager : MarshalByRefObject, IHandle<ShellRequestArgs>, IDisposable
     {
         static ILog _log = LogProvider.For<HoardeManager>();
 
@@ -18,6 +18,8 @@ namespace Drey.Configuration.ServiceModel
 
         ConcurrentDictionary<Guid, Tuple<AppDomain, IShell>> _apps;
         EventHandler<ShellRequestArgs> _shellRequestHandler;
+
+        bool _disposed = false;
 
         public HoardeManager(IEventBus eventBus, INutConfiguration configurationManager, EventHandler<ShellRequestArgs> shellRequestHandler, Action<INutConfiguration> configureLogging)
         {
@@ -31,7 +33,11 @@ namespace Drey.Configuration.ServiceModel
 
             _eventBus.Subscribe(this);
         }
-
+        ~HoardeManager()
+        {
+            Dispose(false);
+        }
+        
         public void Handle(ShellRequestArgs e)
         {
             _log.InfoFormat("'Shell Request' Event Received: {packageId} | {event}", e.PackageId, e.ActionToTake);
@@ -107,7 +113,7 @@ namespace Drey.Configuration.ServiceModel
                 try
                 {
                     instance.Item2.Shutdown();
-                    _log.Debug("Shutdown has completed."); 
+                    _log.Debug("Shutdown has completed.");
                     instance.Item2.Dispose();
                     _log.Debug("Shell has been disposed.");
                     AppDomain.Unload(instance.Item1);
@@ -132,6 +138,23 @@ namespace Drey.Configuration.ServiceModel
                     }
                 }
             }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposing || _disposed) { return; }
+
+            var appIds = _apps.Select(x => x.Value.Item2.Id).ToArray();
+
+            appIds.Apply(ShutdownInstance);
+
+            _disposed = true;
         }
     }
 }

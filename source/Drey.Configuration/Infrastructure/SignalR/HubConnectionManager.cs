@@ -15,9 +15,9 @@ namespace Drey.Configuration.Infrastructure
     public class HubConnectionManager : IHubConnectionManager
     {
         static readonly ILog _log = LogProvider.For<HubConnectionManager>();
-        
+
         private readonly HubConnection _hubConnection;
-        
+
         private int _retryPeriod = 10000;
         private bool _disposed = false;
 

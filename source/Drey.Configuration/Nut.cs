@@ -17,6 +17,7 @@ namespace Drey.Configuration
     {
         IEventBus _eventBus;
         IDisposable _webApp;
+        [NonSerialized]
         ServiceModel.HoardeManager _hoardeManager;
 
         /// <summary>
@@ -64,6 +65,7 @@ namespace Drey.Configuration
         {
             Log.InfoFormat("{id} is shutting down.", this.Id);
 
+            _hoardeManager.Dispose();
             _webApp.Dispose();
             _webApp = null;
         }
@@ -105,6 +107,12 @@ namespace Drey.Configuration
             {
                 _webApp.Dispose();
                 _webApp = null;
+            }
+
+            if (_hoardeManager != null)
+            {
+                _hoardeManager.Dispose();
+                _hoardeManager = null;
             }
         }
     }
