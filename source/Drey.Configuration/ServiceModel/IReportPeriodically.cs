@@ -1,5 +1,8 @@
 ﻿using Drey.Configuration.Infrastructure;
+
 using Microsoft.AspNet.SignalR.Client;
+
+using System;
 
 namespace Drey.Configuration.ServiceModel
 {

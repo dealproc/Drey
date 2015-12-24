@@ -1,4 +1,6 @@
-﻿using Drey.Configuration.Infrastructure.Schema;
+﻿using Autofac;
+
+using Drey.Configuration.Infrastructure.Schema;
 using Drey.Logging;
 using Drey.Nut;
 
@@ -19,6 +21,8 @@ namespace Drey.Configuration
         IDisposable _webApp;
         [NonSerialized]
         ServiceModel.HoardeManager _hoardeManager;
+        [NonSerialized]
+        ServiceModel.IServicesManager _servicesManager;
 
         /// <summary>
         /// Gets the version of the dll for display on the web console.
@@ -58,7 +62,18 @@ namespace Drey.Configuration
             _eventBus = new EventBus();
             _hoardeManager = new ServiceModel.HoardeManager(_eventBus, configurationManager, ShellRequestHandler, this.ConfigureLogging);
 
-            BuildApp();
+            Infrastructure.IoC.AutofacConfig.Configure(_eventBus, _hoardeManager, configurationManager);
+
+            _eventBus.Subscribe(this);
+
+            _servicesManager = Infrastructure.IoC.AutofacConfig.Container.Resolve<ServiceModel.IServicesManager>();
+            _servicesManager.Start();
+
+            var startupUri = string.Format("http://localhost:{0}/", ConfigurationManager.ApplicationSettings["drey.configuration.consoleport"]);
+            var host = new NancyHost(new Bootstrapper(), new[] { new Uri(startupUri) });
+            host.Start();
+
+            _webApp = host;
         }
 
         public override void Shutdown()
@@ -76,17 +91,6 @@ namespace Drey.Configuration
             {
                 EmitShellRequest(message);
             }
-        }
-
-        private void BuildApp()
-        {
-            _eventBus.Subscribe(this);
-
-            var startupUri = string.Format("http://localhost:{0}/", ConfigurationManager.ApplicationSettings["drey.configuration.consoleport"]);
-            var host = new NancyHost(new Bootstrapper(_hoardeManager, _eventBus, ConfigurationManager), new[] { new Uri(startupUri) });
-            host.Start();
-
-            _webApp = host;
         }
 
         protected override void Dispose(bool disposing)
@@ -113,6 +117,12 @@ namespace Drey.Configuration
             {
                 _hoardeManager.Dispose();
                 _hoardeManager = null;
+            }
+
+            if (_servicesManager != null)
+            {
+                _servicesManager.Stop();
+                _servicesManager = null;
             }
         }
     }

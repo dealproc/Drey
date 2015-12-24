@@ -36,6 +36,10 @@
     <DefineConstants>TRACE</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Autofac, Version=3.5.0.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Autofac.3.5.2\lib\net40\Autofac.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Dapper">
       <HintPath>..\..\packages\Dapper.1.42\lib\net45\Dapper.dll</HintPath>
     </Reference>
@@ -52,9 +56,13 @@
     <Reference Include="Microsoft.Web.XmlTransform">
       <HintPath>..\..\packages\Microsoft.Web.Xdt.2.1.1\lib\net40\Microsoft.Web.XmlTransform.dll</HintPath>
     </Reference>
-    <Reference Include="Nancy, Version=1.3.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\Nancy.1.3.0\lib\net40\Nancy.dll</HintPath>
+    <Reference Include="Nancy, Version=1.4.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Nancy.1.4.1\lib\net40\Nancy.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Nancy.Bootstrappers.Autofac, Version=1.4.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Nancy.Bootstrappers.Autofac.1.4.1\lib\net40\Nancy.Bootstrappers.Autofac.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Nancy.Hosting.Self, Version=1.3.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -111,6 +119,8 @@
     <Compile Include="Infrastructure\Events\RecycleApp.cs" />
     <Compile Include="Infrastructure\IHandle.cs" />
     <Compile Include="Infrastructure\EventBus.cs" />
+    <Compile Include="Infrastructure\IoC\AutofacConfig.cs" />
+    <Compile Include="Infrastructure\IoC\AutofacConfigModule.cs" />
     <Compile Include="Infrastructure\Schema\0100\201508241409_Register_DreyConfigurationApp.cs" />
     <Compile Include="Infrastructure\Schema\MigrationManager.cs" />
     <Compile Include="Infrastructure\SignalR\HubConnectionManager.cs" />

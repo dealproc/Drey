@@ -1,9 +1,12 @@
-﻿using Drey.Configuration.Repositories.SQLiteRepositories;
+﻿using Autofac;
+
+using Drey.Configuration.Repositories.SQLiteRepositories;
 using Drey.Logging;
 using Drey.Nut;
 
 using Nancy;
 using Nancy.Bootstrapper;
+using Nancy.Bootstrappers.Autofac;
 using Nancy.Conventions;
 using Nancy.Embedded.Conventions;
 using Nancy.TinyIoc;
@@ -17,74 +20,41 @@ using System.Reflection;
 
 namespace Drey.Configuration
 {
-    public class Bootstrapper : DefaultNancyBootstrapper
+    public class Bootstrapper : AutofacNancyBootstrapper
     {
         static readonly ILog _log = LogProvider.For<Bootstrapper>();
 
-        readonly INutConfiguration _configurationManager;
         readonly Assembly ThisAssembly;
-        readonly IEventBus _eventBus;
-        ServiceModel.IServicesManager _servicesManager;
-        ServiceModel.HoardeManager _hoardeManager;
 
-        public Bootstrapper(ServiceModel.HoardeManager hoardeManager, IEventBus eventBus, INutConfiguration configurationManager) : base()
+        public Bootstrapper() : base()
         {
             _log.Trace("Bootstrapper has been constructed for Drey.Configuration.");
-
-            _hoardeManager = hoardeManager;
-            _eventBus = eventBus;
-            _configurationManager = configurationManager;
-
             ThisAssembly = this.GetType().Assembly;
-
             StaticConfiguration.DisableErrorTraces = false;
         }
 
-        protected override void ApplicationStartup(TinyIoCContainer container, IPipelines pipelines)
+        protected override ILifetimeScope GetApplicationContainer()
+        {
+            return Infrastructure.IoC.AutofacConfig.Container;
+        }
+
+        protected override void ApplicationStartup(Autofac.ILifetimeScope container, IPipelines pipelines)
         {
             base.ApplicationStartup(container, pipelines);
             Nancy.Security.Csrf.Enable(pipelines);
         }
 
-        protected override void ConfigureApplicationContainer(TinyIoCContainer container)
+        protected override void ConfigureApplicationContainer(Autofac.ILifetimeScope container)
         {
-            _log.Debug("Configuration of the application container has happened.");
-
             base.ConfigureApplicationContainer(container);
-
-            container.Register<IEventBus>(_eventBus);
-            container.Register<ServiceModel.HoardeManager>(_hoardeManager);
-            container.Register<INutConfiguration>(_configurationManager);
 
             // we need to manually register the data annotations registrations because we are
             // loading the *.dlls in a dedicated app domain.
-            container.Register(new DataAnnotationsRegistrations());
 
-            container.Register<ServiceModel.PollingClientCollection>().AsSingleton();
-            container.Register<ServiceModel.RegisteredPackagesPollingClient>().AsSingleton();
+            var builder = new ContainerBuilder();
+            builder.RegisterType<DataAnnotationsRegistrations>().AsImplementedInterfaces();
 
-            container.Register<Repositories.IGlobalSettingsRepository, GlobalSettingsRepository>();
-            switch (_configurationManager.Mode)
-            {
-                case ExecutionMode.Development:
-                    container.Register<Repositories.IPackageRepository, Repositories.OnDisk.OnDiskPackageRepository>();
-                    break;
-                case ExecutionMode.Production:
-                    container.Register<Repositories.IPackageRepository, Repositories.SQLiteRepositories.PackageRepository>();
-                    break;
-                default:
-                    container.Register<Repositories.IPackageRepository, Repositories.SQLiteRepositories.PackageRepository>();
-                    _log.WarnFormat("Unknown execution mode '{mode}'.  Registered Sqlite Repository.", _configurationManager.Mode);
-                    break;
-            }
-
-            container.Register<Services.IGlobalSettingsService, Services.GlobalSettingsService>();
-
-            container.Register<ServiceModel.IServicesManager, ServiceModel.ServicesManager>().AsSingleton();
-
-            _servicesManager = container.Resolve<ServiceModel.IServicesManager>();
-
-            _servicesManager.Start();
+            builder.Update(Infrastructure.IoC.AutofacConfig.Container);
         }
 
         protected override NancyInternalConfiguration InternalConfiguration

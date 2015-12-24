@@ -14,7 +14,7 @@ using System.Timers;
 
 namespace Drey.Configuration.ServiceModel
 {
-    class ReportHealthService : IReportPeriodically, IDisposable
+    class ReportHealthService : IReportPeriodically
     {
         static readonly ILog _log = LogProvider.For<ReportHealthService>();
 
@@ -26,7 +26,7 @@ namespace Drey.Configuration.ServiceModel
         DomainModel.RegisteredDbProviderFactory[] _registeredDbFactories;
         DomainModel.FrameworkInfo _frameworkInfo;
 
-        public ReportHealthService(IHubConnectionManager hubConnectionManager)
+        public ReportHealthService()
         {
             _reportHealthTrigger = new Timer();
             _reportHealthTrigger.Elapsed += reportHealthTrigger_Elapsed;
@@ -35,6 +35,7 @@ namespace Drey.Configuration.ServiceModel
 
         public void Start(IHubConnectionManager hubConnectionManager, IHubProxy runtimeHubProxy)
         {
+            _log.Info("Starting 'Report Health Service'.");
             _hubConnectionManager = hubConnectionManager;
             _runtimeHubProxy = runtimeHubProxy;
 
@@ -47,11 +48,13 @@ namespace Drey.Configuration.ServiceModel
                 AssemblyQualifiedName = x["AssemblyQualifiedName"].ToString()
             }).ToArray();
 
+            _log.Info("Starting 'Report Health Info' trigger.");
             _reportHealthTrigger.Start();
         }
 
         public void Stop()
         {
+            _log.Info("'Report Health Info' trigger stopping.");
             _reportHealthTrigger.Stop();
         }
 
@@ -103,6 +106,8 @@ namespace Drey.Configuration.ServiceModel
 
         private void DiscoverDotNetFrameworks()
         {
+            _log.Info("Discovering installed .net frameworks.");
+
             _frameworkInfo = new DomainModel.FrameworkInfo();
 
             List<DomainModel.FrameworkVersion> frameworkVersions = new List<DomainModel.FrameworkVersion>();
@@ -195,6 +200,8 @@ namespace Drey.Configuration.ServiceModel
         }
         protected virtual void Dispose(bool disposing)
         {
+            _log.Debug("Disposing 'Report Health Trigger'.");
+
             if (!disposing || _disposed) { return; }
 
             if (_reportHealthTrigger != null)

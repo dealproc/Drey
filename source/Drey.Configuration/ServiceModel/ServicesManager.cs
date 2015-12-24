@@ -45,8 +45,10 @@ namespace Drey.Configuration.ServiceModel
 
 
 
-        public ServicesManager(INutConfiguration configurationManager, IEventBus eventBus, IEnumerable<IRemoteInvocationService> remoteInvokedServices,
-            IEnumerable<IReportPeriodically> pushServices, Services.IGlobalSettingsService globalSettings, Func<RegisteredPackagesPollingClient> packagesPollerFactory,
+        public ServicesManager(INutConfiguration configurationManager, IEventBus eventBus,
+            IEnumerable<IReportPeriodically> pushServices,
+            IEnumerable<IRemoteInvocationService> remoteInvokedServices,
+            Services.IGlobalSettingsService globalSettings, Func<RegisteredPackagesPollingClient> packagesPollerFactory,
             Func<PollingClientCollection> pollingCollectionFactory, Repositories.IPackageRepository packageRepository, Repositories.IConnectionStringRepository connectionStringsRepository,
             Repositories.IPackageSettingRepository packageSettingsRepository, HoardeManager hoardeManager)
         {
@@ -147,17 +149,21 @@ namespace Drey.Configuration.ServiceModel
 
             var brokerUrl = _globalSettings.GetServerHostname();
 
-            _log.Trace("Connecting to runtime hub.");
+            _log.Debug("Connecting to runtime hub.");
 
             _hubConnectionManager = HubConnectionManager.GetHubConnectionManager(brokerUrl);
             _hubConnectionManager.UseClientCertificate(_globalSettings.GetCertificate());
 
-            _log.Trace("Creating runtime hub proxy and assigning to services.");
+            _log.Debug("Creating runtime hub proxy and assigning to services.");
             _runtimeHubProxy = _hubConnectionManager.CreateHubProxy("Runtime");
+
+            _log.DebugFormat("# of Remote invoked services registered: {count}", _remoteInvokedServices.Count());
             _remoteInvokedServices.Apply(x => x.SubscribeToEvents(_runtimeHubProxy));
+
+            _log.DebugFormat("# of push services registered: {count}", _pushServices.Count());
             _pushServices.Apply(x => x.Start(_hubConnectionManager, _runtimeHubProxy));
 
-            _log.Trace("Establishing connection to runtime hub.");
+            _log.Debug("Establishing connection to runtime hub.");
             _hubConnectionManager.StateChanged += change =>
             {
                 switch (change.NewState)
