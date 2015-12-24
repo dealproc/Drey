@@ -47,6 +47,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Drey.Server.NancyFx", "sour
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Drey.Server.WebApi", "source\Drey.Server.WebApi\Drey.Server.WebApi.csproj", "{B1D8FCB8-B123-4B8F-923E-2E407C6E3EFF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Samples.AppThree", "samples\Samples.AppThree\Samples.AppThree.csproj", "{0614EFC2-D3FC-45C2-A3FD-A3054748C333}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -105,6 +107,10 @@ Global
 		{B1D8FCB8-B123-4B8F-923E-2E407C6E3EFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B1D8FCB8-B123-4B8F-923E-2E407C6E3EFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B1D8FCB8-B123-4B8F-923E-2E407C6E3EFF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0614EFC2-D3FC-45C2-A3FD-A3054748C333}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0614EFC2-D3FC-45C2-A3FD-A3054748C333}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0614EFC2-D3FC-45C2-A3FD-A3054748C333}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0614EFC2-D3FC-45C2-A3FD-A3054748C333}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -113,5 +119,6 @@ Global
 		{0F6D533D-5CA0-4DCD-A83C-D2303AF96698} = {0769F612-7ECF-40CA-9E9C-FD5E3C6B1760}
 		{E7B67ADF-F02E-4FF9-A1D1-DE25844B906B} = {0769F612-7ECF-40CA-9E9C-FD5E3C6B1760}
 		{A34546DE-ED68-4FF5-9FDF-F741CC589368} = {0769F612-7ECF-40CA-9E9C-FD5E3C6B1760}
+		{0614EFC2-D3FC-45C2-A3FD-A3054748C333} = {0769F612-7ECF-40CA-9E9C-FD5E3C6B1760}
 	EndGlobalSection
 EndGlobal

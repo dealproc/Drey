@@ -88,10 +88,18 @@ namespace Drey.Configuration.ServiceModel
                 return false;
             }
 
-            _apps.TryAdd(Guid.NewGuid(), shell);
 
             _log.InfoFormat("Starting {app}", shell.Item2.Id);
-            shell.Item2.Startup(configurationManager);
+
+            if (shell.Item2.Startup(configurationManager))
+            {
+                _apps.TryAdd(Guid.NewGuid(), shell);
+            }
+            else
+            {
+                _log.InfoFormat("{app} failed to start.  Shutting app down.", shell.Item2.Id);
+                KillAppContainer(shell);
+            }
 
             _log.Info("Configuration shell created.  Starting to listen for events.");
             return true;
@@ -108,35 +116,37 @@ namespace Drey.Configuration.ServiceModel
             var instancesToShutdown = _apps.Where(i => i.Value.Item2.Id == id).Select(x => x.Key).ToArray();
             foreach (var key in instancesToShutdown)
             {
-                var instance = _apps[key];
+                KillAppContainer(_apps[key]);
                 Tuple<AppDomain, IShell> removed;
-                try
+                if (_apps.TryRemove(key, out removed))
                 {
-                    instance.Item2.Shutdown();
-                    _log.Debug("Shutdown has completed.");
-                    instance.Item2.Dispose();
-                    _log.Debug("Shell has been disposed.");
-                    AppDomain.Unload(instance.Item1);
+                    _log.Debug("App domain details have been removed from hoarde successfully.");
                 }
-                catch (CannotUnloadAppDomainException ex)
+                else
                 {
-                    _log.WarnException("Could not unload app domain.", ex);
+                    _log.Debug("Removal of app domain details from hoarde did not happen.");
                 }
-                catch (AppDomainUnloadedException ex)
-                {
-                    _log.WarnException("failure to unload app domain?", ex);
-                }
-                finally
-                {
-                    if (_apps.TryRemove(key, out removed))
-                    {
-                        _log.Debug("App domain details have been removed from hoarde successfully.");
-                    }
-                    else
-                    {
-                        _log.Debug("Removal of app domain details from hoarde did not happen.");
-                    }
-                }
+
+            }
+        }
+
+        private void KillAppContainer(Tuple<AppDomain, IShell> shell)
+        {
+            try
+            {
+                shell.Item2.Shutdown();
+                _log.Debug("Shutdown has completed.");
+                shell.Item2.Dispose();
+                _log.Debug("Shell has been disposed.");
+                AppDomain.Unload(shell.Item1);
+            }
+            catch (CannotUnloadAppDomainException ex)
+            {
+                _log.WarnException("Could not unload app domain.", ex);
+            }
+            catch (AppDomainUnloadedException ex)
+            {
+                _log.WarnException("failure to unload app domain?", ex);
             }
         }
 

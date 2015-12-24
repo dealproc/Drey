@@ -52,9 +52,10 @@ namespace Drey.Configuration
             get { return Enumerable.Empty<DefaultConnectionString>(); }
         }
 
-        public override void Startup(INutConfiguration configurationManager)
+        public override bool Startup(INutConfiguration configurationManager)
         {
-            base.Startup(configurationManager);
+            if (!base.Startup(configurationManager)) { return false; }
+
             configurationManager.CertificateValidator.Initialize();
 
             MigrationManager.Migrate(configurationManager);
@@ -74,6 +75,8 @@ namespace Drey.Configuration
             host.Start();
 
             _webApp = host;
+
+            return true;
         }
 
         public override void Shutdown()

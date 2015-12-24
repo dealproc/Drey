@@ -14,7 +14,7 @@ namespace Drey.Nut
         event EventHandler<ShellRequestArgs> OnShellRequest;
         EventHandler<ShellRequestArgs> ShellRequestHandler { get; set; }
 
-        void Startup(INutConfiguration configurationManager);
+        bool Startup(INutConfiguration configurationManager);
         void Shutdown();
 
         Action<INutConfiguration> ConfigureLogging { get; set; }

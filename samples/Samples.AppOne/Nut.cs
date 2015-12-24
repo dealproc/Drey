@@ -12,10 +12,10 @@ namespace Samples.AppOne
     {
         static ILog _log = LogProvider.For<Nut>();
 
-        public override void Startup(INutConfiguration configurationManager)
+        public override bool Startup(INutConfiguration configurationManager)
         {
-            base.Startup(configurationManager);
             _log.Info("Samples - App One Online");
+            return base.Startup(configurationManager);
         }
 
         public override void Shutdown()

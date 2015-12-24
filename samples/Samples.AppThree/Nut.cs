@@ -5,17 +5,20 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Samples.AppTwo
+namespace Samples.AppThree
 {
-    [Serializable]
     public class Nut : ShellBase, IDisposable
     {
         static ILog _log = LogProvider.For<Nut>();
 
         public override bool Startup(INutConfiguration configurationManager)
         {
-            _log.Info("Samples - App Two Online");
-            return base.Startup(configurationManager);
+            _log.Info("Samples - App Three Online.");
+            _log.Info("App Three should be immediately shutdown because it returns false.");
+
+            base.Startup(configurationManager);
+
+            return false;
         }
 
         public override string Id
@@ -40,7 +43,7 @@ namespace Samples.AppTwo
 
         protected override void Dispose(bool disposing)
         {
-            _log.Info("Samples - App Two Torn Down");
+            _log.Info("Samples - App Three Torn Down.");
             base.Dispose(disposing);
         }
     }

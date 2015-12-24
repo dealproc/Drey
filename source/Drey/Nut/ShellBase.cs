@@ -58,7 +58,7 @@ namespace Drey.Nut
         /// The startup routine for the applet.  Think of this like `static main(string args[]) { ... }`.
         /// </summary>
         /// <param name="configurationManager">The configuration manager.</param>
-        public virtual void Startup(INutConfiguration configurationManager)
+        public virtual bool Startup(INutConfiguration configurationManager)
         {
             Log.InfoFormat("{packageName} is starting in {mode}.", this.Id, configurationManager.Mode);
             ConfigurationManager = configurationManager;
@@ -78,6 +78,8 @@ namespace Drey.Nut
             {
                 if (!configurationManager.ConnectionStrings.Exists(connStr.Name)) { configurationManager.ConnectionStrings.Register(connStr.Name, connStr.ConnectionString, connStr.ProviderName); }
             });
+
+            return true;
         }
 
         /// <summary>
