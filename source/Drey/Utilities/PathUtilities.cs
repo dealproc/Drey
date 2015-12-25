@@ -1,5 +1,5 @@
 ﻿using Drey.Extensions;
-
+using Drey.Logging;
 using System.IO;
 using System.Reflection;
 
@@ -7,6 +7,8 @@ namespace Drey.Utilities
 {
     public static class PathUtilities
     {
+        static ILog _log = LogProvider.GetCurrentClassLogger();
+
         /// <summary>
         /// Resolves the path.
         /// <remarks>There may be an alternative method to do this, using the inherit .net framework.  to be analyzed and discovered</remarks>
@@ -28,6 +30,16 @@ namespace Drey.Utilities
             if (!respondWith.EndsWith(Path.DirectorySeparatorChar.ToString()) && includePathSeparator)
             {
                 respondWith += Path.DirectorySeparatorChar.ToString();
+            }
+
+            if (
+                (System.Environment.OSVersion.Platform == System.PlatformID.Unix || System.Environment.OSVersion.Platform == System.PlatformID.MacOSX)
+                &&
+                (!respondWith.StartsWith(Path.DirectorySeparatorChar.ToString()))
+               )
+            {
+                _log.Debug("Detected a mac/unix environment.");
+                respondWith = Path.DirectorySeparatorChar.ToString() + respondWith;
             }
 
             return respondWith.NormalizePathSeparator();

@@ -27,7 +27,7 @@ namespace Drey.Configuration.Repositories.SQLiteRepositories
         /// <param name="work">The work.</param>
         protected void Execute(Action<IDbConnection> work)
         {
-            using (var cn = System.Data.SQLite.SQLiteFactory.Instance.CreateConnection())
+            using (var cn = Mono.Data.Sqlite.SqliteFactory.Instance.CreateConnection())
             {
                 cn.ConnectionString = ConnectionStringBuilder.Invoke(_configurationManager);
                 cn.Open();
@@ -44,7 +44,7 @@ namespace Drey.Configuration.Repositories.SQLiteRepositories
         /// <returns></returns>
         protected T Execute<T>(Func<IDbConnection, T> work)
         {
-            using (var cn = System.Data.SQLite.SQLiteFactory.Instance.CreateConnection())
+            using (var cn = Mono.Data.Sqlite.SqliteFactory.Instance.CreateConnection())
             {
                 cn.ConnectionString = ConnectionStringBuilder.Invoke(_configurationManager);
                 cn.Open();

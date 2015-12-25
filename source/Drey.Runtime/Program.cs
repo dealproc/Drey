@@ -59,6 +59,8 @@ namespace Drey.Runtime
                 {
                     rc.RestartService(1);
                 });
+
+                f.UseLinuxIfAvailable();
             });
         }
     }
