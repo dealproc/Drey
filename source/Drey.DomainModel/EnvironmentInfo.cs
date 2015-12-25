@@ -1,4 +1,7 @@
-﻿namespace Drey.DomainModel
+﻿using System;
+using System.IO;
+using System.Reflection;
+namespace Drey.DomainModel
 {
     public class EnvironmentInfo
     {
@@ -38,7 +41,7 @@
         public long Uptime { get; set; }
 
         /// <summary>
-        /// Gets or sets the i PV4 addresses.
+        /// Gets or sets the IP v4 addresses.
         /// </summary>
         public string[] IPv4Addresses { get; set; }
 
@@ -46,6 +49,27 @@
         /// Gets or sets the physical memory usage of the process.
         /// </summary>
         public long WorkingSet64 { get; set; }
+
+        /// <summary>
+        /// Gets or sets the total memory (expressed as bytes).
+        /// </summary>
+        public ulong TotalMemoryBytes { get; set; }
+
+        /// <summary>
+        /// Gets the executable path.
+        /// </summary>
+        public string ExecutablePath
+        {
+            get
+            {
+                return Path.GetDirectoryName(new Uri(Assembly.GetExecutingAssembly().CodeBase).AbsolutePath);
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the percentage memory in use.
+        /// </summary>
+        public uint PercentageMemoryInUse { get; set; }
 
         /// <summary>
         /// Gets or sets the .NET Runtime version the process is executing on.

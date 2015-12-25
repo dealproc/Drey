@@ -10,6 +10,7 @@ using System.Data.Common;
 using System.Diagnostics;
 using System.Linq;
 using System.Management;
+using System.Runtime.InteropServices;
 using System.Timers;
 
 namespace Drey.Configuration.ServiceModel
@@ -83,6 +84,9 @@ namespace Drey.Configuration.ServiceModel
                                   .OfType<ManagementObject>()
                                   select x.GetPropertyValue("Caption")).First();
 
+            _log.Debug("Reading extended memory status from kernel32.dll");
+            var memStatus = MemoryStatusEx.MemoryInfo;
+
             _log.Debug("Building environment information to report to broker.");
             var ei = new DomainModel.EnvironmentInfo
             {
@@ -95,6 +99,11 @@ namespace Drey.Configuration.ServiceModel
                 Uptime = Environment.TickCount,
                 IPv4Addresses = na,
                 WorkingSet64 = Process.GetCurrentProcess().WorkingSet64,
+                
+                // Note: These may fail on linux boxes.  May need to build a "provider" model for each platform.
+                PercentageMemoryInUse = memStatus.MemoryLoad,
+                TotalMemoryBytes = memStatus.TotalPhysical,
+
                 EnvironmentVersion = Environment.Version.ToString(),
                 RegisteredDbFactories = _registeredDbFactories,
                 InstalledFrameworks = _frameworkInfo
@@ -211,5 +220,43 @@ namespace Drey.Configuration.ServiceModel
             }
             _disposed = true;
         }
+    }
+
+
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
+    internal class MemoryStatusEx
+    {
+        public uint Length;
+
+        public uint MemoryLoad;
+
+        public ulong TotalPhysical;
+        public ulong AvailablePhysical;
+
+        public ulong TotalPageFile;
+        public ulong AvailablePageFile;
+
+        public ulong TotalVirtual;
+        public ulong AvailableVirtual;
+        public ulong AvailableExtendedVirtual;
+
+        public MemoryStatusEx()
+        {
+            Length = (uint)Marshal.SizeOf(typeof(MemoryStatusEx));
+        }
+
+        public static MemoryStatusEx MemoryInfo
+        {
+            get
+            {
+                MemoryStatusEx status = new MemoryStatusEx();
+                GlobalMemoryStatusEx(status);
+                return status;
+            }
+        }
+
+        [return: MarshalAs(UnmanagedType.Bool)]
+        [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        static extern bool GlobalMemoryStatusEx([In, Out] MemoryStatusEx lpBuffer);
     }
 }

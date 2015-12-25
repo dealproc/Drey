@@ -27,7 +27,10 @@ namespace Drey.Nut
 
             asmName = asmName + ".dll";
 
-            //Console.WriteLine("Attempting to resolve " + asmName); // Should possibly not be here.
+#if DEBUG
+            Console.WriteLine(Environment.CurrentDirectory);
+            Console.WriteLine(_pathToAppPackage);
+#endif
 
             var searchPaths = (new[] 
             { 
