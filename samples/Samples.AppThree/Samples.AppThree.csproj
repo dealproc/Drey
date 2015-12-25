@@ -51,10 +51,10 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="BeforeBuild">
     <RemoveDir Directories="$(OutputPath)" />
-    <RemoveDir Directories="$(SolutionDir)\Runtime\hoarde\$(RootNamespace).$(Version)" />
+    <RemoveDir Directories="$(SolutionDir)\Runtime\Hoarde\$(RootNamespace).$(Version)" />
   </Target>
   <Target Name="AfterBuild">
-    <MakeDir Directories="$(SolutionDir)\Runtime\hoarde\$(RootNamespace).$(Version)" />
+    <MakeDir Directories="$(SolutionDir)\Runtime\Hoarde\$(RootNamespace).$(Version)" />
     <ItemGroup>
       <BinDirectoryFiles Include="$(OutputPath)**\*.*" Exclude="**\Drey.dll;**\Drey.pdb" />
     </ItemGroup>
