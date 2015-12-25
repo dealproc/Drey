@@ -34,7 +34,7 @@ namespace Drey.Configuration.Infrastructure.Schema
                 ApplicationContext = string.Empty,
                 Database = "sqlite",
                 Connection = string.Format(CONNECTION_STRING_FORMAT, dbNameAndPath).NormalizePathSeparator(),
-                Targets = new[] { "Drey.Configuration" }
+                Targets = new[] { "Drey.Configuration" } 
             };
 
             try
