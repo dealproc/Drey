@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -71,15 +71,15 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Drey.DomainModel\Drey.DomainModel.csproj">
-      <Project>{424b2437-2f2e-414c-a353-aa8bbbc6e052}</Project>
+      <Project>{424B2437-2F2E-414C-A353-AA8BBBC6E052}</Project>
       <Name>Drey.DomainModel</Name>
     </ProjectReference>
     <ProjectReference Include="..\Drey.Server.Core\Drey.Server.Core.csproj">
-      <Project>{beb7292d-69ec-49f2-878c-c04ff16a72a2}</Project>
+      <Project>{BEB7292D-69EC-49F2-878C-C04FF16A72A2}</Project>
       <Name>Drey.Server.Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\Drey.Server.Hubs\Drey.Server.Hubs.csproj">
-      <Project>{99bcb85b-a0fd-496e-b362-3aa60d296fb9}</Project>
+      <Project>{99BCB85B-A0FD-496E-B362-3AA60D296FB9}</Project>
       <Name>Drey.Server.Hubs</Name>
     </ProjectReference>
   </ItemGroup>
