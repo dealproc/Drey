@@ -256,14 +256,10 @@
     <Copy SourceFiles="@(BinDirectoryFiles)" DestinationFiles="@(BinDirectoryFiles->'$(SolutionDir)\Runtime\Hoarde\drey.configuration.$(Version)\%(RecursiveDir)%(Filename)%(Extension)')" />
     <Copy SourceFiles="@(Sqlite)" DestinationFiles="@(Sqlite->'$(OutputPath)\%(Filename)%(Extension)')" />
     <Copy SourceFiles="@(Sqlite)" DestinationFiles="@(Sqlite->'$(SolutionDir)\Runtime\Hoarde\drey.configuration.$(Version)\%(Filename)%(Extension)')" />
+    <Copy SourceFiles="$(SolutionDir)packages\Nancy.Viewengines.Razor.1.3.0\BuildProviders\Nancy.ViewEngines.Razor.BuildProviders.dll"
+          DestinationFolder="$(ProjectDir)bin\" />
+    <Copy SourceFiles="$(SolutionDir)packages\Nancy.Viewengines.Razor.1.3.0\lib\Net40\Nancy.ViewEngines.Razor.dll"
+          DestinationFolder="$(ProjectDir)bin\" />
   </Target>
   <Import Project="..\..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets" Condition="Exists('..\..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" />
-  <PropertyGroup>
-    <PostBuildEvent>
-      if $(ConfigurationName) == Debug (
-      xcopy /s /y /R "$(SolutionDir)packages\Nancy.Viewengines.Razor.1.3.0\BuildProviders\Nancy.ViewEngines.Razor.BuildProviders.dll" "$(ProjectDir)bin\"
-      xcopy /s /y /R "$(SolutionDir)packages\Nancy.Viewengines.Razor.1.3.0\lib\Net40\Nancy.ViewEngines.Razor.dll" "$(ProjectDir)bin\"
-      )
-    </PostBuildEvent>
-  </PropertyGroup>
 </Project>
