@@ -30,6 +30,7 @@ namespace Drey.Nut
 #if DEBUG
             Console.WriteLine(Environment.CurrentDirectory);
             Console.WriteLine(_pathToAppPackage);
+            Console.WriteLine(asmName);
 #endif
 
             var searchPaths = (new[] 

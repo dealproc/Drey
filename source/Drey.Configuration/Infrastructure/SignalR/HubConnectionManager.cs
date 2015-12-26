@@ -12,11 +12,11 @@ namespace Drey.Configuration.Infrastructure
     /// <summary>
     /// Monitors and heals a HubConnection upon failure
     /// </summary>
-    public class HubConnectionManager : IHubConnectionManager
+    public class HubConnectionManager : IHubConnectionManager, IDisposable
     {
         static readonly ILog _log = LogProvider.For<HubConnectionManager>();
 
-        private readonly HubConnection _hubConnection;
+        private HubConnection _hubConnection;
 
         private int _retryPeriod = 10000;
         private bool _disposed = false;
@@ -214,7 +214,14 @@ namespace Drey.Configuration.Infrastructure
 
             if (_hubConnection != null)
             {
+                _log.Debug("Hub connection is being disposed.");
                 _hubConnection.Dispose();
+                _hubConnection = null;
+                _log.Info("Hub connection has been disposed.");
+            }
+            else
+            {
+                _log.Debug("Hub connection was not setup.");
             }
 
             _disposed = true;

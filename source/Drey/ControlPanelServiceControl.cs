@@ -10,7 +10,7 @@ namespace Drey
     /// <summary>
     /// 
     /// </summary>
-    public class ControlPanelServiceControl : MarshalByRefObject
+    public class ControlPanelServiceControl : MarshalByRefObject, IDisposable
     {
         readonly ILog _log;
         readonly ShellFactory _appFactory;
@@ -21,6 +21,8 @@ namespace Drey
         Tuple<AppDomain, IShell> _console;
 
         Task _restartConsoleTask;
+
+        bool _disposed = false;
 
         public ControlPanelServiceControl(ExecutionMode mode = ExecutionMode.Production, Action<INutConfiguration> configureLogging = null)
         {
@@ -35,6 +37,10 @@ namespace Drey
 
             _log = LogProvider.For<ControlPanelServiceControl>();
             _appFactory = new ShellFactory();
+        }
+        ~ControlPanelServiceControl()
+        {
+            Dispose(false);
         }
 
         public bool Start()
@@ -78,7 +84,11 @@ namespace Drey
                         ShutdownConsole();
                         break;
                     case ShellAction.Restart:
-                        _restartConsoleTask.Start();
+                        if (_restartConsoleTask == null)
+                        {
+                            _restartConsoleTask = new Task(ObserveConsoleFinalizationAndRestart);
+                            _restartConsoleTask.Start();
+                        }
                         ShutdownConsole();
                         break;
                     default:
@@ -99,23 +109,25 @@ namespace Drey
             _console = _appFactory.Create(packageDir, ShellRequestHandler, _configureLogging);
             _console.Item2.Startup(_nutConfiguration);
 
-            if (_restartConsoleTask == null)
-            {
-                _restartConsoleTask = new Task(ObserveConsoleFinalizationAndRestart);
-            }
-
             return true;
         }
 
         void ShutdownConsole()
         {
-            _log.Info("Console is shutting down.");
+            if (_console == null)
+            {
+                _log.Debug("Console has been shutdown already.");
+                return;
+            }
 
             try
             {
+                _log.Info("Console is shutting down.");
+
                 _console.Item2.Shutdown();
                 _console.Item2.Dispose();
                 _log.Debug("Unloading console app domain.");
+
                 AppDomain.Unload(_console.Item1);
             }
             catch (CannotUnloadAppDomainException ex)
@@ -124,7 +136,7 @@ namespace Drey
             }
             catch (AppDomainUnloadedException ex)
             {
-                _log.WarnException("Failure to unload app domain.", ex);
+                _log.Info("App domain has already been unloaded.");
             }
             finally
             {
@@ -151,6 +163,29 @@ namespace Drey
                 }
             }
 
+            _restartConsoleTask = null;
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposing || _disposed) { return; }
+
+            _log.Debug("Control Panel Service Control is being disposed.");
+
+            if (_restartConsoleTask != null)
+            {
+                _log.Debug("Disposing the restart console task");
+                _restartConsoleTask.Dispose();
+                _restartConsoleTask = null;
+            }
+
+            _disposed = true;
         }
     }
 }
