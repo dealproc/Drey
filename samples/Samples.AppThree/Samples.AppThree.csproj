@@ -4,6 +4,8 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <Version Condition=" '$(BuildNumber)' == '' ">1.0.0.0</Version>
+    <Version Condition=" '$(BuildNumber)' != '' ">$(BuildNumber)</Version>
     <ProjectGuid>{0614EFC2-D3FC-45C2-A3FD-A3054748C333}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
@@ -11,23 +13,20 @@
     <AssemblyName>Samples.AppThree</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <OutputPath>bin\$(Configuration)\</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -58,6 +57,6 @@
     <ItemGroup>
       <BinDirectoryFiles Include="$(OutputPath)**\*.*" Exclude="**\Drey.dll;**\Drey.pdb" />
     </ItemGroup>
-    <Copy SourceFiles="@(BinDirectoryFiles)" DestinationFiles="@(BinDirectoryFiles->'$(SolutionDir)\Runtime\Hoarde\$(RootNamespace).$(Version)\%(RecursiveDir)%(Filename)%(Extension)')" />
+    <Copy SourceFiles="@(BinDirectoryFiles)" DestinationFiles="@(BinDirectoryFiles-&gt;'$(SolutionDir)\Runtime\Hoarde\$(RootNamespace).$(Version)\%(RecursiveDir)%(Filename)%(Extension)')" />
   </Target>
 </Project>

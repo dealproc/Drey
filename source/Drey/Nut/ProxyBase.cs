@@ -39,9 +39,16 @@ namespace Drey.Nut
                     Path.GetDirectoryName(Environment.CurrentDirectory),
             });
 
-            var resolvedDll = searchPaths
-                .Select(fullPath => Path.Combine(fullPath, asmName))
-                .Select(fullPath => File.Exists(fullPath) ? Assembly.LoadFrom(fullPath) : null)
+			var dllFullPath = searchPaths
+				.Select (path => 
+					// Refactor here to avoid issues with case sensitivity.
+					Directory
+						.EnumerateFiles (path, "*.dll")
+						.FirstOrDefault (f => f.EndsWith(asmName, StringComparison.OrdinalIgnoreCase))
+				).Where(s => !string.IsNullOrWhiteSpace(s));
+
+			var resolvedDll = dllFullPath.Where (fullPath => !string.IsNullOrWhiteSpace(fullPath))
+				.Select(path => Assembly.LoadFrom(path))
                 .Where(asm => asm != null)
                 .FirstOrDefault();
 

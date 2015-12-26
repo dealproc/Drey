@@ -47,6 +47,10 @@ namespace Drey.Runtime
         [STAThread]
         public static void Main(string[] args)
         {
+			#if DEBUG
+			System.Diagnostics.Debugger.Break();
+			#endif
+
             HostFactory.Run(f =>
             {
                 f.UseLinuxIfAvailable();
