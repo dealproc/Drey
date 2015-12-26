@@ -43,7 +43,7 @@ namespace Drey.Configuration.ServiceModel
 
         bool _disposed = false;
 
-
+        bool _withRestart = false;
 
         public ServicesManager(INutConfiguration configurationManager, IEventBus eventBus,
             IEnumerable<IReportPeriodically> pushServices,
@@ -93,7 +93,7 @@ namespace Drey.Configuration.ServiceModel
             _log.Info("Drey.Runtime is shutting down.");
 
             var packages = _packageRepository.GetPackages().Where(pkg => pkg.Id != DreyConstants.ConfigurationPackageName);
-            
+
             packages.Apply(p =>
             {
                 // Had to refactor from using the event bus due to the event bus not
@@ -123,17 +123,21 @@ namespace Drey.Configuration.ServiceModel
 
             _eventBus.Publish(new ShellRequestArgs
             {
-                ActionToTake = ShellAction.Restart,
+                ActionToTake = _withRestart ? ShellAction.Restart : ShellAction.Shutdown,
                 PackageId = DreyConstants.ConfigurationPackageName,
                 Version = string.Empty,
                 ConfigurationManager = null
             });
+
+            _withRestart = false;
 
             return true;
         }
 
         public void Handle(Infrastructure.Events.RecycleApp message)
         {
+            _withRestart = true;
+
             Stop();
             Start();
         }
@@ -230,6 +234,10 @@ namespace Drey.Configuration.ServiceModel
         }
         protected virtual void Dispose(bool disposing)
         {
+            if (!disposing || _disposed) { return; }
+
+            Stop();
+
             if (_eventBus != null)
             {
                 _eventBus.Unsubscribe(this);
@@ -256,8 +264,6 @@ namespace Drey.Configuration.ServiceModel
                 _hubConnectionManager.Dispose();
                 _hubConnectionManager = null;
             }
-
-            if (!disposing || _disposed) { return; }
         }
     }
 }

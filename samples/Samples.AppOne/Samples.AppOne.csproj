@@ -64,6 +64,6 @@
     <ItemGroup>
       <BinDirectoryFiles Include="$(OutputPath)**\*.*" Exclude="**\Drey.dll;**\Drey.pdb" />
     </ItemGroup>
-    <Copy SourceFiles="@(BinDirectoryFiles)" DestinationFiles="@(BinDirectoryFiles-&gt;'$(SolutionDir)\Runtime\hoarde\$(RootNamespace).$(Version)\%(RecursiveDir)%(Filename)%(Extension)')" />
+    <Copy SourceFiles="@(BinDirectoryFiles)" DestinationFiles="@(BinDirectoryFiles->'$(SolutionDir)\Runtime\Hoarde\$(RootNamespace).$(Version)\%(RecursiveDir)%(Filename)%(Extension)')" />
   </Target>
 </Project>

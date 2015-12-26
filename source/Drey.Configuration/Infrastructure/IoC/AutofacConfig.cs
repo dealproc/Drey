@@ -55,5 +55,14 @@ namespace Drey.Configuration.Infrastructure.IoC
 
             _container = builder.Build();
         }
+
+        public static void DisposeContainer()
+        {
+            if (_container != null)
+            {
+                _container.Dispose();
+                _container = null;
+            }
+        }
     }
 }

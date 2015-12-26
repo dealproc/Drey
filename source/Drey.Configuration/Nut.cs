@@ -127,6 +127,8 @@ namespace Drey.Configuration
                 _servicesManager.Stop();
                 _servicesManager = null;
             }
+
+            Infrastructure.IoC.AutofacConfig.DisposeContainer();
         }
     }
 }

@@ -11,11 +11,12 @@ using System.Diagnostics;
 using System.Linq;
 using System.Management;
 using System.Runtime.InteropServices;
+using System.Security;
 using System.Timers;
 
 namespace Drey.Configuration.ServiceModel
 {
-    class ReportHealthService : IReportPeriodically
+    class ReportHealthService : IReportPeriodically, IDisposable
     {
         static readonly ILog _log = LogProvider.For<ReportHealthService>();
 
@@ -40,7 +41,33 @@ namespace Drey.Configuration.ServiceModel
             _hubConnectionManager = hubConnectionManager;
             _runtimeHubProxy = runtimeHubProxy;
 
-            DiscoverDotNetFrameworks();
+            try
+            {
+                DiscoverDotNetFrameworks();
+            }
+            catch (SecurityException secEx)
+            {
+                if (Environment.OSVersion.Platform == PlatformID.MacOSX || Environment.OSVersion.Platform == PlatformID.Unix)
+                {
+                    _frameworkInfo = new DomainModel.FrameworkInfo
+                    {
+                        NetFxVersions = new[] {
+                            new DomainModel.FrameworkVersion
+                            {
+                                BuildVersion = Environment.Version.ToString(),
+                                CommonVersion = string.Format("Mono on {0}", Environment.OSVersion.Platform),
+                                ServicePack = string.Empty
+                            }
+                        }
+                    };
+
+                }
+                else
+                {
+                    _log.WarnException("Security exception while reading registry", secEx);
+                }
+            }
+
             _registeredDbFactories = DbProviderFactories.GetFactoryClasses().Select().Select(x => new DomainModel.RegisteredDbProviderFactory
             {
                 Name = x["Name"].ToString(),
@@ -56,7 +83,10 @@ namespace Drey.Configuration.ServiceModel
         public void Stop()
         {
             _log.Info("'Report Health Info' trigger stopping.");
-            _reportHealthTrigger.Stop();
+            if (_reportHealthTrigger != null)
+            {
+                _reportHealthTrigger.Stop();
+            }
         }
 
         /// <summary>
@@ -66,6 +96,18 @@ namespace Drey.Configuration.ServiceModel
         /// <param name="e">The <see cref="ElapsedEventArgs"/> instance containing the event data.</param>
         private void reportHealthTrigger_Elapsed(object sender, ElapsedEventArgs e)
         {
+            MemoryStatusEx memStatus = null;
+
+            try
+            {
+                _log.Debug("Reading extended memory status from kernel32.dll");
+                memStatus = MemoryStatusEx.MemoryInfo;
+            }
+            catch (Exception ex)
+            {
+                _log.ErrorException("Error retrieving extended memory information.", ex);
+            }
+
             if (_hubConnectionManager.State != ConnectionState.Connected)
             {
                 _log.Info("Connection has not been established with broker.  Could not report health statistics.");
@@ -84,9 +126,6 @@ namespace Drey.Configuration.ServiceModel
                                   .OfType<ManagementObject>()
                                   select x.GetPropertyValue("Caption")).First();
 
-            _log.Debug("Reading extended memory status from kernel32.dll");
-            var memStatus = MemoryStatusEx.MemoryInfo;
-
             _log.Debug("Building environment information to report to broker.");
             var ei = new DomainModel.EnvironmentInfo
             {
@@ -101,8 +140,8 @@ namespace Drey.Configuration.ServiceModel
                 WorkingSet64 = Process.GetCurrentProcess().WorkingSet64,
                 
                 // Note: These may fail on linux boxes.  May need to build a "provider" model for each platform.
-                PercentageMemoryInUse = memStatus.MemoryLoad,
-                TotalMemoryBytes = memStatus.TotalPhysical,
+                PercentageMemoryInUse = memStatus == null ? 0 : memStatus.MemoryLoad,
+                TotalMemoryBytes = memStatus == null ? 0 : memStatus.TotalPhysical,
 
                 EnvironmentVersion = Environment.Version.ToString(),
                 RegisteredDbFactories = _registeredDbFactories,

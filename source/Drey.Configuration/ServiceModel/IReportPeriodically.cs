@@ -6,7 +6,7 @@ using System;
 
 namespace Drey.Configuration.ServiceModel
 {
-    public interface IReportPeriodically
+    public interface IReportPeriodically : IDisposable
     {
         void Start(IHubConnectionManager hubConnectionManager, IHubProxy runtimeHubProxy);
         void Stop();
