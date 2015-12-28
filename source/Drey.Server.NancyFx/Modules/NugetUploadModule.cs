@@ -16,12 +16,12 @@ namespace Drey.Server.Modules
 
         readonly IPackageService _packageService;
 
-        public NugetUploadModule(IPackageService packageService) : base("/api/v2/package")
+        public NugetUploadModule(IPackageService packageService) : base()
         {
             _packageService = packageService;
 
-            Put["/", runAsync: true] = ParseAndStorePackage;
-            Delete["/{id}/{version}", runAsync: true] = DeleteReleaseAsync;
+            Put["/api/v2/package/", runAsync: true] = ParseAndStorePackage;
+            Delete["/api/v2/package/{id}/{version}", runAsync: true] = DeleteReleaseAsync;
         
             this.Before.AddItemToEndOfPipeline(ctx => { _Log.Trace(ctx.Request.Url); return (Response)null; });
         }
@@ -53,9 +53,9 @@ namespace Drey.Server.Modules
             {
                 return ((Response)"Missing file").StatusCode = HttpStatusCode.BadRequest;
             }
-
+        
             _Log.Info("Received a file to be parsed and stored.");
-
+        
             try
             {
                 await _packageService.SyndicateAsync(Request.Files.First().Value);

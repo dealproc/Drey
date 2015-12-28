@@ -1,21 +1,20 @@
 ﻿using Autofac;
 using Autofac.Integration.SignalR;
-
 using Drey.Server.Logging;
-
 using Microsoft.AspNet.SignalR;
 using Microsoft.AspNet.SignalR.Infrastructure;
 using Microsoft.Owin.Cors;
 using Microsoft.Owin.Hosting;
-
+using Nancy;
 using Owin;
-
 using System;
 using System.IdentityModel.Selectors;
 using System.IO;
+using System.Net;
 using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
 using System.Security.Principal;
+using System.Text;
 
 namespace Samples.Server
 {
@@ -35,7 +34,7 @@ namespace Samples.Server
                 Directory.Delete(PACKAGES_DIR, true);
             }
 
-            var url = "https://localhost:81";
+            var url = "https://+:81";
 
             try
             {
@@ -44,7 +43,15 @@ namespace Samples.Server
                     app.Use(async (ctx, next) =>
                     {
                         if (ctx.Request.User == null) { ctx.Request.User = new GenericPrincipal(new GenericIdentity(""), new string[] { }); }
-                        await next();
+                        Console.WriteLine(string.Format("{0}: {1}", ctx.Request.Method, ctx.Request.Uri.AbsoluteUri));
+
+                        // DIRTY HACK TO GET FILES TO UPLOAD!
+                        var bytes = ReadFully(ctx.Request.Body);
+
+                        ctx.Request.Body = new MemoryStream(bytes);
+                        ctx.Request.Body.Seek(0, 0);
+                        
+                        await next.Invoke();
                     });
 
                     app.UseCors(CorsOptions.AllowAll);
@@ -112,6 +119,20 @@ namespace Samples.Server
             cb.RegisterHubs(serverASM);
 
             _container = cb.Build();
+        }
+
+        public static byte[] ReadFully(Stream input)
+        {
+            byte[] buffer = new byte[16 * 1024];
+            using (MemoryStream ms = new MemoryStream())
+            {
+                int read;
+                while ((read = input.Read(buffer, 0, buffer.Length)) > 0)
+                {
+                    ms.Write(buffer, 0, read);
+                }
+                return ms.ToArray();
+            }
         }
     }
     // https://github.com/brockallen/BrockAllen.MembershipReboot/blob/master/samples/SingleTenant/SingleTenantWebApp/Areas/UserAccount/Controllers/LoginController.cs

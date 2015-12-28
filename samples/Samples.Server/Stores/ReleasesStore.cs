@@ -10,7 +10,7 @@ namespace Samples.Server.Stores
 {
     public class ReleasesStore : Drey.Server.Services.IReleaseStore
     {
-        List<Release> _releases = new List<Release>();
+        static List<Release> _releases = new List<Release>();
 
         public Release Create()
         {

@@ -32,7 +32,8 @@ namespace Drey.Server.Modules.well_known
 
         private async Task<dynamic> GetSubscribedPackages(dynamic args, CancellationToken ct)
         {
-            return await _packageService.GetPackagesAsync(Context.GetMSOwinUser());
+            var packages = await _packageService.GetPackagesAsync(Context.GetMSOwinUser());
+            return packages;
         }
 
         private async Task<dynamic> GetPackageReleasesAsync(dynamic args, CancellationToken ct)
