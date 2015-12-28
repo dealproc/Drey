@@ -49,15 +49,12 @@ namespace Drey.Configuration.ServiceModel
             {
                 if (Environment.OSVersion.Platform == PlatformID.MacOSX || Environment.OSVersion.Platform == PlatformID.Unix)
                 {
-                    _frameworkInfo = new DomainModel.FrameworkInfo
-                    {
-                        NetFxVersions = new[] {
-                            new DomainModel.FrameworkVersion
-                            {
-                                BuildVersion = Environment.Version.ToString(),
-                                CommonVersion = string.Format("Mono on {0}", Environment.OSVersion.Platform),
-                                ServicePack = string.Empty
-                            }
+                    _frameworkInfo.NetFxVersions = new[] {
+                        new DomainModel.FrameworkVersion
+                        {
+                            BuildVersion = Environment.Version.ToString(),
+                            CommonVersion = string.Format("Mono on {0}", Environment.OSVersion.Platform),
+                            ServicePack = string.Empty
                         }
                     };
 
@@ -66,15 +63,36 @@ namespace Drey.Configuration.ServiceModel
                 {
                     _log.WarnException("Security exception while reading registry", secEx);
                 }
+            } catch (NullReferenceException nrEx) 
+            {
+                if (Environment.OSVersion.Platform == PlatformID.MacOSX || Environment.OSVersion.Platform == PlatformID.Unix) {
+                    _frameworkInfo.NetFxVersions = new[] {
+                        new DomainModel.FrameworkVersion
+                        {
+                            BuildVersion = Environment.Version.ToString(),
+                            CommonVersion = string.Format("Mono on {0}", Environment.OSVersion.Platform),
+                            ServicePack = string.Empty
+                        }
+                    };
+
+                } else {
+                    _log.WarnException("Null Reference exception while reading from registry", nrEx);
+                }
             }
 
-            _registeredDbFactories = DbProviderFactories.GetFactoryClasses().Select().Select(x => new DomainModel.RegisteredDbProviderFactory
+            try 
             {
-                Name = x["Name"].ToString(),
-                Description = x["Description"].ToString(),
-                InvariantName = x["InvariantName"].ToString(),
-                AssemblyQualifiedName = x["AssemblyQualifiedName"].ToString()
-            }).ToArray();
+                _registeredDbFactories = DbProviderFactories.GetFactoryClasses().Select().Select(x => new DomainModel.RegisteredDbProviderFactory {
+                    Name = x["Name"].ToString(),
+                    Description = x["Description"].ToString(),
+                    InvariantName = x["InvariantName"].ToString(),
+                    AssemblyQualifiedName = x["AssemblyQualifiedName"].ToString()
+                }).ToArray();
+            } 
+            catch (NullReferenceException exc) 
+            {
+                _registeredDbFactories = new DomainModel.RegisteredDbProviderFactory[0];
+            }
 
             _log.Info("Starting 'Report Health Info' trigger.");
             _reportHealthTrigger.Start();
@@ -154,9 +172,9 @@ namespace Drey.Configuration.ServiceModel
 
         private void DiscoverDotNetFrameworks()
         {
-            _log.Info("Discovering installed .net frameworks.");
-
             _frameworkInfo = new DomainModel.FrameworkInfo();
+
+            _log.Info("Discovering installed .net frameworks.");
 
             List<DomainModel.FrameworkVersion> frameworkVersions = new List<DomainModel.FrameworkVersion>();
 

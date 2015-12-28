@@ -30,6 +30,6 @@
   <Target Name="Publish">
     <Message Text="%(Samples.Identity)" />
     <Exec WorkingDirectory="$(MSBuildThisFileDirectory)"
-          Command=".nuget\nuget.exe push %(Samples.Identity) -Source http://localhost:81/ " />
+          Command=".nuget\nuget.exe push %(Samples.Identity) -Source http://localhost:81/api/v2/package " />
   </Target>
 </Project>

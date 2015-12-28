@@ -54,8 +54,17 @@ namespace Drey.Server.Modules
                 return ((Response)"Missing file").StatusCode = HttpStatusCode.BadRequest;
             }
 
-            await _packageService.SyndicateAsync(Request.Files.First().Value);
+            _Log.Info("Received a file to be parsed and stored.");
 
+            try
+            {
+                await _packageService.SyndicateAsync(Request.Files.First().Value);
+            }
+            catch (Exception ex)
+            {
+                _Log.ErrorException("Could not syndicate package.", ex);
+                return HttpStatusCode.BadRequest;
+            }
             return HttpStatusCode.Created;
         }
     }
