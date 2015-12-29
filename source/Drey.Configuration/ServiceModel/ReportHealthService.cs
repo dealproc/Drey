@@ -89,7 +89,7 @@ namespace Drey.Configuration.ServiceModel
                     AssemblyQualifiedName = x["AssemblyQualifiedName"].ToString()
                 }).ToArray();
             } 
-            catch (NullReferenceException exc) 
+            catch (NullReferenceException) 
             {
                 _registeredDbFactories = new DomainModel.RegisteredDbProviderFactory[0];
             }

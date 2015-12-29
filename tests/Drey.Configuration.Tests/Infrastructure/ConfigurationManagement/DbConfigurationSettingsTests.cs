@@ -9,8 +9,8 @@ namespace Drey.Configuration.Tests.Infrastructure.ConfigurationManagement
 {
     public class DbConfigurationSettingsTests
     {
-        string _packageId = "test.package";
-        IApplicationSettings _applicationSettings;
-        IGlobalSettings _globalSettings;
+        //string _packageId = "test.package";
+        //IApplicationSettings _applicationSettings;
+        //IGlobalSettings _globalSettings;
     }
 }

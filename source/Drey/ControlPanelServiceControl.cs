@@ -133,7 +133,7 @@ namespace Drey
             {
                 _log.WarnException("Could not unload app domain.", ex);
             }
-            catch (AppDomainUnloadedException ex)
+            catch (AppDomainUnloadedException)
             {
                 _log.Info("App domain has already been unloaded.");
             }
