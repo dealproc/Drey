@@ -15,7 +15,7 @@ namespace Drey.Configuration.Infrastructure.Schema
         static string CONFIG_FILE_NAME = "config.db3";
         static string DB_BACKUP_EXT = ".bak";
         static string DB_BACKUP_FILENAME_FORMAT = "config.{0:yyyy-MM-dd}-{0:HH-mm-ss}" + DB_BACKUP_EXT;
-        static string CONNECTION_STRING_FORMAT = "Data Source={0};Version=3;";
+        static string CONNECTION_STRING_FORMAT = "Data Source=\"{0}\";Version=3;";
 
         /// <summary>
         /// Migrates the configuration database, making a backup before it begins.
