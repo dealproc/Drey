@@ -96,6 +96,7 @@ namespace Drey.Configuration.ServiceModel
 
             packages.Apply(p =>
             {
+                _log.DebugFormat("Issuing request to shut down {packageName}", p.Id);
                 // Had to refactor from using the event bus due to the event bus not
                 // respecting delays from the shutdown process of each package.
                 _hoardeManager.Handle(new ShellRequestArgs
@@ -109,6 +110,7 @@ namespace Drey.Configuration.ServiceModel
 
             if (_pushServices.Any())
             {
+                _log.Debug("Shutting down push services.");
                 _pushServices.Apply(x => x.Stop());
             }
 
@@ -116,11 +118,13 @@ namespace Drey.Configuration.ServiceModel
 
             if (_hubConnectionManager != null)
             {
+                _log.Debug("Shutting down hub connection manager.");
                 _hubConnectionManager.Stop();
                 _hubConnectionManager.Dispose();
                 _hubConnectionManager = null;
             }
 
+            _log.DebugFormat("Issuing shell request with restart: {withRestart}", _withRestart);
             _eventBus.Publish(new ShellRequestArgs
             {
                 ActionToTake = _withRestart ? ShellAction.Restart : ShellAction.Shutdown,
@@ -206,15 +210,19 @@ namespace Drey.Configuration.ServiceModel
                 _registeredPackagesPoller = null;
             }
 
+            _log.InfoFormat("Global Settings are valid: {areSettingsValid}, and we are in {mode} mode.", _globalSettings.HasValidSettings(), _configurationManager.Mode);
             if (_globalSettings.HasValidSettings() && _configurationManager.Mode == ExecutionMode.Production)
             {
+                _log.Info("Setting up for discovery of packages from reflector.");
+
                 // We need to have valid settings AND we need to be in production mode to start the polling agent(s)
                 _registeredPackagesPoller = _packagesPollerFactory.Invoke();
                 _pollingCollection = _pollingCollectionFactory.Invoke();
                 _pollingCollection.Add(_registeredPackagesPoller);
             }
-            else
+            else if (_globalSettings.HasValidSettings())
             {
+                _log.Info("Resolving packages from local cache.");
                 // Just discover the packages from the hdd's hoarde directory and start 'em up.
                 packages.Apply(p =>
                     _eventBus.Publish(new ShellRequestArgs
@@ -224,6 +232,11 @@ namespace Drey.Configuration.ServiceModel
                         Version = string.Empty,
                         ConfigurationManager = new Drey.Configuration.Infrastructure.ConfigurationManagement.DbConfigurationSettings(_configurationManager, _packageSettingsRepository, _connectionStringsRepository, p.Id)
                     }));
+            }
+            else
+            {
+                _log.Warn("Did not start polling services, nor could we read from the local store.");
+                _log.WarnFormat("Global Settings are valid: {hasValidSettings} | Execution Mode: {executionMode}", _globalSettings.HasValidSettings(), _configurationManager.Mode);
             }
         }
 

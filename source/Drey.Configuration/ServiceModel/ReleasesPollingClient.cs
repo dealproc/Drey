@@ -33,6 +33,8 @@ namespace Drey.Configuration.ServiceModel
 
         bool _disposed = false;
 
+        public string Title { get { return "Releases Polling Client for " + _packageId; } }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ReleasesPollingClient" /> class.
         /// </summary>

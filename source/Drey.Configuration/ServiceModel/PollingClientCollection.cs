@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Drey.Logging;
+using System;
 using System.Collections.Concurrent;
 using System.Threading;
 
@@ -6,6 +7,8 @@ namespace Drey.Configuration.ServiceModel
 {
     public class PollingClientCollection : ConcurrentBag<IPollingClient>, IDisposable
     {
+        static ILog _log = LogProvider.For<PollingClientCollection>();
+
         bool _disposed = false;
         CancellationTokenSource _cts = new CancellationTokenSource();
 
@@ -20,8 +23,10 @@ namespace Drey.Configuration.ServiceModel
         /// <param name="client">The client.</param>
         public new void Add(IPollingClient client)
         {
+            _log.InfoFormat("Adding {title} polling client.", client.Title);
             base.Add(client);
 
+            _log.DebugFormat("Starting {title} polling client.", client.Title);
             client.Start(_cts.Token);
         }
 
@@ -31,18 +36,21 @@ namespace Drey.Configuration.ServiceModel
         public void Dispose()
         {
             Dispose(true);
-            _disposed = true;
+
+            GC.SuppressFinalize(this);
         }
 
         protected virtual void Dispose(bool disposing)
         {
+            if (!disposing || _disposed) { return; }
+
             if (_cts != null)
             {
                 _cts.Dispose();
                 _cts = null;
             }
 
-            if (!disposing || _disposed) { return; }
+            _disposed = true;
         }
     }
 }

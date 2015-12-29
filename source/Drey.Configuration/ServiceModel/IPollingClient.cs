@@ -5,6 +5,7 @@ namespace Drey.Configuration.ServiceModel
 {
     public interface IPollingClient
     {
+        string Title { get; }
         /// <summary>
         /// Starts the specified ct.
         /// </summary>

@@ -28,6 +28,8 @@ namespace Drey.Configuration.ServiceModel
 
         bool _disposed = false;
 
+        public string Title { get { return "Packages Polling Client"; } }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="RegisteredPackagesPollingClient"/> class.
         /// </summary>
