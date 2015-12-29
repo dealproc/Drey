@@ -58,8 +58,6 @@ namespace Drey.Configuration
         {
             if (!base.Startup(configurationManager)) { return false; }
 
-            configurationManager.CertificateValidator.Initialize();
-
             try
             {
                 MigrationManager.Migrate(configurationManager);
@@ -69,6 +67,8 @@ namespace Drey.Configuration
                 _log.FatalException("Migration Failed.", ex);
                 return false;
             }
+
+            configurationManager.CertificateValidator.Initialize();
 
             _eventBus = new EventBus();
             _hoardeManager = new ServiceModel.HoardeManager(_eventBus, configurationManager, ShellRequestHandler, this.ConfigureLogging);
