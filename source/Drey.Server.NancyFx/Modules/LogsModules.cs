@@ -15,7 +15,8 @@ namespace Drey.Server.Modules
 
         readonly Directors.IListLogsDirector _director;
 
-        public ListLogsModule(Directors.IListLogsDirector director) : base("/runtime/Logs")
+        public ListLogsModule(Directors.IListLogsDirector director)
+            : base("/runtime/Logs")
         {
             _director = director;
 
@@ -45,10 +46,11 @@ namespace Drey.Server.Modules
     public class OpenLogFileModule : NancyModule
     {
         static readonly ILog _log = LogProvider.For<OpenLogFileModule>();
-        
+
         readonly Directors.IOpenLogFileDirector _director;
 
-        public OpenLogFileModule(Directors.IOpenLogFileDirector director) : base("/runtime/Logs")
+        public OpenLogFileModule(Directors.IOpenLogFileDirector director)
+            : base("/runtime/Logs")
         {
             _director = director;
 

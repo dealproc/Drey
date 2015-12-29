@@ -12,7 +12,8 @@ namespace Drey.Server.Modules
     {
         readonly Directors.IRecycleClientDirector _director;
 
-        public RecycleClientModule(Directors.IRecycleClientDirector director) : base("/runtime")
+        public RecycleClientModule(Directors.IRecycleClientDirector director)
+            : base("/runtime")
         {
             _director = director;
 

@@ -16,12 +16,13 @@ namespace Drey.Server.Modules
 
         readonly IPackageService _packageService;
 
-        public NugetUploadModule(IPackageService packageService) : base()
+        public NugetUploadModule(IPackageService packageService)
+            : base("/api/v2/package")
         {
             _packageService = packageService;
 
-            Put["/api/v2/package/", runAsync: true] = ParseAndStorePackage;
-            Delete["/api/v2/package/{id}/{version}", runAsync: true] = DeleteReleaseAsync;
+            Put["/", runAsync: true] = ParseAndStorePackage;
+            Delete["/{id}/{version}", runAsync: true] = DeleteReleaseAsync;
         
             this.Before.AddItemToEndOfPipeline(ctx => { _Log.Trace(ctx.Request.Url); return (Response)null; });
         }

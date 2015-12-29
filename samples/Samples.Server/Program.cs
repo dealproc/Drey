@@ -1,20 +1,22 @@
 ﻿using Autofac;
 using Autofac.Integration.SignalR;
+
 using Drey.Server.Logging;
+
 using Microsoft.AspNet.SignalR;
 using Microsoft.AspNet.SignalR.Infrastructure;
+using Microsoft.Owin;
 using Microsoft.Owin.Cors;
 using Microsoft.Owin.Hosting;
-using Nancy;
+
 using Owin;
+
 using System;
 using System.IdentityModel.Selectors;
 using System.IO;
-using System.Net;
 using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
 using System.Security.Principal;
-using System.Text;
 
 namespace Samples.Server
 {
@@ -34,28 +36,19 @@ namespace Samples.Server
                 Directory.Delete(PACKAGES_DIR, true);
             }
 
-            var url = "https://+:81";
+            var url = "https://e7440-win81:81";
 
             try
             {
                 using (var webApp = WebApp.Start(url, (app) =>
                 {
-                    app.Use(async (ctx, next) =>
-                    {
-                        if (ctx.Request.User == null) { ctx.Request.User = new GenericPrincipal(new GenericIdentity(""), new string[] { }); }
-                        Console.WriteLine(string.Format("{0}: {1}", ctx.Request.Method, ctx.Request.Uri.AbsoluteUri));
-
-                        // DIRTY HACK TO GET FILES TO UPLOAD!
-                        var bytes = ReadFully(ctx.Request.Body);
-
-                        ctx.Request.Body = new MemoryStream(bytes);
-                        ctx.Request.Body.Seek(0, 0);
-                        
-                        await next.Invoke();
-                    });
+                    app.UseAutofacMiddleware(_container);
 
                     app.UseCors(CorsOptions.AllowAll);
-                    app.UseAutofacMiddleware(_container);
+
+                    app.Use<GlobalExceptionMiddleware>();
+                    app.Use<BufferContentIntoAMemoryStreamMiddleware>();
+                    app.Use<ProvideGenericUserMiddleware>();
 
                     // auth's the client certificate.
                     app.UseClientCertificateAuthentication(new ClientCertificateAuthenticationOptions
@@ -121,19 +114,6 @@ namespace Samples.Server
             _container = cb.Build();
         }
 
-        public static byte[] ReadFully(Stream input)
-        {
-            byte[] buffer = new byte[16 * 1024];
-            using (MemoryStream ms = new MemoryStream())
-            {
-                int read;
-                while ((read = input.Read(buffer, 0, buffer.Length)) > 0)
-                {
-                    ms.Write(buffer, 0, read);
-                }
-                return ms.ToArray();
-            }
-        }
     }
     // https://github.com/brockallen/BrockAllen.MembershipReboot/blob/master/samples/SingleTenant/SingleTenantWebApp/Areas/UserAccount/Controllers/LoginController.cs
 
@@ -148,6 +128,64 @@ namespace Samples.Server
         public override void Validate(X509Certificate2 certificate)
         {
             _log.InfoFormat("Validating {thumbprint}", certificate.Thumbprint);
+        }
+    }
+
+    public class GlobalExceptionMiddleware : OwinMiddleware
+    {
+        public GlobalExceptionMiddleware(OwinMiddleware next) : base(next) { }
+        public override async System.Threading.Tasks.Task Invoke(IOwinContext context)
+        {
+            try
+            {
+                await Next.Invoke(context);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+        }
+    }
+
+    public class ProvideGenericUserMiddleware : OwinMiddleware
+    {
+        public ProvideGenericUserMiddleware(OwinMiddleware next) : base(next) { }
+        public override System.Threading.Tasks.Task Invoke(IOwinContext context)
+        {
+            Console.WriteLine(string.Format("{0}: {1}", context.Request.Method, context.Request.Uri.AbsoluteUri));
+
+            if (context.Request.User == null) { context.Request.User = new GenericPrincipal(new GenericIdentity(""), new string[] { }); }
+            return Next.Invoke(context);
+        }
+    }
+
+    public class BufferContentIntoAMemoryStreamMiddleware : OwinMiddleware
+    {
+        public BufferContentIntoAMemoryStreamMiddleware(OwinMiddleware next):base(next){}
+        public override System.Threading.Tasks.Task Invoke(IOwinContext context)
+        {
+            // DIRTY HACK TO GET FILES TO UPLOAD!  This is only needed if you need to use client certificates.
+            // need to find out why client certificates seem to bork the pipeline.
+            var bytes = ReadFully(context.Request.Body);
+
+            context.Request.Body = new MemoryStream(bytes);
+            context.Request.Body.Seek(0, 0);
+
+            return Next.Invoke(context);
+        }
+        
+        static byte[] ReadFully(Stream input)
+        {
+            byte[] buffer = new byte[16 * 1024];
+            using (MemoryStream ms = new MemoryStream())
+            {
+                int read;
+                while ((read = input.Read(buffer, 0, buffer.Length)) > 0)
+                {
+                    ms.Write(buffer, 0, read);
+                }
+                return ms.ToArray();
+            }
         }
     }
 }

@@ -1,5 +1,5 @@
 ﻿using Nancy;
-
+using System;
 using System.Linq;
 
 namespace Samples.Server.Modules
@@ -12,7 +12,17 @@ namespace Samples.Server.Modules
         {
             _clientRegistry = clientRegistry;
 
-            Get["/"] = _ => _clientRegistry.Select(kvp => string.Format("{0}:{1}",kvp.Key, kvp.Value)).Aggregate((s1, s2) => s1 + " | " + s2);
+            Get["/"] = _ =>
+            {
+                try
+                {
+                    return _clientRegistry.Select(kvp => string.Format("{0}:{1}", kvp.Key, kvp.Value)).Aggregate((s1, s2) => s1 + " | " + s2);
+                }
+                catch (InvalidOperationException)
+                {
+                    return (Response)"None";
+                }
+            };
         }
     }
 }

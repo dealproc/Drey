@@ -13,13 +13,15 @@ namespace Drey.Server
         {
             pipelines.OnError += (ctx, ex) =>
             {
-                if (ex.GetBaseException() is TimeoutException)
+                var exceptionToProcess = ex.GetBaseException();
+
+                if (exceptionToProcess is TimeoutException)
                 {
                     var timeoutExc = ex.GetBaseException() as TimeoutException;
                     return new Response { StatusCode = HttpStatusCode.RequestTimeout, ReasonPhrase = timeoutExc.Message };
                 }
-                
-                if (ex.GetBaseException() is RuntimeHasNotConnectedException)
+
+                if (exceptionToProcess is RuntimeHasNotConnectedException)
                 {
                     return new Response { StatusCode = HttpStatusCode.ServiceUnavailable, ReasonPhrase = "Runtime is not connected." };
                 }

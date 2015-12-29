@@ -7,7 +7,8 @@ namespace Samples.Server
     {
         public X509CertificateValidator Validator { get; set; }
         public bool CreateExtendedClaimSet { get; set; }
-        public ClientCertificateAuthenticationOptions() : base("x.509")
+
+        public ClientCertificateAuthenticationOptions() : base("X.509")
         {
             Validator = X509CertificateValidator.ChainTrust;
             CreateExtendedClaimSet = false;
