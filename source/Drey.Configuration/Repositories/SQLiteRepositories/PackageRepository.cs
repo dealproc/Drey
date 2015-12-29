@@ -31,7 +31,7 @@ namespace Drey.Configuration.Repositories.SQLiteRepositories
         /// <returns></returns>
         public IEnumerable<DataModel.Package> GetPackages()
         {
-            return Execute(cn => cn.Query<DataModel.Package>("SELECT Id, Min(Title) as Title, true as AutoUpdates FROM Releases GROUP BY Id")).Where(r => !r.Id.Equals(DreyConstants.ConfigurationPackageName, StringComparison.OrdinalIgnoreCase));
+            return Execute(cn => cn.Query<DataModel.Package>("SELECT Id, Min(Title) as Title, 1 as AutoUpdates FROM Releases GROUP BY Id")).Where(r => !r.Id.Equals(DreyConstants.ConfigurationPackageName, StringComparison.OrdinalIgnoreCase));
         }
 
         /// <summary>
