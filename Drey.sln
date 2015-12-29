@@ -49,8 +49,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Drey.Server.NancyFx", "sour
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Drey.Server.WebApi", "source\Drey.Server.WebApi\Drey.Server.WebApi.csproj", "{B1D8FCB8-B123-4B8F-923E-2E407C6E3EFF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Drey.Owin", "source\Drey.Owin\Drey.Owin.csproj", "{9CE93619-282D-4136-816B-1055E46CA124}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -113,10 +111,6 @@ Global
 		{B1D8FCB8-B123-4B8F-923E-2E407C6E3EFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B1D8FCB8-B123-4B8F-923E-2E407C6E3EFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B1D8FCB8-B123-4B8F-923E-2E407C6E3EFF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9CE93619-282D-4136-816B-1055E46CA124}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9CE93619-282D-4136-816B-1055E46CA124}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9CE93619-282D-4136-816B-1055E46CA124}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9CE93619-282D-4136-816B-1055E46CA124}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
