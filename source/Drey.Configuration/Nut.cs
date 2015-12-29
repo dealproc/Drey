@@ -17,6 +17,8 @@ namespace Drey.Configuration
     [Serializable]
     public class Nut : ShellBase, IHandle<ShellRequestArgs>, IDisposable
     {
+        static ILog _log = LogProvider.For<Nut>();
+
         IEventBus _eventBus;
         IDisposable _webApp;
         [NonSerialized]
@@ -58,7 +60,15 @@ namespace Drey.Configuration
 
             configurationManager.CertificateValidator.Initialize();
 
-            MigrationManager.Migrate(configurationManager);
+            try
+            {
+                MigrationManager.Migrate(configurationManager);
+            }
+            catch (Exception ex)
+            {
+                _log.FatalException("Migration Failed.", ex);
+                return false;
+            }
 
             _eventBus = new EventBus();
             _hoardeManager = new ServiceModel.HoardeManager(_eventBus, configurationManager, ShellRequestHandler, this.ConfigureLogging);

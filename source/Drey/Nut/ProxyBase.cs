@@ -30,7 +30,7 @@ namespace Drey.Nut
             var searchPaths = (new[] 
             { 
                     Path.GetFullPath(_pathToAppPackage), 
-                    Path.GetDirectoryName(Environment.CurrentDirectory),
+                    Environment.CurrentDirectory,
             });
 
             Console.WriteLine("Searching the following paths for `{0}`: {1}", asmName, string.Join(";", searchPaths));
