@@ -147,24 +147,14 @@ namespace Drey.Server.Tests.Modules
             [Fact]
             public Task Should_Return_Bad_Request_When_Provided_Empty_Token_Async()
             {
-                using (var fixture = new ApiTestFixture())
-                {
-                    A.CallTo(() => fixture.OpenLogFileDirector.PendingTask)
-                        .Returns(new DomainModel.Response<byte[]> { Message = new byte[10] });
+                A.CallTo(() => _testFixture.OpenLogFileDirector.PendingTask)
+                    .Returns(new DomainModel.Response<byte[]> { Message = new byte[10] });
 
-                    return fixture.WithOwinServer(async (client) =>
-                    {
-                        try
-                        {
-                            var result = await client.PostAsync("/runtime/Logs/OpenLog/1?token=", new StringContent(string.Empty));
-                            result.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
-                        }
-                        catch (Exception ex)
-                        {
-                            throw;
-                        }
-                    });
-                }
+                return _testFixture.WithOwinServer(async (client) =>
+                {
+                    var result = await client.PostAsync("/runtime/Logs/OpenLog/1?token=", new StringContent(string.Empty));
+                    result.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+                });
             }
 
             [Fact]

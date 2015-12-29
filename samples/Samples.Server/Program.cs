@@ -5,7 +5,6 @@ using Drey.Server.Logging;
 
 using Microsoft.AspNet.SignalR;
 using Microsoft.AspNet.SignalR.Infrastructure;
-using Microsoft.Owin;
 using Microsoft.Owin.Cors;
 using Microsoft.Owin.Hosting;
 
@@ -16,7 +15,6 @@ using System.IdentityModel.Selectors;
 using System.IO;
 using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
-using System.Security.Principal;
 
 namespace Samples.Server
 {
@@ -36,7 +34,7 @@ namespace Samples.Server
                 Directory.Delete(PACKAGES_DIR, true);
             }
 
-            var url = "https://e7440-win81:81";
+            var url = "https://+:81";
 
             try
             {
@@ -131,61 +129,6 @@ namespace Samples.Server
         }
     }
 
-    public class GlobalExceptionMiddleware : OwinMiddleware
-    {
-        public GlobalExceptionMiddleware(OwinMiddleware next) : base(next) { }
-        public override async System.Threading.Tasks.Task Invoke(IOwinContext context)
-        {
-            try
-            {
-                await Next.Invoke(context);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
-        }
-    }
 
-    public class ProvideGenericUserMiddleware : OwinMiddleware
-    {
-        public ProvideGenericUserMiddleware(OwinMiddleware next) : base(next) { }
-        public override System.Threading.Tasks.Task Invoke(IOwinContext context)
-        {
-            Console.WriteLine(string.Format("{0}: {1}", context.Request.Method, context.Request.Uri.AbsoluteUri));
 
-            if (context.Request.User == null) { context.Request.User = new GenericPrincipal(new GenericIdentity(""), new string[] { }); }
-            return Next.Invoke(context);
-        }
-    }
-
-    public class BufferContentIntoAMemoryStreamMiddleware : OwinMiddleware
-    {
-        public BufferContentIntoAMemoryStreamMiddleware(OwinMiddleware next):base(next){}
-        public override System.Threading.Tasks.Task Invoke(IOwinContext context)
-        {
-            // DIRTY HACK TO GET FILES TO UPLOAD!  This is only needed if you need to use client certificates.
-            // need to find out why client certificates seem to bork the pipeline.
-            var bytes = ReadFully(context.Request.Body);
-
-            context.Request.Body = new MemoryStream(bytes);
-            context.Request.Body.Seek(0, 0);
-
-            return Next.Invoke(context);
-        }
-        
-        static byte[] ReadFully(Stream input)
-        {
-            byte[] buffer = new byte[16 * 1024];
-            using (MemoryStream ms = new MemoryStream())
-            {
-                int read;
-                while ((read = input.Read(buffer, 0, buffer.Length)) > 0)
-                {
-                    ms.Write(buffer, 0, read);
-                }
-                return ms.ToArray();
-            }
-        }
-    }
 }

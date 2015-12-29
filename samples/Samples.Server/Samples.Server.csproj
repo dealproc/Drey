@@ -131,6 +131,10 @@
       <Project>{424B2437-2F2E-414C-A353-AA8BBBC6E052}</Project>
       <Name>Drey.DomainModel</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\source\Drey.Owin\Drey.Owin.csproj">
+      <Project>{9ce93619-282d-4136-816b-1055e46ca124}</Project>
+      <Name>Drey.Owin</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\source\Drey.Server.Core\Drey.Server.Core.csproj">
       <Project>{BEB7292D-69EC-49F2-878C-C04FF16A72A2}</Project>
       <Name>Drey.Server.Core</Name>
