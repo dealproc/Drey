@@ -27,17 +27,13 @@ namespace Drey.Nut
 
             asmName = asmName + ".dll";
 
-#if DEBUG
-            Console.WriteLine(Environment.CurrentDirectory);
-            Console.WriteLine(_pathToAppPackage);
-            Console.WriteLine(asmName);
-#endif
-
             var searchPaths = (new[] 
             { 
                     Path.GetFullPath(_pathToAppPackage), 
                     Path.GetDirectoryName(Environment.CurrentDirectory),
             });
+
+            Console.WriteLine("Searching the following paths for `{0}`: {1}", asmName, string.Join(";", searchPaths));
 
 			var dllFullPath = searchPaths
 				.Select (path => 
