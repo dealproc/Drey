@@ -22,7 +22,7 @@ namespace Drey.Configuration.ServiceModel
 
         readonly Drey.Nut.INutConfiguration _configurationManager;
         readonly Services.IGlobalSettingsService _globalSettingsService;
-        readonly Services.PackageService _packageService;
+        readonly Services.IPackageService _packageService;
         readonly Repositories.IPackageSettingRepository _packageSettingsRepository;
         readonly Repositories.IConnectionStringRepository _connectionStringsRepository;
         readonly IEventBus _eventBus;
@@ -47,7 +47,7 @@ namespace Drey.Configuration.ServiceModel
         /// <param name="packageId">The package identifier.</param>
         public ReleasesPollingClient(Drey.Nut.INutConfiguration configurationManager,
             Services.IGlobalSettingsService globalSettingsService,
-            Services.PackageService packageService,
+            Services.IPackageService packageService,
             Repositories.IPackageSettingRepository packageSettingsRepository,
             Repositories.IConnectionStringRepository connectionStringsRepository,
             IEventBus eventBus,

@@ -17,7 +17,7 @@ namespace Drey.Configuration.ServiceModel
 
         readonly Drey.Nut.INutConfiguration _configurationManager;
         readonly Services.IGlobalSettingsService _globalSettingsService;
-        readonly Services.PackageService _packageService;
+        readonly Services.IPackageService _packageService;
         readonly Repositories.IPackageSettingRepository _packageSettingRepository;
         readonly Repositories.IConnectionStringRepository _connectionStringRepository;
         readonly PollingClientCollection _pollingClients;
@@ -42,7 +42,7 @@ namespace Drey.Configuration.ServiceModel
         /// <param name="pollingClients">The polling clients.</param>
         public RegisteredPackagesPollingClient(Drey.Nut.INutConfiguration configurationManager,
             Services.IGlobalSettingsService globalSettingsService,
-            Services.PackageService packageService,
+            Services.IPackageService packageService,
             Repositories.IPackageSettingRepository packageSettingRepository,
             Repositories.IConnectionStringRepository connectionStringRepository,
             IEventBus eventBus,
