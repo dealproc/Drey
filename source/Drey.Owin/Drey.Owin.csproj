@@ -55,6 +55,7 @@
     <Compile Include="ProvideGenericUserMiddleware.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Drey.Owin.nuspec" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>Drey.Owin</id>
+    <version>$version$</version>
+    <title>Drey - Owin Components</title>
+    <authors>Richard A. Bennett</authors>
+    <owners>Richard A. Bennett</owners>
+    <licenseUrl>https://github.com/dealproc/Drey/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/dealproc/Drey/</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Owin Components</description>
+    <dependencies>
+      <dependency id="Microsoft.Owin" version="3.0.1" />
+      <dependency id="Owin" version="1.0" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="bin\$configuration$\Drey.Owin.dll" target="lib\net451" />
+  </files>
+</package>
