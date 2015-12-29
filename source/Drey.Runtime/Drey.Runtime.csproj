@@ -18,7 +18,7 @@
     <WarningLevel>4</WarningLevel>
     <RestorePackages>true</RestorePackages>
     <StartAction>Program</StartAction>
-    <StartProgram>$(SolutionDir)Runtime\Runtime.exe</StartProgram>
+    <StartProgram>$(SolutionDir)Runtime\AcademyOne, Inc\Runtime.exe</StartProgram>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -97,12 +97,12 @@
        Other similar extension points exist, see Microsoft.Common.targets.
   -->
   <Target Name="BeforeBuild">
-    <Delete Files="@(BuildArtifacts -&gt; '$(SolutionDir)\Runtime\%(Filename)%(Extension)')" />
+    <Delete Files="@(BuildArtifacts -&gt; '$(SolutionDir)\Runtime\AcademyOne, Inc\%(Filename)%(Extension)')" />
   </Target>
   <Target Name="AfterBuild">
     <ItemGroup>
       <BuildArtifacts Include="$(OutputPath)*.*" />
     </ItemGroup>
-    <Copy SourceFiles="@(BuildArtifacts)" DestinationFiles="@(BuildArtifacts -&gt; '$(SolutionDir)\Runtime\%(Filename)%(Extension)')" />
+    <Copy SourceFiles="@(BuildArtifacts)" DestinationFiles="@(BuildArtifacts -&gt; '$(SolutionDir)\Runtime\AcademyOne, Inc\%(Filename)%(Extension)')" />
   </Target>
 </Project>

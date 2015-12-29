@@ -64,6 +64,8 @@ namespace Drey.Configuration
             }
             catch (Exception ex)
             {
+                var baseEx = ex.GetBaseException();
+                _log.FatalException("Base exception of migration failure:", ex);
                 _log.FatalException("Migration Failed.", ex);
                 return false;
             }
