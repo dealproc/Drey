@@ -65,17 +65,20 @@ namespace Drey.Server.Tests
         public void Dispose()
         {
             Dispose(true);
-            _disposed = true;
+
+            GC.SuppressFinalize(this);
         }
         protected virtual void Dispose(bool disposing)
         {
+            if (!disposing || _disposed) { return; }
+
             if (_bootstrapper != null)
             {
                 _bootstrapper.Dispose();
                 _bootstrapper = null;
             }
 
-            if (!disposing || _disposed) { return; }
+            _disposed = true;
         }
     }
 }
