@@ -24,9 +24,15 @@ namespace Drey.Nut
             _Log.TraceFormat("Loading app from '{0}'", assemblyPath);
 
             var pathToAssembly = Utilities.PathUtilities.MapPath(assemblyPath);
+            var searchPaths = (new[] 
+            { 
+                    Path.GetFullPath(assemblyPath), 
+                    Environment.CurrentDirectory,
+            });
+
             var discoverStartupType = typeof(DiscoverStartupDllProxy);
             var startupProxyType = typeof(StartupProxy);
-            var discoveryDomain = Utilities.AppDomainUtils.CreateDomain(Guid.NewGuid().ToString());
+            var discoveryDomain = Utilities.AppDomainUtils.CreateDomain(Guid.NewGuid().ToString(), searchPaths);
             Tuple<string, string, string> entryDllAndType;
             DiscoverStartupDllProxy discoverPath = null;
 
@@ -60,7 +66,7 @@ namespace Drey.Nut
             }
 
             _Log.Info("Instantiating app.");
-            var domain = Utilities.AppDomainUtils.CreateDomain(entryDllAndType.Item3);
+            var domain = Utilities.AppDomainUtils.CreateDomain(entryDllAndType.Item3, searchPaths);
             var domainProxy = (StartupProxy)domain.CreateInstanceFromAndUnwrap(startupProxyType.Assembly.Location, startupProxyType.FullName, false,
                 BindingFlags.CreateInstance | BindingFlags.Instance | BindingFlags.Public, null, new[] { Path.GetDirectoryName(entryDllAndType.Item1) }, null, null);
             domain.AssemblyResolve += domainProxy.ResolveAssemblyInDomain;

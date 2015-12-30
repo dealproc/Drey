@@ -1,5 +1,7 @@
 ﻿using Drey.Logging;
+
 using System;
+using System.Linq;
 
 namespace Drey.Utilities
 {
@@ -12,13 +14,21 @@ namespace Drey.Utilities
         /// </summary>
         /// <param name="domainName">Name of the domain.</param>
         /// <returns></returns>
-        public static AppDomain CreateDomain(string domainName)
+        public static AppDomain CreateDomain(string domainName, string[] shadowCopyDirectories)
         {
             _Log.Trace("Creating a domain.");
 
             var setup = new AppDomainSetup();
             setup.ApplicationBase = AppDomain.CurrentDomain.SetupInformation.ApplicationBase;
             setup.ConfigurationFile = AppDomain.CurrentDomain.SetupInformation.ConfigurationFile;
+
+            if (shadowCopyDirectories.Any())
+            {
+                _Log.Debug("Setting shadow copy directories");
+                setup.ShadowCopyFiles = "true";
+                setup.ShadowCopyDirectories = string.Join(";", shadowCopyDirectories);
+            }
+
             var adEvidence = AppDomain.CurrentDomain.Evidence;
 
             var domain = AppDomain.CreateDomain(domainName, adEvidence, setup);
