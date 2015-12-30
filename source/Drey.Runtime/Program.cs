@@ -56,8 +56,6 @@ namespace Drey.Runtime
 
                 f.Service<HordeServiceWrapper>();
 
-                f.EnableShutdown();
-
                 f.EnableServiceRecovery(rc =>
                 {
                     rc.RestartService(1);
