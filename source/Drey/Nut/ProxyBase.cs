@@ -44,7 +44,7 @@ namespace Drey.Nut
 				).Where(s => !string.IsNullOrWhiteSpace(s));
 
 			var resolvedDll = dllFullPath.Where (fullPath => !string.IsNullOrWhiteSpace(fullPath))
-				.Select(path => Assembly.LoadFile(path))
+				.Select(path => Assembly.LoadFrom(path))
                 .Where(asm => asm != null)
                 .FirstOrDefault();
 
