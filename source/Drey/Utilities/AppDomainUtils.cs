@@ -12,14 +12,13 @@ namespace Drey.Utilities
         /// </summary>
         /// <param name="domainName">Name of the domain.</param>
         /// <returns></returns>
-        public static AppDomain CreateDomain(string domainName, bool shadowCopyLibraries = false)
+        public static AppDomain CreateDomain(string domainName)
         {
             _Log.Trace("Creating a domain.");
 
             var setup = new AppDomainSetup();
             setup.ApplicationBase = AppDomain.CurrentDomain.SetupInformation.ApplicationBase;
             setup.ConfigurationFile = AppDomain.CurrentDomain.SetupInformation.ConfigurationFile;
-            setup.ShadowCopyFiles = shadowCopyLibraries ? "true" : string.Empty;
             var adEvidence = AppDomain.CurrentDomain.Evidence;
 
             var domain = AppDomain.CreateDomain(domainName, adEvidence, setup);
