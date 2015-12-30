@@ -18,7 +18,7 @@ namespace Drey.Configuration.ServiceModel
         /// <summary>
         /// The delay, in milliseconds, between queries to the known-packages endpoint to see if updates are available.
         /// </summary>
-        const int DELAY_TIME_SEC = 5;
+        const int DELAY_TIME_SEC = 15;
 
         readonly Drey.Nut.INutConfiguration _configurationManager;
         readonly Services.IGlobalSettingsService _globalSettingsService;
@@ -103,6 +103,7 @@ namespace Drey.Configuration.ServiceModel
                     // if the response has new:
                     if (newReleases.Any())
                     {
+                        _log.Info("New releases were found.");
                         // determine latest
                         var releaseToDownload = _packageService
                             .GetReleases(_packageId)
@@ -124,6 +125,10 @@ namespace Drey.Configuration.ServiceModel
                             ConfigurationManager = CreateConfigurationManager()
                         });
                     }
+                    else
+                    {
+                        _log.Debug("No new releases detected.");
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -131,6 +136,7 @@ namespace Drey.Configuration.ServiceModel
                 }
 
                 _log.DebugFormat("Waiting {0} seconds before checking for new releases.", DELAY_TIME_SEC);
+
                 try
                 {
                     await Task.Delay(TimeSpan.FromSeconds(DELAY_TIME_SEC), _ct);
@@ -145,7 +151,7 @@ namespace Drey.Configuration.ServiceModel
         private async Task DownloadAndExtractRelease(HttpClient webClient, DataModel.Release releaseToDownload)
         {
             // download latest, based on package id and version (storage in {hordebasedir}\packages
-            _log.DebugFormat("Downloading release {version} of {pacakgeId} from server.", releaseToDownload.Version, releaseToDownload.Id);
+            _log.InfoFormat("Downloading {packageName} - {version}", releaseToDownload.Id, releaseToDownload.Version);
             var fileResult = await webClient.GetAsync("/.well-known/releases/" + releaseToDownload.Id + "/" + releaseToDownload.Version);
 
             fileResult.EnsureSuccessStatusCode();
