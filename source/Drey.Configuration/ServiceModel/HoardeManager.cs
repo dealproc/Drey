@@ -37,7 +37,7 @@ namespace Drey.Configuration.ServiceModel
         {
             Dispose(false);
         }
-        
+
         public void Handle(ShellRequestArgs e)
         {
             _log.InfoFormat("'Shell Request' Event Received: {packageId} | {event}", e.PackageId, e.ActionToTake);
@@ -58,6 +58,7 @@ namespace Drey.Configuration.ServiceModel
                     break;
                 case ShellAction.Restart:
                     ShutdownInstance(e.PackageId);
+                    CleanupHoarde(e);
                     StartupInstance(e.ConfigurationManager, e.PackageId, e.Version);
                     break;
                 default:
@@ -103,6 +104,25 @@ namespace Drey.Configuration.ServiceModel
 
             _log.Info("Configuration shell created.  Starting to listen for events.");
             return true;
+        }
+
+        /// <summary>
+        /// Removes historical versions of the applet from the hoarde.
+        /// </summary>
+        /// <param name="e">The e.</param>
+        /// <exception cref="System.NotImplementedException"></exception>
+        private void CleanupHoarde(ShellRequestArgs e)
+        {
+            if (!(e.RemoveOtherVersionsOnRestart && e.ActionToTake == ShellAction.Restart)) { return; }
+
+            var dir = new System.IO.DirectoryInfo(Drey.Utilities.PathUtilities.MapPath(_configurationManager.HoardeBaseDirectory));
+            var deployments = dir.EnumerateDirectories(e.PackageId + "*", searchOption: System.IO.SearchOption.TopDirectoryOnly)
+                .Where(di => !di.Name.EndsWith(e.Version))
+                .Apply(di =>
+                {
+                    _log.DebugFormat("Removing {folder} from hoarde.", di.Name);
+                    di.Delete();
+                });
         }
 
         /// <summary>

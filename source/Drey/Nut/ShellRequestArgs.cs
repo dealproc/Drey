@@ -27,6 +27,16 @@ namespace Drey.Nut
         /// Gets or sets the version.
         /// </summary>
         public string Version { get; set; }
+
+        /// <summary>
+        /// During a restart operation, if this is set to true, then the system will go about cleaning up historical versions of the <see cref="PackageId"/> that exist within the hoarde.
+        /// </summary>
+        public bool RemoveOtherVersionsOnRestart { get; set; }
+
+        public ShellRequestArgs()
+        {
+            RemoveOtherVersionsOnRestart = false;
+        }
     }
 
     /// <summary>
