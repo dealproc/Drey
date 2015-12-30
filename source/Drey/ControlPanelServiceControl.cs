@@ -1,7 +1,8 @@
 ﻿using Drey.Logging;
 using Drey.Nut;
-
 using System;
+using System.IO;
+using System.Linq;
 using System.Security.Permissions;
 using System.Threading.Tasks;
 
@@ -21,6 +22,7 @@ namespace Drey
         Tuple<AppDomain, IShell> _console;
 
         Task _restartConsoleTask;
+        ShellRequestArgs _requestArgsForRestart;
 
         bool _disposed = false;
 
@@ -89,6 +91,7 @@ namespace Drey
                             _restartConsoleTask = new Task(ObserveConsoleFinalizationAndRestart);
                             _restartConsoleTask.Start();
                         }
+                        _requestArgsForRestart = e;
                         ShutdownConsole();
                         break;
                     default:
@@ -102,6 +105,29 @@ namespace Drey
             _console.Item2.ShellRequestHandler(sender, e);
         }
 
+        /// <summary>
+        /// Removes historical versions of the applet from the hoarde.
+        /// </summary>
+        /// <param name="e">The e.</param>
+        /// <exception cref="System.NotImplementedException"></exception>
+        private void CleanupHoarde(ShellRequestArgs e)
+        {
+            _log.InfoFormat("Remove other versions: {removeVersions} | Action to Take: {action}", e.RemoveOtherVersionsOnRestart, e.ActionToTake);
+
+            if (!(e.RemoveOtherVersionsOnRestart && e.ActionToTake == ShellAction.Restart)) { return; }
+
+            _log.Info("Cleaning up hoarde due to restart and RemoveOtherVersionsOnRestart being set to true.");
+
+            var dir = new System.IO.DirectoryInfo(Drey.Utilities.PathUtilities.MapPath(_nutConfiguration.HoardeBaseDirectory));
+            var deployments = dir.EnumerateDirectories(e.PackageId + "*", searchOption: System.IO.SearchOption.TopDirectoryOnly)
+                .Where(di => !di.Name.EndsWith(e.Version))
+                .Apply(di =>
+                {
+                    _log.DebugFormat("Removing {folder} from hoarde.", di.Name);
+                    Directory.Delete(di.FullName, true); // This removes all contents of the folder as well.
+                });
+        }
+        
         private bool StartupConsole()
         {
             _log.Info("Console is starting up.");
@@ -159,6 +185,14 @@ namespace Drey
                     _log.Info("Console has completed its shutdown process... restarting.");
                     StartupConsole();
                     restartIssued = true;
+
+                    if (_requestArgsForRestart != null)
+                    {
+                        _log.Info("Attempting to cleanup old versions of the console in the hoarde.");
+                        CleanupHoarde(_requestArgsForRestart);
+                    }
+
+                    _requestArgsForRestart = null;
                 }
             }
 
