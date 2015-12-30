@@ -79,6 +79,11 @@ namespace Drey.Server.Services
                 release = _releaseStore.Create();
             }
 
+            if (stream.CanSeek)
+            {
+                stream.Seek(0, 0);
+            }
+
             var streamSHA = Utilities.CalculateChecksum(stream);
             if (!streamSHA.Equals(release.SHA1))
             {
