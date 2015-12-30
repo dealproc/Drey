@@ -122,7 +122,8 @@ namespace Drey.Configuration.ServiceModel
                             ActionToTake = Drey.Nut.ShellAction.Restart,
                             PackageId = releaseToDownload.Id,
                             Version = releaseToDownload.Version,
-                            ConfigurationManager = CreateConfigurationManager()
+                            ConfigurationManager = CreateConfigurationManager(),
+                            RemoveOtherVersionsOnRestart = true
                         });
                     }
                     else

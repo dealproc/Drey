@@ -1,8 +1,8 @@
 ﻿using Drey.Logging;
 using Drey.Nut;
-
 using System;
 using System.Collections.Concurrent;
+using System.IO;
 using System.Linq;
 
 namespace Drey.Configuration.ServiceModel
@@ -113,7 +113,11 @@ namespace Drey.Configuration.ServiceModel
         /// <exception cref="System.NotImplementedException"></exception>
         private void CleanupHoarde(ShellRequestArgs e)
         {
+            _log.InfoFormat("Remove other versions: {removeVersions} | Action to Take: {action}", e.RemoveOtherVersionsOnRestart, e.ActionToTake);
+            
             if (!(e.RemoveOtherVersionsOnRestart && e.ActionToTake == ShellAction.Restart)) { return; }
+
+            _log.Info("Cleaning up hoarde due to restart and RemoveOtherVersionsOnRestart being set to true.");
 
             var dir = new System.IO.DirectoryInfo(Drey.Utilities.PathUtilities.MapPath(_configurationManager.HoardeBaseDirectory));
             var deployments = dir.EnumerateDirectories(e.PackageId + "*", searchOption: System.IO.SearchOption.TopDirectoryOnly)
@@ -121,7 +125,7 @@ namespace Drey.Configuration.ServiceModel
                 .Apply(di =>
                 {
                     _log.DebugFormat("Removing {folder} from hoarde.", di.Name);
-                    di.Delete();
+                    Directory.Delete(di.FullName, true); // This removes all contents of the folder as well.
                 });
         }
 

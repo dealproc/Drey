@@ -60,7 +60,7 @@ namespace Drey.Nut
             }
 
             _Log.Info("Instantiating app.");
-            var domain = Utilities.AppDomainUtils.CreateDomain(entryDllAndType.Item3);
+            var domain = Utilities.AppDomainUtils.CreateDomain(entryDllAndType.Item3, true);
             var domainProxy = (StartupProxy)domain.CreateInstanceFromAndUnwrap(startupProxyType.Assembly.Location, startupProxyType.FullName, false,
                 BindingFlags.CreateInstance | BindingFlags.Instance | BindingFlags.Public, null, new[] { Path.GetDirectoryName(entryDllAndType.Item1) }, null, null);
             domain.AssemblyResolve += domainProxy.ResolveAssemblyInDomain;
