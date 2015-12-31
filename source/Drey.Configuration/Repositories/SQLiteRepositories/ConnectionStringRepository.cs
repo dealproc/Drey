@@ -16,6 +16,8 @@ namespace Drey.Configuration.Repositories.SQLiteRepositories
         /// <param name="configurationManager">The configuration manager.</param>
         public ConnectionStringRepository(INutConfiguration configurationManager) : base(configurationManager) { }
 
+        public ConnectionStringRepository(string databaseNameAndPath) : base(databaseNameAndPath) { }
+
         /// <summary>
         /// Alls this instance.
         /// </summary>

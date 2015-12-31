@@ -25,16 +25,22 @@ namespace Drey.Configuration.Infrastructure.Schema
         public static void Migrate(Drey.Nut.INutConfiguration config)
         {
             string dbNameAndPath = PathUtilities.MapPath(Path.Combine(config.WorkingDirectory, CONFIG_FILE_NAME), false);
+            Migrate(dbNameAndPath, true);
+        }
 
-            var currentDb = new FileInfo(dbNameAndPath);
-            var backupDb = Backup(currentDb);
+        public static void Migrate(string fileNameAndPath, bool withBackup = false)
+        {
+            var currentDb = new FileInfo(fileNameAndPath);
+            var backupDb = string.Empty;
+
+            if (withBackup) { Backup(currentDb); }
 
             var ctx = new RunnerContext(new ConsoleAnnouncer())
             {
                 ApplicationContext = string.Empty,
                 Database = "sqlite",
-                Connection = string.Format(CONNECTION_STRING_FORMAT, dbNameAndPath).NormalizePathSeparator(),
-                Targets = new[] { "Drey.Configuration" } 
+                Connection = string.Format(CONNECTION_STRING_FORMAT, fileNameAndPath).NormalizePathSeparator(),
+                Targets = new[] { "Drey.Configuration" }
             };
 
             try
@@ -44,8 +50,12 @@ namespace Drey.Configuration.Infrastructure.Schema
             }
             catch (Exception)
             {
-                currentDb.Delete();
-                if (!string.IsNullOrWhiteSpace(backupDb)) { File.Copy(backupDb, currentDb.FullName); }
+                if (withBackup)
+                {
+                    currentDb.Delete();
+                    if (!string.IsNullOrWhiteSpace(backupDb)) { File.Copy(backupDb, currentDb.FullName); }
+                }
+
                 throw;
             }
         }

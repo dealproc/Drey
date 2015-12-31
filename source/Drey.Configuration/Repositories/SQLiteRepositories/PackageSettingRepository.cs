@@ -8,6 +8,9 @@ using System.Linq;
 
 namespace Drey.Configuration.Repositories.SQLiteRepositories
 {
+    /// <summary>
+    /// This is the app settings, per package.
+    /// </summary>
     public class PackageSettingRepository : SqlRepository, IPackageSettingRepository
     {
         /// <summary>
@@ -15,6 +18,8 @@ namespace Drey.Configuration.Repositories.SQLiteRepositories
         /// </summary>
         /// <param name="configurationManager">The configuration manager.</param>
         public PackageSettingRepository(INutConfiguration configurationManager) : base(configurationManager) { }
+
+        public PackageSettingRepository(string databaseNameAndPath) : base(databaseNameAndPath) { }
 
         /// <summary>
         /// Alls this instance.
@@ -82,7 +87,7 @@ namespace Drey.Configuration.Repositories.SQLiteRepositories
             Execute(cn =>
             {
                 var parms = new { id = model.Id, packageId = model.PackageId, key = model.Key, Value = model.Value, createdOn = DateTime.Now, updatedOn = DateTime.Now };
-                
+
                 if (model.Id == 0) // assume insert.
                 {
                     cn.Execute(@"INSERT INTO PackageSettings (PackageId, Key, Value, CreatedOn, UpdatedOn) VALUES(@packageId, @key, @value, @createdOn, @updatedOn);", parms);

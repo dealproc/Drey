@@ -1,17 +1,22 @@
 ﻿using Autofac;
 
-using System.Linq;
+using Drey.Nut;
 
 namespace Drey.Configuration.Infrastructure.IoC
 {
     public class AutofacConfigModule : Module
     {
-        private string[] REGISTRATION_SUFFIXES = new[] { "Repository", "Service" };
         protected override void Load(ContainerBuilder builder)
         {
             builder.RegisterAssemblyTypes(ThisAssembly)
-                .Where(t => REGISTRATION_SUFFIXES.Any(t.Name.EndsWith))
+                .Where(t => t.Name.EndsWith("Service"))
                 .AsImplementedInterfaces()
+                .InstancePerLifetimeScope();
+
+            builder.RegisterAssemblyTypes(ThisAssembly)
+                .Where(t => t.Name.EndsWith("Repository"))
+                .AsImplementedInterfaces()
+                .UsingConstructor(typeof(INutConfiguration))
                 .InstancePerLifetimeScope();
         }
     }

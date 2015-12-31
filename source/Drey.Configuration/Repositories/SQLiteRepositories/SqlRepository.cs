@@ -1,6 +1,8 @@
 ﻿using Drey.Nut;
 using Drey.Utilities;
 
+using Mono.Data.Sqlite;
+
 using System;
 using System.Data;
 using System.IO;
@@ -21,13 +23,18 @@ namespace Drey.Configuration.Repositories.SQLiteRepositories
             _configurationManager = configurationManager;
         }
 
+        public SqlRepository(string databaseNameAndPath)
+        {
+            ConnectionStringBuilder = (config) => string.Format(CONNECTION_STRING_FORMAT, databaseNameAndPath);
+        }
+
         /// <summary>
         /// Executes the specified work.
         /// </summary>
         /// <param name="work">The work.</param>
         protected void Execute(Action<IDbConnection> work)
         {
-            using (var cn = Mono.Data.Sqlite.SqliteFactory.Instance.CreateConnection())
+            using (var cn = SqliteFactory.Instance.CreateConnection())
             {
                 cn.ConnectionString = ConnectionStringBuilder.Invoke(_configurationManager);
                 cn.Open();
@@ -44,7 +51,7 @@ namespace Drey.Configuration.Repositories.SQLiteRepositories
         /// <returns></returns>
         protected T Execute<T>(Func<IDbConnection, T> work)
         {
-            using (var cn = Mono.Data.Sqlite.SqliteFactory.Instance.CreateConnection())
+            using (var cn = SqliteFactory.Instance.CreateConnection())
             {
                 cn.ConnectionString = ConnectionStringBuilder.Invoke(_configurationManager);
                 cn.Open();

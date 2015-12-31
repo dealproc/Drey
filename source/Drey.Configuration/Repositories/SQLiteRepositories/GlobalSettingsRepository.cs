@@ -14,6 +14,8 @@ namespace Drey.Configuration.Repositories.SQLiteRepositories
         /// <param name="configurationManager">The configuration manager.</param>
         public GlobalSettingsRepository(INutConfiguration configurationManager) : base(configurationManager) { }
 
+        public GlobalSettingsRepository(string databaseNameAndPath) : base(databaseNameAndPath) { }
+
         /// <summary>
         /// Saves the setting.
         /// </summary>
