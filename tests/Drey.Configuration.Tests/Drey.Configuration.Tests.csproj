@@ -115,6 +115,7 @@
     <Compile Include="Modules\AppletModuleTests.cs" />
     <Compile Include="Modules\HomeModuleTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repositories\SqliteRepositories\ConnectionStringRepositoryTests.cs" />
     <Compile Include="Repositories\SqliteRepositories\PackageSettingRepositoryTests.cs" />
     <Compile Include="Repositories\SqliteRepositories\RepositoryTests.cs" />
     <Compile Include="Resources\SampleFiles.Designer.cs">

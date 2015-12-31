@@ -13,7 +13,7 @@ namespace Drey.Configuration.Tests.Repositories.SqliteRepositories
     {
         PackageSettingRepository _sut;
 
-        public PackageSettingRepositoryTests()
+        public PackageSettingRepositoryTests() : base()
         {
             _sut = new PackageSettingRepository(this.FilePath);
         }
