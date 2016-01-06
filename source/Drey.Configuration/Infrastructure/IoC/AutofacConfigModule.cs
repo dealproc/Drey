@@ -16,7 +16,9 @@ namespace Drey.Configuration.Infrastructure.IoC
             builder.RegisterAssemblyTypes(ThisAssembly)
                 .Where(t => t.Name.EndsWith("Repository"))
                 .AsImplementedInterfaces()
-                .UsingConstructor(typeof(INutConfiguration))
+                .FindConstructorsWith(t => new[] { 
+                    t.GetConstructor(new[] { typeof(INutConfiguration) })
+                })
                 .InstancePerLifetimeScope();
         }
     }

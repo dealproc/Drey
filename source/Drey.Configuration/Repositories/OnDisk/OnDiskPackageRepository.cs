@@ -12,7 +12,7 @@ namespace Drey.Configuration.Repositories.OnDisk
 
         readonly Drey.Nut.INutConfiguration _configurationManager;
 
-        public OnDiskPackageRepository(Drey.Nut.INutConfiguration configurationManager)
+        public OnDiskPackageRepository(Drey.Nut.INutConfiguration configurationManager) : base()
         {
             _configurationManager = configurationManager;
         }
