@@ -5,10 +5,12 @@ using Drey.Utilities;
 
 using System;
 using System.IO;
+using System.Runtime.Remoting;
+using System.Security.Permissions;
 
 namespace Drey.Configuration.Infrastructure.ConfigurationManagement
 {
-    public class DbConfigurationSettings : MarshalByRefObject, Drey.Nut.INutConfiguration
+    public class DbConfigurationSettings : MarshalByRefObject, Drey.Nut.INutConfiguration, IDisposable
     {
         static readonly ILog _log = LogProvider.For<DbConfigurationSettings>();
 
@@ -17,6 +19,8 @@ namespace Drey.Configuration.Infrastructure.ConfigurationManagement
         readonly IGlobalSettingsRepository _globalSettingsRepository;
         readonly IApplicationSettings _applicationSettingsService;
         readonly IConnectionStrings _connectionStringsService;
+
+        bool _disposed = false;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DbConfigurationSettings"/> class.
@@ -36,6 +40,10 @@ namespace Drey.Configuration.Infrastructure.ConfigurationManagement
             _globalSettingsRepository = new Repositories.SQLiteRepositories.GlobalSettingsRepository(this);
             _applicationSettingsService = new Services.ApplicationSettingsService(_packageId, packageSettingRepository);
             _connectionStringsService = new Services.ConnectionStringsService(_packageId, connectionStringsRepository);
+        }
+        ~DbConfigurationSettings()
+        {
+            Dispose(false);
         }
 
         /// <summary>
@@ -82,6 +90,33 @@ namespace Drey.Configuration.Infrastructure.ConfigurationManagement
         public ExecutionMode Mode
         {
             get { return _hostApplicationConfiguration.Mode; }
+        }
+
+        [SecurityPermission(SecurityAction.Demand, Flags = SecurityPermissionFlag.Infrastructure)]
+        public override object InitializeLifetimeService()
+        {
+            //
+            // Returning null designates an infinite non-expiring lease.
+            // We must therefore ensure that RemotingServices.Disconnect() is called when
+            // it's no longer needed otherwise there will be a memory leak.
+            //
+            return null;
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposing || _disposed) { return; }
+
+            RemotingServices.Disconnect(this);
+
+            _disposed = true;
         }
     }
 }

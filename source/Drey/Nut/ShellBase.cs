@@ -1,8 +1,9 @@
 ﻿using Drey.Logging;
+
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.Remoting;
-using System.Runtime.Remoting.Lifetime;
 using System.Security.Permissions;
 
 namespace Drey.Nut
@@ -21,7 +22,7 @@ namespace Drey.Nut
         /// </summary>
         protected virtual IEnumerable<MarshalByRefObject> NestedMarshalByRefObjects
         {
-            get { yield break; }
+            get { return Enumerable.Empty<MarshalByRefObject>(); }
         }
 
         public ShellBase()
@@ -110,6 +111,11 @@ namespace Drey.Nut
         protected virtual void Dispose(bool disposing)
         {
             if (!disposing || Disposed) { return; }
+
+            if (ConfigurationManager is IDisposable)
+            {
+                ((IDisposable)ConfigurationManager).Dispose();
+            }
 
             Disconnect();
 

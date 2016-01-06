@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Security.Permissions;
 
 namespace Drey.Configuration
 {
@@ -14,7 +15,7 @@ namespace Drey.Configuration
         void Publish(object message, object token);
     }
 
-    public class EventBus : MarshalByRefObject, IEventBus
+    public class EventBus : IEventBus
     {
         readonly List<Handler> handlers = new List<Handler>();
         public static Action<object, object> HandlerResultProcessing = (target, result) => { };

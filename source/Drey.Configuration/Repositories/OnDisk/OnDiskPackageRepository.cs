@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Permissions;
 using System.Text.RegularExpressions;
 
 namespace Drey.Configuration.Repositories.OnDisk
@@ -66,6 +67,12 @@ namespace Drey.Configuration.Repositories.OnDisk
         public DataModel.Release Store(DataModel.Release r)
         {
             throw new NotSupportedException("On-Disk Package Repository is for development purposes only.");
+        }
+
+        [SecurityPermission(SecurityAction.Demand, Flags = SecurityPermissionFlag.Infrastructure)]
+        public override object InitializeLifetimeService()
+        {
+            return null;
         }
     }
 }

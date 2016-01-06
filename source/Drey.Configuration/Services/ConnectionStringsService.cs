@@ -1,8 +1,8 @@
 ﻿using Drey.Nut;
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
+using System.Security.Permissions;
 
 namespace Drey.Configuration.Services
 {
@@ -46,6 +46,12 @@ namespace Drey.Configuration.Services
             model.ConnectionString = connectionString;
             model.ProviderName = providerName;
             _connectionStringsRepository.Store(model);
+        }
+
+        [SecurityPermission(SecurityAction.Demand, Flags = SecurityPermissionFlag.Infrastructure)]
+        public override object InitializeLifetimeService()
+        {
+            return null;
         }
     }
 }

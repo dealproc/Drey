@@ -1,9 +1,11 @@
 ﻿using Drey.Logging;
 using Drey.Nut;
+
 using System;
 using System.Collections.Concurrent;
 using System.IO;
 using System.Linq;
+using System.Security.Permissions;
 
 namespace Drey.Configuration.ServiceModel
 {
@@ -153,7 +155,13 @@ namespace Drey.Configuration.ServiceModel
 
             }
         }
-
+        
+        [SecurityPermission(SecurityAction.Demand, Flags = SecurityPermissionFlag.Infrastructure)]
+        public override object InitializeLifetimeService()
+        {
+            return null;
+        }
+        
         private void KillAppContainer(Tuple<AppDomain, IShell> shell)
         {
             try

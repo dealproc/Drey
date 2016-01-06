@@ -6,6 +6,7 @@ using Mono.Data.Sqlite;
 using System;
 using System.Data;
 using System.IO;
+using System.Security.Permissions;
 
 namespace Drey.Configuration.Repositories.SQLiteRepositories
 {
@@ -74,6 +75,12 @@ namespace Drey.Configuration.Repositories.SQLiteRepositories
                     tx.Commit();
                 }
             });
+        }
+
+        [SecurityPermission(SecurityAction.Demand, Flags = SecurityPermissionFlag.Infrastructure)]
+        public override object InitializeLifetimeService()
+        {
+            return null;
         }
     }
 }
