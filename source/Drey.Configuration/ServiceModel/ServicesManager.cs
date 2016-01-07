@@ -28,7 +28,7 @@ namespace Drey.Configuration.ServiceModel
         readonly Repositories.IPackageRepository _packageRepository;
         readonly Repositories.IConnectionStringRepository _connectionStringsRepository;
         readonly Repositories.IPackageSettingRepository _packageSettingsRepository;
-        readonly HoardeManager _hoardeManager;
+        readonly IHoardeManager _hoardeManager;
 
 
         IHubConnectionManager _hubConnectionManager;
@@ -50,7 +50,8 @@ namespace Drey.Configuration.ServiceModel
             IEnumerable<IRemoteInvocationService> remoteInvokedServices,
             Services.IGlobalSettingsService globalSettings, Func<RegisteredPackagesPollingClient> packagesPollerFactory,
             Func<PollingClientCollection> pollingCollectionFactory, Repositories.IPackageRepository packageRepository, Repositories.IConnectionStringRepository connectionStringsRepository,
-            Repositories.IPackageSettingRepository packageSettingsRepository, HoardeManager hoardeManager)
+            Repositories.IPackageSettingRepository packageSettingsRepository, 
+            IHoardeManager hoardeManager)
         {
             _log = LogProvider.For<ServicesManager>();
 
