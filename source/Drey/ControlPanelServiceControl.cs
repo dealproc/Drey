@@ -145,12 +145,21 @@ namespace Drey
                 return;
             }
 
+
             try
             {
                 _log.Info("Console is shutting down.");
 
-                _console.Item2.Shutdown();
-                _console.Item2.Dispose();
+                if (_console.Item2 != null)
+                {
+                    _console.Item2.Shutdown();
+                    _console.Item2.Dispose();
+                }
+                else
+                {
+                    _log.Debug("Applet shell is empty.  Must have been shutdown.");
+                }
+
                 _log.Debug("Unloading console app domain.");
 
                 AppDomain.Unload(_console.Item1);

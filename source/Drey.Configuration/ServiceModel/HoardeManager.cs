@@ -71,7 +71,13 @@ namespace Drey.Configuration.ServiceModel
 
         public bool IsOnline(DataModel.Release package)
         {
-            return _apps.Any(a => a.Value.Item2.Id == package.Id);
+            _log.DebugFormat("Online packages: {packageList}", _apps.Select(x => x.Value.Item2.Id).ToArray());
+
+            var isOnline = _apps.Any(a => a.Value.Item2.Id.Equals(package.Id, StringComparison.OrdinalIgnoreCase));
+            
+            _log.DebugFormat("Is {package} online? {isOnline}", package.Id, isOnline);
+            
+            return isOnline;
         }
 
         /// <summary>
