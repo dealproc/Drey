@@ -210,6 +210,7 @@
     <EmbeddedResource Include="Views\Setup\ClientCertificate.cshtml" />
     <EmbeddedResource Include="Views\Home\recycleapp.cshtml" />
     <EmbeddedResource Include="Views\Home\recyclepending.cshtml" />
+    <EmbeddedResource Include="Views\Home\_AppletInfo.cshtml" />
     <None Include="Views\Web.config" />
     <None Include="web.config" />
   </ItemGroup>

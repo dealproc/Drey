@@ -1,0 +1,46 @@
+﻿@inherits NancyRazorViewBase<Drey.Configuration.Services.ViewModels.AppletInfoPmo>
+@{
+    var faBase = "fa fa-fw fa-3x";
+}
+
+<div class="panel panel-default">
+    <div class="panel-body">
+
+        <div class="media">
+            <div class="media-left media-middle">
+                <span class="@faBase @(Model.Online ? "fa-check-square-o text-success" : "fa-square-o text-danger")" title="@(Model.Online ? "Online" : "Offline")"></span>
+            </div>
+            <div class="media-body">
+                <a href="~/applet/@Model.Id">
+                    <h2 class="media-heading">@Model.Title</h2>
+                </a>
+                <dl class="dl-horizontal">
+                    @if (!string.IsNullOrEmpty(Model.Description))
+                    {
+                        <dt>Description</dt>
+                        <dd>@Model.Description</dd>
+                    }
+                    @if (!string.IsNullOrEmpty(Model.Version))
+                    {
+                        <dt>Version</dt>
+                        <dd>@Model.Version</dd>
+                    }
+                    @if (!string.IsNullOrEmpty(Model.Summary))
+                    {
+                        <dt>Summary</dt>
+                        <dd>@Model.Summary</dd>
+                    }
+                    @if (!string.IsNullOrEmpty(Model.ReleaseNotes))
+                    {
+                        <dt>Release Notes</dt>
+                        <dd>@Model.ReleaseNotes</dd>
+                    }
+                    <dt>Updated On</dt>
+                    <dd>@Model.UpdatedOn</dd>
+                </dl>
+
+            </div>
+        </div>
+
+    </div>
+</div>

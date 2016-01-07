@@ -1,52 +1,11 @@
 ﻿@inherits NancyRazorViewBase<IEnumerable<Drey.Configuration.Services.ViewModels.AppletInfoPmo>>
 @{
     ViewBag.Title = "Global Settings";
-    var faBase = "fa fa-fw fa-3x";
 }
 
 <p class="lead">The following applications are installed in this runtime.</p>
 
 @foreach (Drey.Configuration.Services.ViewModels.AppletInfoPmo pkg in Model)
 {
-    <div class="panel panel-default">
-        <div class="panel-body">
-
-            <div class="media">
-                <div class="media-left media-middle">
-                    <span class="@faBase @(pkg.Online ? "fa-check-square-o text-success" : "fa-square-o text-danger")" title="@(pkg.Online ? "Online" : "Offline")"></span>
-                </div>
-                <div class="media-body">
-                    <a href="~/applet/@pkg.Id">
-                        <h2 class="media-heading">@pkg.Title</h2>
-                    </a>
-                    <dl class="dl-horizontal">
-                        @if (!string.IsNullOrEmpty(pkg.Description))
-                        {
-                            <dt>Description</dt>
-                            <dd>@pkg.Description</dd>
-                        }
-                        @if (!string.IsNullOrEmpty(pkg.Version))
-                        {
-                            <dt>Version</dt>
-                            <dd>@pkg.Version</dd>
-                        }
-                        @if (!string.IsNullOrEmpty(pkg.Summary))
-                        {
-                            <dt>Summary</dt>
-                            <dd>@pkg.Summary</dd>
-                        }
-                        @if (!string.IsNullOrEmpty(pkg.ReleaseNotes))
-                        {
-                            <dt>Release Notes</dt>
-                            <dd>@pkg.ReleaseNotes</dd>
-                        }
-                        <dt>Updated On</dt>
-                        <dd>@pkg.UpdatedOn</dd>
-                    </dl>
-
-                </div>
-            </div>
-
-        </div>
-    </div>
+    @Html.Partial("_AppletInfo", pkg)
 }

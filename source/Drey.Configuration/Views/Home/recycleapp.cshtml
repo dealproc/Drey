@@ -1,4 +1,4 @@
-﻿@inherits NancyRazorViewBase<IEnumerable<Drey.Configuration.DataModel.Release>>
+﻿@inherits NancyRazorViewBase<IEnumerable<Drey.Configuration.Services.ViewModels.AppletInfoPmo>>
 @{
     ViewBag.Title = "Recycle Environment";
     //var faBase = "fa fa-fw fa-3x";
@@ -10,12 +10,10 @@
 
 <p>Current applications:</p>
 
-<ul class="">
-    @foreach (Drey.Configuration.DataModel.Release pkg in Model)
-    {
-        <li>@pkg.Title - @pkg.Description</li>
-    }
-</ul>
+@foreach (Drey.Configuration.Services.ViewModels.AppletInfoPmo pkg in Model)
+{
+    @Html.Partial("_AppletInfo", pkg)
+}
 
 <form method="post">
     @Html.AntiForgeryToken()
