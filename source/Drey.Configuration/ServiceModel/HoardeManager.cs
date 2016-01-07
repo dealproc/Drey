@@ -9,7 +9,7 @@ using System.Security.Permissions;
 
 namespace Drey.Configuration.ServiceModel
 {
-    public class HoardeManager : MarshalByRefObject, IHandle<ShellRequestArgs>, IDisposable
+    public class HoardeManager : MarshalByRefObject, IHandle<ShellRequestArgs>, IHoardeManager
     {
         static ILog _log = LogProvider.For<HoardeManager>();
 

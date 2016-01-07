@@ -24,12 +24,12 @@ namespace Drey.Configuration.Infrastructure.IoC
             }
         }
 
-        public static void Configure(IEventBus eventBus, ServiceModel.HoardeManager hoardeManager, INutConfiguration configurationManager)
+        public static void Configure(IEventBus eventBus, ServiceModel.IHoardeManager hoardeManager, INutConfiguration configurationManager)
         {
             var builder = new ContainerBuilder();
 
             builder.RegisterInstance<IEventBus>(eventBus);
-            builder.RegisterInstance<ServiceModel.HoardeManager>(hoardeManager);
+            builder.RegisterInstance<ServiceModel.IHoardeManager>(hoardeManager);
             builder.RegisterInstance<INutConfiguration>(configurationManager);
 
             builder.RegisterType<ServiceModel.ServicesManager>().AsImplementedInterfaces().SingleInstance();

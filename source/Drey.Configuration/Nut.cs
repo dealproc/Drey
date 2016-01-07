@@ -22,7 +22,7 @@ namespace Drey.Configuration
         IEventBus _eventBus;
         IDisposable _webApp;
         [NonSerialized]
-        ServiceModel.HoardeManager _hoardeManager;
+        ServiceModel.IHoardeManager _hoardeManager;
         [NonSerialized]
         ServiceModel.IServicesManager _servicesManager;
 

@@ -11,7 +11,7 @@ namespace Drey.Configuration.Services
         readonly IPackageRepository _packageRepository;
         readonly IConnectionStringRepository _connectionStringRepository;
         readonly IPackageSettingRepository _packageSettingRepository;
-        readonly ServiceModel.HoardeManager _hoardManager;
+        readonly ServiceModel.IHoardeManager _hoardManager;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PackageService"/> class.
@@ -19,7 +19,7 @@ namespace Drey.Configuration.Services
         /// <param name="packageRepository">The package repository.</param>
         /// <param name="connectionStringRepository">The connection string repository.</param>
         /// <param name="packageSettingRepository">The package setting repository.</param>
-        public PackageService(IPackageRepository packageRepository, IConnectionStringRepository connectionStringRepository, IPackageSettingRepository packageSettingRepository, ServiceModel.HoardeManager hoardeManager)
+        public PackageService(IPackageRepository packageRepository, IConnectionStringRepository connectionStringRepository, IPackageSettingRepository packageSettingRepository, ServiceModel.IHoardeManager hoardeManager)
         {
             _packageRepository = packageRepository;
             _connectionStringRepository = connectionStringRepository;
