@@ -173,6 +173,7 @@
     <Compile Include="ServiceModel\IReportPeriodically.cs" />
     <Compile Include="Services\PackageService.cs" />
     <Compile Include="Services\ViewModels\AppletDashboardPmo.cs" />
+    <Compile Include="Services\ViewModels\AppletInfoPmo.cs" />
     <Compile Include="Services\ViewModels\AppSettingPmo.cs" />
     <Compile Include="Services\ViewModels\ConnectionStringPmo.cs" />
     <Compile Include="Services\ViewModels\GlobalSettingsPmo.cs" />

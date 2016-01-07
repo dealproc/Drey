@@ -1,4 +1,4 @@
-﻿@inherits NancyRazorViewBase<IEnumerable<Drey.Configuration.DataModel.Release>>
+﻿@inherits NancyRazorViewBase<IEnumerable<Drey.Configuration.Services.ViewModels.AppletInfoPmo>>
 @{
     ViewBag.Title = "Global Settings";
     var faBase = "fa fa-fw fa-3x";
@@ -6,14 +6,14 @@
 
 <p class="lead">The following applications are installed in this runtime.</p>
 
-@foreach (Drey.Configuration.DataModel.Release pkg in Model)
+@foreach (Drey.Configuration.Services.ViewModels.AppletInfoPmo pkg in Model)
 {
     <div class="panel panel-default">
         <div class="panel-body">
 
             <div class="media">
                 <div class="media-left media-middle">
-                    <span class="@faBase fa-ban text-danger" title="offline"></span>
+                    <span class="@faBase @(pkg.Online ? "fa-check-square-o text-success" : "fa-square-o text-danger")" title="@(pkg.Online ? "Online" : "Offline")"></span>
                 </div>
                 <div class="media-body">
                     <a href="~/applet/@pkg.Id">

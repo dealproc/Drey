@@ -30,7 +30,7 @@ namespace Drey.Configuration.Services
         /// Retrieves the list of latest releases registered on the system.
         /// </summary>
         /// <returns></returns>
-        IEnumerable<DataModel.Release> LatestRegisteredReleases();
+        IEnumerable<ViewModels.AppletInfoPmo> LatestRegisteredReleases();
 
         /// <summary>
         /// Stores a list of releases.

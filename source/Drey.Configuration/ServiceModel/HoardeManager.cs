@@ -69,6 +69,11 @@ namespace Drey.Configuration.ServiceModel
             }
         }
 
+        public bool IsOnline(DataModel.Release package)
+        {
+            return _apps.Any(a => a.Value.Item2.Id == package.Id);
+        }
+
         /// <summary>
         /// Starts an app instance from the horde.
         /// </summary>

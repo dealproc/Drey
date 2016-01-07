@@ -8,9 +8,10 @@ namespace Drey.Configuration.Services
 {
     public class PackageService : IPackageService
     {
-        IPackageRepository _packageRepository;
-        IConnectionStringRepository _connectionStringRepository;
-        IPackageSettingRepository _packageSettingRepository;
+        readonly IPackageRepository _packageRepository;
+        readonly IConnectionStringRepository _connectionStringRepository;
+        readonly IPackageSettingRepository _packageSettingRepository;
+        readonly ServiceModel.HoardeManager _hoardManager;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PackageService"/> class.
@@ -18,11 +19,12 @@ namespace Drey.Configuration.Services
         /// <param name="packageRepository">The package repository.</param>
         /// <param name="connectionStringRepository">The connection string repository.</param>
         /// <param name="packageSettingRepository">The package setting repository.</param>
-        public PackageService(IPackageRepository packageRepository, IConnectionStringRepository connectionStringRepository, IPackageSettingRepository packageSettingRepository)
+        public PackageService(IPackageRepository packageRepository, IConnectionStringRepository connectionStringRepository, IPackageSettingRepository packageSettingRepository, ServiceModel.HoardeManager hoardeManager)
         {
             _packageRepository = packageRepository;
             _connectionStringRepository = connectionStringRepository;
             _packageSettingRepository = packageSettingRepository;
+            _hoardManager = hoardeManager;
         }
 
         /// <summary>
@@ -39,12 +41,27 @@ namespace Drey.Configuration.Services
         /// Retrieves the list of latest releases registered on the system.
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<DataModel.Release> LatestRegisteredReleases()
+        public IEnumerable<ViewModels.AppletInfoPmo> LatestRegisteredReleases()
         {
-            return _packageRepository.All()
+            var releases = _packageRepository.All()
                 .Select(rel => new { Release = rel, Version = new NuGet.SemanticVersion(rel.Version) })
                 .GroupBy(x => x.Release.Id)
                 .Select(x => x.OrderByDescending(rel => rel.Version).First().Release);
+
+            var models = releases.Select(x => new ViewModels.AppletInfoPmo
+            {
+                Description = x.Description,
+                Id = x.Id,
+                UpdatedOn = x.UpdatedOn,
+                ReleaseNotes = x.ReleaseNotes,
+                SHA1 = x.SHA1,
+                Online = _hoardManager.IsOnline(x),
+                Summary = x.Summary,
+                Title = x.Title,
+                Version = x.Version
+            });
+
+            return models;
         }
 
         /// <summary>
