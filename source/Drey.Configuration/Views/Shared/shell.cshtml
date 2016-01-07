@@ -12,19 +12,31 @@
 </head>
 <body>
     <div class="container">
-        <h1>@ViewBag.Title</h1>
-
-        <div class="btn-toolbar">
-            <div class="btn-group">
-                <a href="~/" class="btn btn-default" title="Home"><span class="fa fa-fw fa-lg fa-home"></span></a>
-                <a href="~/recycle" class="btn btn-default" title="Restart Application"><span class="fa fa-fw fa-lg fa-refresh"></span></a>
+        <div class="row">
+            <div class="col-md-11">
+                <a href="~/"><h1>@ViewBag.Title</h1></a>
+                <h2>@ViewBag.Subtitle</h2>
             </div>
-
-            @RenderSection("Buttons", false)
-
-            <div class="btn-group pull-right">
-                <a href="~/Setup/ClientCertificate" class="btn btn-default" title="Change Client Certificate"><span class="fa fa-fw fa-lg fa-key"></span></a>
-                <a href="~/Setup/ServerUrl" class="btn btn-default" title="Change Server Url"><span class="fa fa-fw fa-lg fa-link"></span></a>
+        </div>
+        <div class="row">
+            <div class="col-md-11">
+                <div class="btn-toolbar">
+                    @RenderSection("Buttons", false)
+                </div>
+            </div>
+            <div class="col-md-1">
+                <div class="btn-group">
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <em class="fa fa-lg fa-cog"></em>
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-right">
+                        <li><a href="~/recycle">Restart Runtime</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="~/Setup/ClientCertificate">Change Client Certificate</a></li>
+                        <li><a href="~/Setup/ServerUrl">Change Server Url</a></li>
+                    </ul>
+                </div>
             </div>
         </div>
 

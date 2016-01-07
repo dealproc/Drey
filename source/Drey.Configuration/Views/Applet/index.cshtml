@@ -1,7 +1,8 @@
 ﻿@using System.Linq;
 @inherits NancyRazorViewBase<Drey.Configuration.Services.ViewModels.AppletDashboardPmo>
 @{
-    ViewBag.Title = "Applet Settings - " + Model.Title;
+    ViewBag.Title = "Applet Settings";
+    ViewBag.Subtitle = Model.Title;
     var faBase = "fa fa-fw fa-3x";
     var cmdBtnColSize = "col-md-2";
 }

@@ -6,19 +6,47 @@
 
 <p class="lead">The following applications are installed in this runtime.</p>
 
-<ul class="media-list">
-    @foreach (Drey.Configuration.DataModel.Release pkg in Model)
-    {
-        <li class="media">
-            <div class="media-left media-top">
-                <span class="@faBase fa-ban text-danger" title="offline"></span>
+@foreach (Drey.Configuration.DataModel.Release pkg in Model)
+{
+    <div class="panel panel-default">
+        <div class="panel-body">
+
+            <div class="media">
+                <div class="media-left media-middle">
+                    <span class="@faBase fa-ban text-danger" title="offline"></span>
+                </div>
+                <div class="media-body">
+                    <a href="~/applet/@pkg.Id">
+                        <h2 class="media-heading">@pkg.Title</h2>
+                    </a>
+                    <dl class="dl-horizontal">
+                        @if (!string.IsNullOrEmpty(pkg.Description))
+                        {
+                            <dt>Description</dt>
+                            <dd>@pkg.Description</dd>
+                        }
+                        @if (!string.IsNullOrEmpty(pkg.Version))
+                        {
+                            <dt>Version</dt>
+                            <dd>@pkg.Version</dd>
+                        }
+                        @if (!string.IsNullOrEmpty(pkg.Summary))
+                        {
+                            <dt>Summary</dt>
+                            <dd>@pkg.Summary</dd>
+                        }
+                        @if (!string.IsNullOrEmpty(pkg.ReleaseNotes))
+                        {
+                            <dt>Release Notes</dt>
+                            <dd>@pkg.ReleaseNotes</dd>
+                        }
+                        <dt>Updated On</dt>
+                        <dd>@pkg.UpdatedOn</dd>
+                    </dl>
+
+                </div>
             </div>
-            <div class="media-body">
-                <a href="~/applet/@pkg.Id">
-                    <h2 class="media-heading">@pkg.Title</h2>
-                </a>
-                <p>@pkg.Description</p>
-            </div>
-        </li>
-    }
-</ul>
+
+        </div>
+    </div>
+}
