@@ -74,5 +74,10 @@ namespace Drey.Configuration.Repositories.OnDisk
         {
             return null;
         }
+
+        public void Delete(string packageId, string version)
+        {
+            throw new NotSupportedException("we do not delete packages from disc.");
+        }
     }
 }

@@ -153,6 +153,7 @@
     <Compile Include="Repositories\SQLiteRepositories\PackageRepository.cs" />
     <Compile Include="Repositories\SQLiteRepositories\PackageSettingRepository.cs" />
     <Compile Include="Repositories\SQLiteRepositories\SqlRepository.cs" />
+    <Compile Include="Repositories\UniqueIndexException.cs" />
     <Compile Include="ServiceModel\HoardeManager.cs" />
     <Compile Include="ServiceModel\IHoardeManager.cs" />
     <Compile Include="ServiceModel\IPollingClient.cs" />
@@ -212,6 +213,8 @@
     <EmbeddedResource Include="Views\Home\recycleapp.cshtml" />
     <EmbeddedResource Include="Views\Home\recyclepending.cshtml" />
     <EmbeddedResource Include="Views\Home\_AppletInfo.cshtml" />
+    <EmbeddedResource Include="Views\Applet\appSettingDelete.cshtml" />
+    <EmbeddedResource Include="Views\Applet\connStringDelete.cshtml" />
     <None Include="Views\Web.config" />
     <None Include="web.config" />
   </ItemGroup>

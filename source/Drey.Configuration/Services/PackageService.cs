@@ -45,7 +45,7 @@ namespace Drey.Configuration.Services
         {
             var releases = _packageRepository.All()
                 .Select(rel => new { Release = rel, Version = new NuGet.SemanticVersion(rel.Version) })
-                .GroupBy(x => x.Release.Id)
+                .GroupBy(x => x.Release.Id.ToLower())
                 .Select(x => x.OrderByDescending(rel => rel.Version).First().Release);
 
             var models = releases.Select(x => new ViewModels.AppletInfoPmo
@@ -141,6 +141,11 @@ namespace Drey.Configuration.Services
             _packageSettingRepository.Store(model);
         }
 
+        public void RemoveAppSetting(ViewModels.AppSettingPmo model)
+        {
+            _packageSettingRepository.Delete(model.Id);
+        }
+
         /// <summary>
         /// Retrieves the connection string from the repository.
         /// </summary>
@@ -165,6 +170,12 @@ namespace Drey.Configuration.Services
         {
             _connectionStringRepository.Store(model);
         }
+
+        public void RemoveConnectionString(ViewModels.ConnectionStringPmo model)
+        {
+            _connectionStringRepository.Delete(model.Id);
+        }
+
 
         /// <summary>
         /// Retrieves a list of the System.Data Connection Factory Providers registered in this system.

@@ -34,7 +34,7 @@ namespace Drey.Configuration.Repositories.SQLiteRepositories
         /// <returns></returns>
         public IEnumerable<DataModel.PackageConnectionString> All(string packageId)
         {
-            return Execute(cn => cn.Query<DataModel.PackageConnectionString>("SELECT * FROM ConnectionStrings WHERE PackageId = @packageId", new { packageId = packageId }));
+            return Execute(cn => cn.Query<DataModel.PackageConnectionString>("SELECT * FROM ConnectionStrings WHERE PackageId COLLATE nocase = @packageId", new { packageId = packageId }));
         }
 
         /// <summary>
@@ -45,7 +45,7 @@ namespace Drey.Configuration.Repositories.SQLiteRepositories
         /// <returns></returns>
         public string ByName(string packageId, string name)
         {
-            return Execute(cn => cn.ExecuteScalar<string>("SELECT ConnectionString FROM ConnectionStrings where PackageId = @packageId and Name = @name;", new { packageId = packageId, name = name }));
+            return Execute(cn => cn.ExecuteScalar<string>("SELECT ConnectionString FROM ConnectionStrings where PackageId COLLATE nocase = @packageId and Name COLLATE nocase = @name;", new { packageId = packageId, name = name }));
         }
 
         /// <summary>
@@ -56,7 +56,7 @@ namespace Drey.Configuration.Repositories.SQLiteRepositories
         /// <returns></returns>
         public DataModel.PackageConnectionString Get(string packageId, string name)
         {
-            return Execute(cn => cn.Query<DataModel.PackageConnectionString>("SELECT * FROM ConnectionStrings WHERE PackageId = @id and Name = @name;", new { id = packageId, name = name }).SingleOrDefault());
+            return Execute(cn => cn.Query<DataModel.PackageConnectionString>("SELECT * FROM ConnectionStrings WHERE PackageId COLLATE nocase = @id and Name COLLATE nocase = @name;", new { id = packageId, name = name }).SingleOrDefault());
         }
 
         /// <summary>
@@ -78,7 +78,11 @@ namespace Drey.Configuration.Repositories.SQLiteRepositories
 
             if (model.Id == 0)
             {
-                Execute(cn => cn.Execute(@"INSERT INTO ConnectionStrings (PackageId, Name, ConnectionString, ProviderName, CreatedOn, UpdatedOn) VALUES (@packageId, @name, @connectionString, @providerName, @createdOn, @updatedOn);", parms));
+                Execute(cn =>
+                {
+                    if (Get(model.PackageId, model.Name) != null) { throw new UniqueIndexException("Violation of unique index."); }
+                    cn.Execute(@"INSERT INTO ConnectionStrings (PackageId, Name, ConnectionString, ProviderName, CreatedOn, UpdatedOn) VALUES (@packageId, @name, @connectionString, @providerName, @createdOn, @updatedOn);", parms);
+                });
                 return;
             }
 
@@ -100,11 +104,25 @@ namespace Drey.Configuration.Repositories.SQLiteRepositories
 
             if (model.Id == 0)
             {
-                Execute(cn => cn.Execute(@"INSERT INTO ConnectionStrings (PackageId, Name, ConnectionString, ProviderName, CreatedOn, UpdatedOn) VALUES (@packageId, @name, @connectionString, @providerName, @createdOn, @updatedOn);", parms));
+                Execute(cn =>
+                {
+                    if (Get(model.PackageId, model.Name) != null) { throw new UniqueIndexException("Violation of unique index."); }
+                    cn.Execute(@"INSERT INTO ConnectionStrings (PackageId, Name, ConnectionString, ProviderName, CreatedOn, UpdatedOn) VALUES (@packageId, @name, @connectionString, @providerName, @createdOn, @updatedOn);", parms);
+                });
                 return;
             }
 
             Execute(cn => cn.Execute(@"UPDATE ConnectionStrings SET PackageId = @packageId, Name = @name, ConnectionString = @connectionString, ProviderName = @providerName, UpdatedOn = @updatedOn WHERE Id = @id", parms));
+        }
+
+        /// <summary>
+        /// Deletes the package connection string, by its key.
+        /// </summary>
+        /// <param name="id">The key for the connection string to be deleted.</param>
+        /// <exception cref="System.NotImplementedException"></exception>
+        public void Delete(int id)
+        {
+            Execute(cn => cn.Execute("DELETE FROM ConnectionStrings WHERE Id=@id", new { id }));
         }
     }
 }

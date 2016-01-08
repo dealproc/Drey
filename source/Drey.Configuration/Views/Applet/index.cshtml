@@ -14,8 +14,6 @@
     </div>
 }
 
-<h2>@Model.Title - @Model.Version</h2>
-
 <div class="panel panel-default">
     <div class="panel-body">
         <div>
@@ -47,6 +45,7 @@
                                                 <a href="#" data-toggle="dropdown" class="btn btn-default dropdown-toggle"><span class="caret"></span><span class="sr-only">Toggle Dropdown</span></a>
                                                 <ul role="menu" class="dropdown-menu">
                                                     <li><a href="~/applet/@Model.Id/appSetting/@appSetting.Key/Edit"><span class="glyphicon glyphicon-pencil"></span> Edit</a></li>
+                                                    <li><a href="~/applet/@Model.Id/appSetting/@appSetting.Key/Delete"><span class="glyphicon glyphicon-remove"></span> Delete</a></li>
                                                 </ul>
                                             </div>
                                         </td>
@@ -86,6 +85,7 @@
                                                 <a href="#" data-toggle="dropdown" class="btn btn-default dropdown-toggle"><span class="caret"></span><span class="sr-only">Toggle Dropdown</span></a>
                                                 <ul role="menu" class="dropdown-menu">
                                                     <li><a href="~/applet/@Model.Id/connectionStrings/@connStr.Name/Edit"><span class="glyphicon glyphicon-pencil"></span> Edit</a></li>
+                                                    <li><a href="~/applet/@Model.Id/connectionStrings/@connStr.Name/Delete"><span class="glyphicon glyphicon-remove"></span> Delete</a></li>
                                                 </ul>
                                             </div>
                                         </td>

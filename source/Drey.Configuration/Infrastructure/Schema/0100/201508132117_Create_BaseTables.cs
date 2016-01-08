@@ -25,20 +25,32 @@ namespace Drey.Configuration.Infrastructure.Schema._0100
 
             Create.Table("ConnectionStrings")
                 .WithColumn("Id").AsInt32().PrimaryKey().Identity()
-                .WithColumn("PackageId").AsString(255).Indexed()
+                .WithColumn("PackageId").AsString(255)
                 .WithColumn("Name").AsString(100)
                 .WithColumn("ConnectionString").AsString(Int32.MaxValue)
                 .WithColumn("ProviderName").AsString(100)
                 .WithColumn("CreatedOn").AsDateTime().WithDefault(SystemMethods.CurrentDateTime)
                 .WithColumn("UpdatedOn").AsDateTime().WithDefault(SystemMethods.CurrentDateTime);
 
+            Create.Index("IX_ConnectionStrings_PackageId_Name")
+                .OnTable("ConnectionStrings")
+                .OnColumn("PackageId").Ascending()
+                .OnColumn("Name").Ascending()
+                .WithOptions().Unique();
+
             Create.Table("PackageSettings")
                 .WithColumn("Id").AsInt32().PrimaryKey().Identity()
-                .WithColumn("PackageId").AsString(255).Indexed()
+                .WithColumn("PackageId").AsString(255)
                 .WithColumn("Key").AsString(100)
                 .WithColumn("Value").AsString(Int32.MaxValue)
                 .WithColumn("CreatedOn").AsDateTime().WithDefault(SystemMethods.CurrentDateTime)
                 .WithColumn("UpdatedOn").AsDateTime().WithDefault(SystemMethods.CurrentDateTime);
+
+            Create.Index("IX_PackageSettings_PackageId_Key")
+                .OnTable("PackageSettings")
+                .OnColumn("PackageId").Ascending()
+                .OnColumn("Key").Ascending()
+                .WithOptions().Unique();
 
             Create.Table("GlobalSettings")
                 .WithColumn("Id").AsInt32().PrimaryKey().Identity()

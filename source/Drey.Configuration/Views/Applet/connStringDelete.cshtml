@@ -1,0 +1,47 @@
+﻿@inherits NancyRazorViewBase<Drey.Configuration.Services.ViewModels.ConnectionStringPmo>
+@{
+    ViewBag.Title = "Delete Connection String";
+    ViewBag.Subtitle = Model.PackageId;
+    var faBase = "fa fa-fw fa-3x";
+}
+
+@Html.Partial("Shared/ValidationSummary")
+
+<form method="post" action="~/applet/@Model.PackageId/connectionStrings/@Model.Name/delete">
+
+    <p>Please confirm deletion of this connection string.  This action cannot be undone.</p>
+
+    <input type="hidden" name="Id" value="@Model.Id" />
+    <input type="hidden" name="PackageId" value="@Model.PackageId" />
+
+    <div class="form-group">
+        <label for="Name">Name</label>
+        <span class="form-control-static">@Model.Name</span>
+        <input type="hidden" value="@Model.Name" name="Name" />
+    </div>
+
+    <div class="form-group">
+        <label for="ConnectionString">Connection String</label>
+        <code>
+<pre>
+@Model.ConnectionString
+</pre>
+        </code>
+    </div>
+
+    <div class="form-group">
+        <label for="ProviderName">Provider</label>
+@foreach (KeyValuePair<string, string> name in Model.Providers)
+{
+    if (name.Key.Equals(Model.ProviderName))
+    {
+        <span class="form-control-static">@Model.ProviderName</span>
+    }
+}
+    </div>
+
+    <div>
+        <button type="submit" class="btn btn-danger">Delete</button>
+        <a href="~/applet/@Model.PackageId" class="btn btn-default">Cancel</a>
+    </div>
+</form>

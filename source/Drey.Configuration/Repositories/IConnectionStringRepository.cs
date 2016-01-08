@@ -39,6 +39,16 @@ namespace Drey.Configuration.Repositories
         /// <param name="model">The model.</param>
         void Store(Services.ViewModels.ConnectionStringPmo model);
 
+        /// <summary>
+        /// Stores the specified model.
+        /// </summary>
+        /// <param name="model">The model.</param>
         void Store(DataModel.PackageConnectionString model);
+
+        /// <summary>
+        /// Deletes the package connection string, by its key.
+        /// </summary>
+        /// <param name="id">The key for the connection string to be deleted.</param>
+        void Delete(int id);
     }
 }

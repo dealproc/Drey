@@ -58,6 +58,8 @@ namespace Drey.Configuration.Services
         /// <param name="model">The model.</param>
         void RecordAppSetting(ViewModels.AppSettingPmo model);
 
+        void RemoveAppSetting(ViewModels.AppSettingPmo model);
+
         /// <summary>
         /// Retrieves the connection string from the repository.
         /// </summary>
@@ -70,6 +72,8 @@ namespace Drey.Configuration.Services
         /// </summary>
         /// <param name="model">The model.</param>
         void RecordConnectionString(ViewModels.ConnectionStringPmo model);
+
+        void RemoveConnectionString(ViewModels.ConnectionStringPmo model);
 
         /// <summary>
         /// Retrieves a list of the System.Data Connection Factory Providers registered in this system.

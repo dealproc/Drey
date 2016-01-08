@@ -1,0 +1,36 @@
+﻿@inherits NancyRazorViewBase<Drey.Configuration.Services.ViewModels.AppSettingPmo>
+@{
+    ViewBag.Title = "Delete Application Setting";
+    ViewBag.Subtitle = Model.PackageId;
+    var faBase = "fa fa-fw fa-3x";
+}
+
+@Html.Partial("Shared/ValidationSummary")
+
+<form method="post" action="~/applet/@Model.PackageId/appSetting/@Model.Key/delete">
+
+    <p>Please confirm deletion of this application setting.  This action cannot be undone.</p>
+
+    <input type="hidden" name="Id" value="@Model.Id" />
+    <input type="hidden" name="PackageId" value="@Model.PackageId" />
+
+    <div class="form-group">
+        <label for="Key">Key</label>
+        <span class="form-control-static">@Model.Key</span>
+        <input type="hidden" value="@Model.Key" name="Key" />
+    </div>
+
+    <div class="form-group">
+        <label for="Value">Value</label>
+        <code>
+<pre>
+@Model.Value
+</pre>
+        </code>
+    </div>
+
+    <div>
+        <button type="submit" class="btn btn-danger">Delete</button>
+        <a href="~/applet/@Model.PackageId" class="btn btn-default">Cancel</a>
+    </div>
+</form>

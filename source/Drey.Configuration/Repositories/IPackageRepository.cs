@@ -22,12 +22,19 @@ namespace Drey.Configuration.Repositories
         /// <param name="packageId">The package identifier.</param>
         /// <returns></returns>
         IEnumerable<DataModel.Release> GetReleases(string packageId);
-        
+
         /// <summary>
-        /// Stores the specified r.
+        /// Stores the release.
         /// </summary>
-        /// <param name="r">The r.</param>
+        /// <param name="release">The release.</param>
         /// <returns></returns>
-        DataModel.Release Store(DataModel.Release r);
+        DataModel.Release Store(DataModel.Release release);
+
+        /// <summary>
+        /// Deletes the specified package identifier.
+        /// </summary>
+        /// <param name="packageId">The package identifier.</param>
+        /// <param name="version">The version.</param>
+        void Delete(string packageId, string version);
     }
 }

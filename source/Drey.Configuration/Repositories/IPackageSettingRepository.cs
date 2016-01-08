@@ -40,5 +40,11 @@ namespace Drey.Configuration.Repositories
         void Store(Services.ViewModels.AppSettingPmo model);
 
         void Store(DataModel.PackageSetting model);
+
+        /// <summary>
+        /// Deletes the specified package setting, by its key.
+        /// </summary>
+        /// <param name="id">The key of the package setting.</param>
+        void Delete(int id);
     }
 }

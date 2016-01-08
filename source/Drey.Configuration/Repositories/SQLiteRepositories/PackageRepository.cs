@@ -24,7 +24,8 @@ namespace Drey.Configuration.Repositories.SQLiteRepositories
         /// <returns></returns>
         public IEnumerable<DataModel.Release> All()
         {
-            return Execute(cn => cn.Query<DataModel.Release>("SELECT * FROM Releases")).Where(r => !r.Id.Equals(DreyConstants.ConfigurationPackageName, StringComparison.OrdinalIgnoreCase));
+            return Execute(cn => cn.Query<DataModel.Release>("SELECT * FROM Releases"))
+                .Where(r => !r.Id.Equals(DreyConstants.ConfigurationPackageName, StringComparison.OrdinalIgnoreCase));
         }
 
         /// <summary>
@@ -33,7 +34,7 @@ namespace Drey.Configuration.Repositories.SQLiteRepositories
         /// <returns></returns>
         public IEnumerable<DataModel.Package> GetPackages()
         {
-            return Execute(cn => cn.Query<DataModel.Package>("SELECT Id, Min(Title) as Title, 1 as AutoUpdates FROM Releases GROUP BY Id")).Where(r => !r.Id.Equals(DreyConstants.ConfigurationPackageName, StringComparison.OrdinalIgnoreCase));
+            return Execute(cn => cn.Query<DataModel.Package>("SELECT Id, Min(Title) as Title, 1 as AutoUpdates FROM Releases GROUP BY Id COLLATE nocase")).Where(r => !r.Id.Equals(DreyConstants.ConfigurationPackageName, StringComparison.OrdinalIgnoreCase));
         }
 
         /// <summary>
@@ -43,7 +44,7 @@ namespace Drey.Configuration.Repositories.SQLiteRepositories
         /// <returns></returns>
         public IEnumerable<DataModel.Release> GetReleases(string packageId)
         {
-            return Execute(cn => cn.Query<DataModel.Release>(@"SELECT * FROM RELEASES WHERE Id = @packageId", new { packageId = packageId }));
+            return Execute(cn => cn.Query<DataModel.Release>(@"SELECT * FROM RELEASES WHERE Id COLLATE nocase = @packageId", new { packageId = packageId }));
         }
 
         /// <summary>
@@ -72,7 +73,7 @@ namespace Drey.Configuration.Repositories.SQLiteRepositories
                     updatedOn = DateTime.Now
                 };
 
-                if (0 == cn.ExecuteScalar<int>("SELECT count(*) from Releases WHERE Id = @id AND Version = @version", sqlParams))
+                if (0 == cn.ExecuteScalar<int>("SELECT count(*) from Releases WHERE Id COLLATE nocase = @id AND Version COLLATE nocase = @version", sqlParams))
                 {
                     cn.Execute(@"INSERT INTO Releases (Id, Version, Description, IconUrl, Listed, Published, ReleaseNotes, Summary, Tags, Title, SHA1, CreatedOn, UpdatedOn) 
 VALUES (@id, @version, @description, @iconUrl, @listed, @published, @releaseNotes, @summary, @tags, @title, @sha1, @createdOn, @updatedOn);", sqlParams);
@@ -91,11 +92,16 @@ VALUES (@id, @version, @description, @iconUrl, @listed, @published, @releaseNote
     Title = @title,
     SHA1 = @sha1,
     UpdatedOn = @updatedOn
-WHERE Id = @id AND Version = @version;
+WHERE Id COLLATE nocase = @id AND Version = @version;
 ", sqlParams);
                 }
                 return release;
             });
+        }
+
+        public void Delete(string packageId, string version)
+        {
+            Execute(cn => cn.Execute("DELETE FROM Releases WHERE Id COLLATE nocase = @packageId AND Version COLLATE nocase = @version", new { packageId, version }));
         }
     }
 }

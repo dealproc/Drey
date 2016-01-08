@@ -37,7 +37,7 @@ namespace Drey.Configuration.Repositories.SQLiteRepositories
         /// <returns></returns>
         public IEnumerable<DataModel.PackageSetting> All(string packageId)
         {
-            return Execute(cn => cn.Query<DataModel.PackageSetting>("SELECT * FROM PackageSettings WHERE PackageId = @packageId", new { packageId = packageId }));
+            return Execute(cn => cn.Query<DataModel.PackageSetting>("SELECT * FROM PackageSettings WHERE PackageId COLLATE nocase = @packageId", new { packageId = packageId }));
         }
 
         /// <summary>
@@ -48,7 +48,7 @@ namespace Drey.Configuration.Repositories.SQLiteRepositories
         /// <returns></returns>
         public string ByKey(string packageId, string key)
         {
-            return Execute(cn => cn.ExecuteScalar<string>("SELECT Value FROM PackageSettings WHERE PackageId=@packageId AND Key = @key;", new { packageId = packageId, key = key }));
+            return Execute(cn => cn.ExecuteScalar<string>("SELECT Value FROM PackageSettings WHERE PackageId COLLATE nocase = @packageId AND Key COLLATE nocase = @key;", new { packageId = packageId, key = key }));
         }
 
         /// <summary>
@@ -59,7 +59,7 @@ namespace Drey.Configuration.Repositories.SQLiteRepositories
         /// <returns></returns>
         public DataModel.PackageSetting Get(string packageId, string key)
         {
-            return Execute(cn => cn.Query<DataModel.PackageSetting>("SELECT * FROM PackageSettings WHERE PackageId = @id AND Key = @key;", new { id = packageId, key = key }).FirstOrDefault());
+            return Execute(cn => cn.Query<DataModel.PackageSetting>("SELECT * FROM PackageSettings WHERE PackageId COLLATE nocase = @id AND Key COLLATE nocase = @key;", new { id = packageId, key = key }).FirstOrDefault());
         }
 
         /// <summary>
@@ -74,6 +74,8 @@ namespace Drey.Configuration.Repositories.SQLiteRepositories
 
                 if (model.Id == 0) // assume insert
                 {
+                    if (Get(model.PackageId, model.Key) != null) { throw new UniqueIndexException("Violation of unique index."); }
+
                     cn.Execute(@"INSERT INTO PackageSettings (PackageId, Key, Value, CreatedOn, UpdatedOn) VALUES (@packageId, @key, @value, @createdOn, @updatedOn);", parms);
                     return;
                 }
@@ -82,6 +84,10 @@ namespace Drey.Configuration.Repositories.SQLiteRepositories
             });
         }
 
+        /// <summary>
+        /// Stores the specified model.
+        /// </summary>
+        /// <param name="model">The model.</param>
         public void Store(DataModel.PackageSetting model)
         {
             Execute(cn =>
@@ -90,12 +96,24 @@ namespace Drey.Configuration.Repositories.SQLiteRepositories
 
                 if (model.Id == 0) // assume insert.
                 {
+                    if (Get(model.PackageId, model.Key) != null) { throw new UniqueIndexException("Violation of unique index."); }
+
                     cn.Execute(@"INSERT INTO PackageSettings (PackageId, Key, Value, CreatedOn, UpdatedOn) VALUES(@packageId, @key, @value, @createdOn, @updatedOn);", parms);
                     return;
                 }
 
                 cn.Execute(@"UPDATE PackageSettings SET PackageId = @packageId, Key = @key, Value = @value, UpdatedOn = @updatedOn WHERE ID = @id;", parms);
             });
+        }
+
+        /// <summary>
+        /// Deletes the specified package setting, by its key.
+        /// </summary>
+        /// <param name="id">The key of the package setting.</param>
+        /// <exception cref="System.NotImplementedException"></exception>
+        public void Delete(int id)
+        {
+            Execute(cn => cn.Execute("DELETE FROM PackageSettings where ID = @id;", new { id }));
         }
     }
 }

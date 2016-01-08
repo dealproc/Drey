@@ -37,7 +37,7 @@ namespace Drey.Configuration.Services
 
         public bool Exists(string key)
         {
-            return _packageSettingsRepository.All().Any(setting => setting.PackageId == _packageId && setting.Key == key);
+            return _packageSettingsRepository.All().Any(setting => setting.PackageId.ToLower() == _packageId.ToLower() && setting.Key.ToLower() == key.ToLower());
         }
 
         public void Register(string key, string value = "")

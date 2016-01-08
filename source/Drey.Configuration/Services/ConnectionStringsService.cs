@@ -37,7 +37,7 @@ namespace Drey.Configuration.Services
 
         public bool Exists(string name)
         {
-            return _connectionStringsRepository.All().Any(cn => cn.PackageId == _packageId && cn.Name == name);
+            return _connectionStringsRepository.All().Any(cn => cn.PackageId.ToLower() == _packageId.ToLower() && cn.Name.ToLower() == name.ToLower());
         }
 
         public void Register(string name, string connectionString, string providerName = "")
