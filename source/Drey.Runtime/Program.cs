@@ -33,7 +33,7 @@ namespace Drey.Runtime
             fileTarget.Layout = "${longdate}|${level:uppercase=true}|${logger}|${message}|${exception:maxInnerExceptionLevel=4}  ${onexception: ${exception:format=ToString} | ${stacktrace:format=raw} }";
 
             // Step 4. Define rules
-            var rule1 = new LoggingRule("*", NLog.LogLevel.Trace, consoleTarget);
+            var rule1 = new LoggingRule("*", NLog.LogLevel.Info, consoleTarget);
             nlogConfig.LoggingRules.Add(rule1);
 
             var rule2 = new LoggingRule("*", NLog.LogLevel.Debug, fileTarget);

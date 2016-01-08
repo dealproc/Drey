@@ -80,6 +80,9 @@ namespace Drey.Nut
                 if (!configurationManager.ConnectionStrings.Exists(connStr.Name)) { configurationManager.ConnectionStrings.Register(connStr.Name, connStr.ConnectionString, connStr.ProviderName); }
             });
 
+            _Log.Info("Setting up Server Certificate Validation.");
+            ConfigurationManager.CertificateValidator.Initialize();
+
             return true;
         }
 

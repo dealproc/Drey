@@ -70,8 +70,6 @@ namespace Drey.Configuration
                 return false;
             }
 
-            configurationManager.CertificateValidator.Initialize();
-
             _eventBus = new EventBus();
             _hoardeManager = new ServiceModel.HoardeManager(_eventBus, configurationManager, ShellRequestHandler, this.ConfigureLogging);
 
