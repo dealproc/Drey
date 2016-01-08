@@ -10,6 +10,7 @@ namespace Drey.Nut
         string HoardeBaseDirectory { get; }
         string LogsDirectory { get; }
         ExecutionMode Mode { get; }
+        string LogVerbosity { get; }
         ICertificateValidation CertificateValidator { get; }
     }
 }

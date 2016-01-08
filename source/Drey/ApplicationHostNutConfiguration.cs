@@ -48,6 +48,7 @@ namespace Drey
         public string LogsDirectory { get { return Path.Combine(WorkingDirectory, "Logs").NormalizePathSeparator(); } }
 
         public ExecutionMode Mode { get; set; }
+        public string LogVerbosity { get; set; }
 
         public CertificateValidation.ICertificateValidation CertificateValidator
         {

@@ -14,6 +14,8 @@ namespace Drey.Runtime
 {
     class Program
     {
+        public static string LogVerbosity { get; protected set; }
+
         public static Action<INutConfiguration> LogConfiguration = (INutConfiguration config) =>
         {
             // Step 1. Create configuration object 
@@ -36,10 +38,10 @@ namespace Drey.Runtime
             fileTarget.ArchiveNumbering = ArchiveNumberingMode.Sequence;
 
             // Step 4. Define rules
-            var rule1 = new LoggingRule("*", NLog.LogLevel.Debug, consoleTarget);
+            var rule1 = new LoggingRule("*", NLog.LogLevel.FromString(config.LogVerbosity), consoleTarget);
             nlogConfig.LoggingRules.Add(rule1);
 
-            var rule2 = new LoggingRule("*", NLog.LogLevel.Debug, fileTarget);
+            var rule2 = new LoggingRule("*", NLog.LogLevel.FromString(config.LogVerbosity), fileTarget);
             nlogConfig.LoggingRules.Add(rule2);
 
             // Step 5. Activate the configuration
@@ -50,9 +52,13 @@ namespace Drey.Runtime
         [STAThread]
         public static void Main(string[] args)
         {
+            LogVerbosity = "Info";
+
             HostFactory.Run(f =>
             {
                 f.UseLinuxIfAvailable();
+
+                f.AddCommandLineDefinition("verbosity", v => LogVerbosity = v);
 
                 f.SetDisplayName("Drey Runtime Environment");
                 f.SetServiceName("Runtime");
@@ -75,7 +81,11 @@ namespace Drey.Runtime
 
         public HordeServiceWrapper()
         {
-            _control = new ControlPanelServiceControl(ExecutionMode.Development, Program.LogConfiguration);
+            _control = new ControlPanelServiceControl(
+                mode: ExecutionMode.Development,
+                configureLogging: Program.LogConfiguration,
+                logVerbosity: Program.LogVerbosity
+            );
         }
         public bool Start(HostControl hostControl)
         {

@@ -26,9 +26,9 @@ namespace Drey
 
         bool _disposed = false;
 
-        public ControlPanelServiceControl(ExecutionMode mode = ExecutionMode.Production, Action<INutConfiguration> configureLogging = null)
+        public ControlPanelServiceControl(ExecutionMode mode = ExecutionMode.Production, Action<INutConfiguration> configureLogging = null, string logVerbosity = "Info")
         {
-            _nutConfiguration = new ApplicationHostNutConfiguration { Mode = mode };
+            _nutConfiguration = new ApplicationHostNutConfiguration() { Mode = mode, LogVerbosity = logVerbosity };
             _executionMode = mode;
 
             if (configureLogging != null)
@@ -127,13 +127,13 @@ namespace Drey
                     Directory.Delete(di.FullName, true); // This removes all contents of the folder as well.
                 });
         }
-        
+
         private bool StartupConsole()
         {
             _log.Info("Console is starting up.");
             string packageDir = Utilities.PackageUtils.DiscoverPackage(DreyConstants.ConfigurationPackageName, _nutConfiguration.HoardeBaseDirectory);
             _console = _appFactory.Create(packageDir, ShellRequestHandler, _configureLogging);
-            
+
             return _console.Item2.Startup(_nutConfiguration);
         }
 

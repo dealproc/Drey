@@ -99,6 +99,10 @@ namespace Drey.Configuration.Infrastructure.ConfigurationManagement
         {
             get { return _hostApplicationConfiguration.Mode; }
         }
+        public string LogVerbosity
+        {
+            get { return _hostApplicationConfiguration.LogVerbosity; }
+        }
 
         [SecurityPermission(SecurityAction.Demand, Flags = SecurityPermissionFlag.Infrastructure)]
         public override object InitializeLifetimeService()
