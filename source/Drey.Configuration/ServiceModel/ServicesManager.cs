@@ -160,7 +160,7 @@ namespace Drey.Configuration.ServiceModel
 
             _log.Debug("Connecting to runtime hub.");
 
-            _hubConnectionManager = HubConnectionManager.GetHubConnectionManager(brokerUrl);
+            _hubConnectionManager = HubConnectionManager.GetHubConnectionManager(brokerUrl.CurrentHostname);
             _hubConnectionManager.UseClientCertificate(_globalSettings.GetCertificate());
 
             _log.Debug("Creating runtime hub proxy and assigning to services.");

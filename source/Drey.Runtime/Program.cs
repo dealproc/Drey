@@ -36,7 +36,7 @@ namespace Drey.Runtime
             fileTarget.ArchiveNumbering = ArchiveNumberingMode.Sequence;
 
             // Step 4. Define rules
-            var rule1 = new LoggingRule("*", NLog.LogLevel.Info, consoleTarget);
+            var rule1 = new LoggingRule("*", NLog.LogLevel.Debug, consoleTarget);
             nlogConfig.LoggingRules.Add(rule1);
 
             var rule2 = new LoggingRule("*", NLog.LogLevel.Debug, fileTarget);

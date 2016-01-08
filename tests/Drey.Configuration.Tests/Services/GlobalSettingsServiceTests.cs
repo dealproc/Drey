@@ -37,17 +37,23 @@ namespace Drey.Configuration.Tests.Services
         [Fact]
         public void SSLCertificateCanBeSaved()
         {
-            A.CallTo(() => _globalSettingsRepository.SaveSetting(A<string>.That.IsEqualTo("SSLPfx"), A<string>.Ignored)).DoesNothing();
+            A.CallTo(() => _globalSettingsRepository.SaveSetting(A<string>.That.IsEqualTo(DreyConstants.ClientCertificate), A<string>.Ignored)).DoesNothing();
 
-            _SUT.UpdateSSLCertificate(new byte[10]);
+            _SUT.UpdateClientCertificate(new byte[10]);
+
+            A.CallTo(() => _globalSettingsRepository.SaveSetting(A<string>.That.IsEqualTo(DreyConstants.ClientCertificate), A<string>.Ignored)).MustHaveHappened();
         }
 
         [Fact]
         public void ServerHostnameCanBeSaved()
         {
-            A.CallTo(() => _globalSettingsRepository.SaveSetting(A<string>.That.IsEqualTo("ServerHostname"), A<string>.Ignored)).DoesNothing();
+            A.CallTo(() => _globalSettingsRepository.SaveSetting(A<string>.That.IsEqualTo(DreyConstants.ServerHostname), A<string>.Ignored)).DoesNothing();
+            A.CallTo(() => _globalSettingsRepository.SaveSetting(A<string>.That.IsEqualTo(DreyConstants.ServerSSLThumbprint), A<string>.Ignored)).DoesNothing();
 
-            _SUT.UpdateServerHostname("http://time.is/utc");
+            _SUT.UpdateHostDetails(new Configuration.Services.ViewModels.ServerHostnamePmo { NewHostname = "http://time.is/utc", NewServerCertificateThumbprint = Guid.NewGuid().ToString() });
+
+            A.CallTo(() => _globalSettingsRepository.SaveSetting(A<string>.That.IsEqualTo(DreyConstants.ServerHostname), A<string>.Ignored)).MustHaveHappened();
+            A.CallTo(() => _globalSettingsRepository.SaveSetting(A<string>.That.IsEqualTo(DreyConstants.ServerSSLThumbprint), A<string>.Ignored)).MustHaveHappened();
         }
 
         [Fact]
@@ -87,8 +93,9 @@ namespace Drey.Configuration.Tests.Services
         [MemberData("ValidCertificate")]
         public void HasValidSettingsTests(string hostUrl, string sslCert, bool isConfigured)
         {
-            A.CallTo(() => _globalSettingsRepository.GetSetting(A<string>.That.IsEqualTo("ServerHostname"))).Returns(hostUrl);
-            A.CallTo(() => _globalSettingsRepository.GetSetting(A<string>.That.IsEqualTo("SSLPfx"))).Returns(sslCert);
+            A.CallTo(() => _globalSettingsRepository.GetSetting(A<string>.That.IsEqualTo(DreyConstants.ServerHostname))).Returns(hostUrl);
+            A.CallTo(() => _globalSettingsRepository.GetSetting(A<string>.That.IsEqualTo(DreyConstants.ServerSSLThumbprint))).Returns(string.Empty);
+            A.CallTo(() => _globalSettingsRepository.GetSetting(A<string>.That.IsEqualTo(DreyConstants.ClientCertificate))).Returns(sslCert);
 
             var isValid = _SUT.HasValidSettings();
 

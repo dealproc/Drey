@@ -15,7 +15,7 @@ namespace Drey.Configuration.Services
         /// Gets the server hostname from the Global Settings store.
         /// </summary>
         /// <returns></returns>
-        string GetServerHostname();
+        ViewModels.ServerHostnamePmo GetServerHostname();
         
         /// <summary>
         /// Stores the initial settings in the Global Settings store.
@@ -29,14 +29,14 @@ namespace Drey.Configuration.Services
         /// Updates the server hostname in the Global Settings store.
         /// </summary>
         /// <param name="serverHostName">Name of the server host.</param>
-        void UpdateServerHostname(string serverHostName);
+        void UpdateHostDetails(ViewModels.ServerHostnamePmo pmo);
         
         /// <summary>
         /// Updates the SSL certificate in the Global Settings store.
         /// </summary>
         /// <param name="cert">The cert.</param>
-        void UpdateSSLCertificate(byte[] cert);
-        
+        void UpdateClientCertificate(byte[] cert);
+
         /// <summary>
         /// Determines whether the global settings are valid or not.
         /// </summary>

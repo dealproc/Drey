@@ -15,7 +15,8 @@ namespace Drey.Configuration.Modules
     {
         static readonly ILog _log = LogProvider.For<SetupModule>();
 
-        public SetupModule(IEventBus eventBus, Services.IGlobalSettingsService globalSettingsService) : base(eventBus, globalSettingsService, "/Setup", false)
+        public SetupModule(IEventBus eventBus, Services.IGlobalSettingsService globalSettingsService)
+            : base(eventBus, globalSettingsService, "/Setup", false)
         {
             Get["/"] = GetIndex;
             Post["/"] = CommitSettings;
@@ -86,7 +87,7 @@ namespace Drey.Configuration.Modules
                 }
 
                 var clientSslObj = new X509Certificate2(cert, (string)null);
-                GlobalSettingsService.UpdateSSLCertificate(cert);
+                GlobalSettingsService.UpdateClientCertificate(cert);
 
                 return RestartAppDomains();
             }
@@ -101,7 +102,7 @@ namespace Drey.Configuration.Modules
         private dynamic UpdateServerUrl(dynamic arg)
         {
             _log.Debug("Attempting to update Server Url.");
-            return Negotiate.WithView("ServerUrl").WithModel(new Services.ViewModels.ServerHostnamePmo { CurrentHostname = GlobalSettingsService.GetServerHostname() });
+            return Negotiate.WithView("ServerUrl").WithModel(GlobalSettingsService.GetServerHostname());
         }
 
         // TODO: Restructure this to re-boot all loaded applets.
@@ -112,11 +113,13 @@ namespace Drey.Configuration.Modules
 
             if (ModelValidationResult.IsValid)
             {
-                GlobalSettingsService.UpdateServerHostname(model.NewHostname);
+                GlobalSettingsService.UpdateHostDetails(model);
                 return RestartAppDomains();
             }
 
-            model.CurrentHostname = GlobalSettingsService.GetServerHostname();
+            var currentHostInfo = GlobalSettingsService.GetServerHostname();
+            model.CurrentHostname = currentHostInfo.CurrentHostname;
+            model.CurrentServerCertificateThumbprint = currentHostInfo.CurrentServerCertificateThumbprint;
             return Negotiate.WithView("ServerUrl").WithModel(model);
         }
     }

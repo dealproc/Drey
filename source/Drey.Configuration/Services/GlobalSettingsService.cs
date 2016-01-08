@@ -31,8 +31,12 @@ namespace Drey.Configuration.Services
         /// <returns></returns>
         public bool StoreSettings(ViewModels.GlobalSettingsPmo settings)
         {
-            UpdateServerHostname(settings.ServerHostname);
-            UpdateSSLCertificate(settings.SSLPfx);
+            UpdateHostDetails(new ViewModels.ServerHostnamePmo()
+            {
+                NewHostname = settings.ServerHostname,
+                NewServerCertificateThumbprint = settings.SSLThumbprint
+            });
+            UpdateClientCertificate(settings.SSLPfx);
 
             return true;
         }
@@ -41,9 +45,13 @@ namespace Drey.Configuration.Services
         /// Gets the server hostname from the Global Settings store.
         /// </summary>
         /// <returns></returns>
-        public string GetServerHostname()
+        public ViewModels.ServerHostnamePmo GetServerHostname()
         {
-            return _globalSettingsRepository.GetSetting(DreyConstants.ServerHostname);
+            return new ViewModels.ServerHostnamePmo()
+            {
+                CurrentHostname = _globalSettingsRepository.GetSetting(DreyConstants.ServerHostname),
+                CurrentServerCertificateThumbprint = _globalSettingsRepository.GetSetting(DreyConstants.ServerSSLThumbprint)
+            };
         }
 
         /// <summary>
@@ -75,10 +83,11 @@ namespace Drey.Configuration.Services
         /// </summary>
         /// <param name="serverHostName">Name of the server host.</param>
         /// <exception cref="System.ArgumentNullException"></exception>
-        public void UpdateServerHostname(string serverHostName)
+        public void UpdateHostDetails(ViewModels.ServerHostnamePmo pmo)
         {
-            if (string.IsNullOrWhiteSpace(serverHostName)) { throw new ArgumentNullException(serverHostName); }
-            _globalSettingsRepository.SaveSetting(DreyConstants.ServerHostname, serverHostName);
+            if (string.IsNullOrWhiteSpace(pmo.NewHostname)) { throw new ArgumentNullException(); }
+            _globalSettingsRepository.SaveSetting(DreyConstants.ServerHostname, pmo.NewHostname.Trim());
+            _globalSettingsRepository.SaveSetting(DreyConstants.ServerSSLThumbprint, (pmo.NewServerCertificateThumbprint ?? string.Empty).Trim());
         }
 
         /// <summary>
@@ -86,7 +95,7 @@ namespace Drey.Configuration.Services
         /// </summary>
         /// <param name="cert">The cert.</param>
         /// <exception cref="System.ArgumentNullException">cert</exception>
-        public void UpdateSSLCertificate(byte[] cert)
+        public void UpdateClientCertificate(byte[] cert)
         {
             if (cert == null) { throw new ArgumentNullException("cert"); }
             _globalSettingsRepository.SaveSetting(DreyConstants.ClientCertificate, Convert.ToBase64String(cert));
@@ -98,7 +107,7 @@ namespace Drey.Configuration.Services
         /// <returns></returns>
         public bool HasValidSettings()
         {
-            bool hasHostname = !string.IsNullOrWhiteSpace(GetServerHostname());
+            bool hasHostname = !string.IsNullOrWhiteSpace(GetServerHostname().CurrentHostname);
             bool hasCertificate = GetCertificate() != null;
             return hasHostname && hasCertificate;
         }
@@ -109,7 +118,7 @@ namespace Drey.Configuration.Services
         /// <returns></returns>
         public HttpClient GetHttpClient()
         {
-            var url = new Uri(GetServerHostname());
+            var url = new Uri(GetServerHostname().CurrentHostname);
             var wrh = new WebRequestHandler();
 
             var cert = GetCertificate();

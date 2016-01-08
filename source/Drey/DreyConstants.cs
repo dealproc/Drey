@@ -7,5 +7,6 @@ namespace Drey
         public static string RelativeUrlMarker { get { return "~" + Path.DirectorySeparatorChar.ToString(); } }
         public static string ServerHostname { get { return "ServerHostname"; } }
         public static string ClientCertificate { get { return "SSLPfx"; } }
+        public static string ServerSSLThumbprint { get { return "server.sslthumbprint"; } }
     }
 }

@@ -51,15 +51,8 @@ namespace Drey
 
         public CertificateValidation.ICertificateValidation CertificateValidator
         {
-            get 
-            {
-                var thumbprint = ApplicationSettings["server.sslthumbprint"] ?? string.Empty;
-                if (string.IsNullOrWhiteSpace(thumbprint))
-                {
-                    return new CertificateValidation.AuthorityIssuedServerCertificateValidation();
-                }
-                return new CertificateValidation.SelfSignedServerCertificateValidation(thumbprint);
-            }
+            // only ever return the authority issued certificate validation routine.
+            get { return new CertificateValidation.AuthorityIssuedServerCertificateValidation(); }
         }
 
         [SecurityPermission(SecurityAction.Demand, Flags = SecurityPermissionFlag.Infrastructure)]

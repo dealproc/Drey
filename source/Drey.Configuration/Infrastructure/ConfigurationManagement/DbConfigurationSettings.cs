@@ -84,7 +84,15 @@ namespace Drey.Configuration.Infrastructure.ConfigurationManagement
 
         public CertificateValidation.ICertificateValidation CertificateValidator
         {
-            get { return _hostApplicationConfiguration.CertificateValidator; }
+            get
+            {
+                var thumbprint = GlobalSettings[DreyConstants.ServerSSLThumbprint] ?? string.Empty;
+                if (string.IsNullOrWhiteSpace(thumbprint))
+                {
+                    return new CertificateValidation.AuthorityIssuedServerCertificateValidation();
+                }
+                return new CertificateValidation.SelfSignedServerCertificateValidation(thumbprint);
+            }
         }
 
         public ExecutionMode Mode

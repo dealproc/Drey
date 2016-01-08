@@ -54,13 +54,45 @@ namespace Drey.Configuration
             get { return Enumerable.Empty<DefaultConnectionString>(); }
         }
 
-        public override bool Startup(INutConfiguration configurationManager)
+        public override bool Startup(INutConfiguration hostConfigMgr)
         {
-            if (!base.Startup(configurationManager)) { return false; }
+            if (!base.Startup(hostConfigMgr)) { return false; }
+            if (!MigrateDatabase(hostConfigMgr)) { return false; }
+            if (string.IsNullOrWhiteSpace(hostConfigMgr.ApplicationSettings["drey.configuration.consoleport"]))
+            {
+                _log.Fatal("Console port is missing or not set.  Cannot start.");
+                return false;
+            }
+            if (string.IsNullOrWhiteSpace(hostConfigMgr.ApplicationSettings["WorkingDirectory"]))
+            {
+                _log.Fatal("Hoarde working directory is missing or has not been configured.  Cannot start.");
+                return false;
+            }
+
+            SetupIoCContainer(hostConfigMgr);
+            ResetConfigurationManager();
 
             try
             {
+                _log.Debug("Attempting to set certificate validation within the runtime env.");
+                ConfigurationManager.CertificateValidator.Initialize();
+            }
+            catch (Exception ex)
+            {
+                _log.WarnException("While trying to configure certificate validation", ex);
+            }
+
+            StartServicesManager();
+            StartWebConsole(hostConfigMgr);
+
+            return true;
+        }
+        private static bool MigrateDatabase(INutConfiguration configurationManager)
+        {
+            try
+            {
                 MigrationManager.Migrate(configurationManager);
+                return true;
             }
             catch (Exception ex)
             {
@@ -69,24 +101,41 @@ namespace Drey.Configuration
                 _log.FatalException("Migration Failed.", ex);
                 return false;
             }
-
+        }
+        private void SetupIoCContainer(INutConfiguration configurationManager)
+        {
             _eventBus = new EventBus();
-            _hoardeManager = new ServiceModel.HoardeManager(_eventBus, configurationManager, ShellRequestHandler, this.ConfigureLogging);
-
-            Infrastructure.IoC.AutofacConfig.Configure(_eventBus, _hoardeManager, configurationManager);
-
             _eventBus.Subscribe(this);
+            _hoardeManager = new ServiceModel.HoardeManager(_eventBus, configurationManager, ShellRequestHandler, this.ConfigureLogging);
+            Infrastructure.IoC.AutofacConfig.Configure(_eventBus, _hoardeManager, configurationManager);
+        }
+        private void ResetConfigurationManager()
+        {
+            if (this.ConfigurationManager is Infrastructure.ConfigurationManagement.DbConfigurationSettings)
+            {
+                _log.Info("Configuration manager has already been reset.");
+                return;
+            }
 
+            var pkgRepository = Infrastructure.IoC.AutofacConfig.Container.Resolve<Repositories.IPackageRepository>();
+            var pkgSettingsRepository = Infrastructure.IoC.AutofacConfig.Container.Resolve<Repositories.IPackageSettingRepository>();
+            var connStrRepository = Infrastructure.IoC.AutofacConfig.Container.Resolve<Repositories.IConnectionStringRepository>();
+
+            this.ConfigurationManager = new Infrastructure.ConfigurationManagement.DbConfigurationSettings(this.ConfigurationManager, pkgSettingsRepository, connStrRepository, this.Id);
+        }
+        private void StartServicesManager()
+        {
             _servicesManager = Infrastructure.IoC.AutofacConfig.Container.Resolve<ServiceModel.IServicesManager>();
             _servicesManager.Start();
-
-            var startupUri = string.Format("http://localhost:{0}/", ConfigurationManager.ApplicationSettings["drey.configuration.consoleport"]);
+        }
+        private void StartWebConsole(INutConfiguration configMgr)
+        {
+            var startupUri = string.Format("http://localhost:{0}/", configMgr.ApplicationSettings["drey.configuration.consoleport"]);
+            _log.InfoFormat("Bringing web console online at {uri}", startupUri);
             var host = new NancyHost(new Bootstrapper(), new[] { new Uri(startupUri) });
             host.Start();
 
             _webApp = host;
-
-            return true;
         }
 
         public override void Shutdown()
