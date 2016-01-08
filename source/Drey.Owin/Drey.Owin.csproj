@@ -49,6 +49,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="App_Packages\LibLog.4.2\LibLog.cs" />
     <Compile Include="BufferContentIntoAMemoryStreamMiddleware.cs" />
     <Compile Include="GlobalExceptionMiddleware.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
