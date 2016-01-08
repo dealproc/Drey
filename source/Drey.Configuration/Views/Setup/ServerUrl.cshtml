@@ -4,19 +4,33 @@
 }
 @Html.Partial("Shared/ValidationSummary")
 <div class="row">
-    <div class="col-md-4 col-md-offset-4 col-xs-12">
+    <div class="col-md-6 col-md-offset-3 col-xs-12">
         <div class="panel panel-default">
             <div class="panel-heading">@ViewBag.Title</div>
             <div class="panel-body">
                 <form method="post" enctype="multipart/form-data">
                     <div class="form-group">
-                        <label for="CurrentHostname">Currently Set As</label>
+                        <label for="CurrentHostname">Currently Server Url</label>
                         <span name="CurrentHostname" class="form-control-static">@Model.CurrentHostname</span>
                     </div>
                     <div class="form-group">
-                        <label for="NewHostname">Update To</label>
-                        <input name="NewHostname" class="form-control" value="@Model.NewHostname" />
+                        <label for="NewHostname">New Server Url</label>
+                        <input name="NewHostname" class="form-control" value="@Model.CurrentHostname" />
                     </div>
+                    <div class="form-group">
+                        <label for="CurrentServerCertificateThumbprint">Current Self-Signed Certificate Thumbprint</label>
+                        <span name="CurrentServerCertificateThumbprint" class="form-control-static">@Model.CurrentServerCertificateThumbprint</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="NewServerCertificateThumbprint">New Self-Signed SSL Certificate thumbprint</label>
+                        <input name="NewServerCertificateThumbprint" class="form-control" value="@Model.CurrentServerCertificateThumbprint" />
+                        <p class="help-block">
+                            If your setup instructions dictate that the <strong>server</strong> you will be connecting to is
+                            using a self-signed certificate, provide the thumbprint within the instructions here.  Otherwise,
+                            leave this blank and only CA-issued certificates will be trusted.
+                        </p>
+                    </div>
+
                     <div>
                         <button type="submit" class="btn btn-primary">Submit</button>
                         <a href="~/" class="btn btn-default">Cancel</a>
