@@ -27,10 +27,13 @@ namespace Drey.Runtime
             nlogConfig.AddTarget("file", fileTarget);
 
             // Step 3. Set target properties 
-            consoleTarget.Layout = @"${appdomain:format={0\}-{1\}} - ${logger:shortName} - ${message} ${onexception: ${exception:format=ToString} | ${stacktrace:format=raw} }";
+            consoleTarget.Layout = @"${appdomain:format={0\} - {1\}} - ${message} ${onexception: ${exception:format=ToString} | ${stacktrace:format=raw} }";
+
             fileTarget.FileName = Drey.Utilities.PathUtilities.MapPath(Path.Combine(config.LogsDirectory, @"log.${machinename}.${appdomain:format={1\}}.txt"));
             fileTarget.ArchiveFileName = Drey.Utilities.PathUtilities.MapPath(Path.Combine(config.LogsDirectory, @"archives/log.${machinename}.${appdomain:format={1\}}.{#####}.txt"));
             fileTarget.Layout = "${longdate}|${level:uppercase=true}|${logger}|${message}|${exception:maxInnerExceptionLevel=4}  ${onexception: ${exception:format=ToString} | ${stacktrace:format=raw} }";
+            fileTarget.ArchiveAboveSize = 150 * 1024;
+            fileTarget.ArchiveNumbering = ArchiveNumberingMode.Sequence;
 
             // Step 4. Define rules
             var rule1 = new LoggingRule("*", NLog.LogLevel.Info, consoleTarget);

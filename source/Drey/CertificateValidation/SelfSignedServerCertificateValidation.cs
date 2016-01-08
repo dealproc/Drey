@@ -13,13 +13,13 @@ namespace Drey.CertificateValidation
         static ILog _log = LogProvider.For<SelfSignedServerCertificateValidation>();
 
         readonly string _thumbprint;
-        
+
         public SelfSignedServerCertificateValidation(string thumbprint)
         {
-            _log.Info("Trusting remote certificate with thumbprint: " + thumbprint);
+            _log.InfoFormat("Trusted SSL Certificate (thumbprint): {thumbprint}", thumbprint);
             _thumbprint = thumbprint;
         }
-        
+
         public void Initialize()
         {
             ServicePointManager.ServerCertificateValidationCallback = ValidateServerCertificate;
@@ -59,11 +59,11 @@ namespace Drey.CertificateValidation
             }
             else
             {
-                _log.Warn("No expiration date is available on server certificate.");
+                _log.Warn("Expiration Date unavailable on certificate.");
             }
 
-            _log.Debug("Server Certificate effective as of: " + cert2.GetEffectiveDateString());
-            _log.Debug("Server Certificate expires on: " + cert2.GetExpirationDateString());
+            _log.DebugFormat("Certificate effective date: {date}", cert2.GetEffectiveDateString());
+            _log.DebugFormat("Certificate expiration date: {date}", cert2.GetExpirationDateString());
 
             return _thumbprint.Equals(cert2.Thumbprint, System.StringComparison.OrdinalIgnoreCase);
         }

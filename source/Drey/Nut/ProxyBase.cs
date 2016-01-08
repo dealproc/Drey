@@ -33,8 +33,6 @@ namespace Drey.Nut
                     Environment.CurrentDirectory,
             });
 
-            Console.WriteLine("Searching the following paths for `{0}`: {1}", asmName, string.Join(";", searchPaths));
-
 			var dllFullPath = searchPaths
 				.Select (path => 
 					// Refactor here to avoid issues with case sensitivity.

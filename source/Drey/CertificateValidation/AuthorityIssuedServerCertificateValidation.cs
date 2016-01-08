@@ -18,7 +18,7 @@ namespace Drey.CertificateValidation
         /// </summary>
         public void Initialize()
         {
-            _log.Info("Trusting server certificates from a registered authority.");
+            _log.Info("Trusting all CA Signed SSL Certificates.");
             ServicePointManager.ServerCertificateValidationCallback = null;
         }
     }
