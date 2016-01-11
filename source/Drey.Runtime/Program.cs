@@ -59,6 +59,7 @@ namespace Drey.Runtime
                 f.UseLinuxIfAvailable();
 
                 f.AddCommandLineDefinition("verbosity", v => LogVerbosity = v);
+                f.ApplyCommandLine();
 
                 f.SetDisplayName("Drey Runtime Environment");
                 f.SetServiceName("Runtime");
