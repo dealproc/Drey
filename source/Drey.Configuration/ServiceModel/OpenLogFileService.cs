@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace Drey.Configuration.ServiceModel
 {
+    /// <summary>
+    /// Provides the capability for the server to retrieve a log file for display.
+    /// </summary>
     class OpenLogFileService : RemoteInvocationService<DomainModel.Request<DomainModel.FileDownloadOptions>, DomainModel.FileDownloadOptions, DomainModel.Response<byte[]>, byte[]>
     {
         readonly INutConfiguration _configurationManager;
@@ -16,6 +19,7 @@ namespace Drey.Configuration.ServiceModel
         {
             _configurationManager = configurationManager;
         }
+
         protected override async Task<DomainModel.Response<byte[]>> ProcessAsync(DomainModel.Request<DomainModel.FileDownloadOptions> request)
         {
             var relativePath = request.Message.RelativeOrAbsolutePath;

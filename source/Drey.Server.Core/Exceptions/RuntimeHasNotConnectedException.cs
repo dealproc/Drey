@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Drey.Server.Exceptions
 {
+    /// <summary>
+    /// Thrown when a consumer is making a request to a runtime that has yet to establish a connection with the exchange.
+    /// </summary>
     [Serializable]
-    public class RuntimeHasNotConnectedException : Exception
-    {
-    }
+    public class RuntimeHasNotConnectedException : Exception { }
 }

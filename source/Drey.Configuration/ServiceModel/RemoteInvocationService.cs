@@ -8,6 +8,13 @@ using System.Threading.Tasks;
 
 namespace Drey.Configuration.ServiceModel
 {
+    /// <summary>
+    /// A base class, representing core logic for handling signalr bus events from the server to the client.
+    /// </summary>
+    /// <typeparam name="TRequest">The type of the request.</typeparam>
+    /// <typeparam name="TRequestMessage">The type of the request message.</typeparam>
+    /// <typeparam name="TResponse">The type of the response.</typeparam>
+    /// <typeparam name="TResponseMessage">The type of the response message.</typeparam>
     abstract class RemoteInvocationService<TRequest, TRequestMessage, TResponse, TResponseMessage> : IRemoteInvocationService<TRequest, TResponse>
         where TRequest : DomainModel.Request<TRequestMessage>
         where TResponse : DomainModel.Response<TResponseMessage>
@@ -22,12 +29,21 @@ namespace Drey.Configuration.ServiceModel
         readonly string _remoteMethodName;
         IHubProxy _runtimeHubProxy;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RemoteInvocationService{TRequest, TRequestMessage, TResponse, TResponseMessage}"/> class.
+        /// </summary>
+        /// <param name="eventName">Name of the event.</param>
+        /// <param name="remoteMethodName">Name of the remote method.</param>
         public RemoteInvocationService(string eventName, string remoteMethodName)
         {
             _eventName = eventName;
             _remoteMethodName = remoteMethodName;
         }
 
+        /// <summary>
+        /// Subscribes one or more handlers to an IHubProxy.
+        /// </summary>
+        /// <param name="runtimeHubProxy">The runtime hub proxy.</param>
         public void SubscribeToEvents(IHubProxy runtimeHubProxy)
         {
             _runtimeHubProxy = runtimeHubProxy;

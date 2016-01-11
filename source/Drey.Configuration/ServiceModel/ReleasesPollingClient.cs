@@ -11,6 +11,9 @@ using System.Threading.Tasks;
 
 namespace Drey.Configuration.ServiceModel
 {
+    /// <summary>
+    /// Manages resolving updated versions of installed packages, downloads them, and signals to the runtime to reload the package at the current release level.
+    /// </summary>
     class ReleasesPollingClient : IPollingClient, IDisposable
     {
         static readonly ILog _log = LogProvider.For<ReleasesPollingClient>();
@@ -199,12 +202,19 @@ namespace Drey.Configuration.ServiceModel
             return new Drey.Configuration.Infrastructure.ConfigurationManagement.DbConfigurationSettings(_configurationManager, _packageSettingsRepository, _connectionStringsRepository, _packageId);
         }
 
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
         public void Dispose()
         {
             Dispose(true);
             _disposed = true;
         }
 
+        /// <summary>
+        /// Releases unmanaged and - optionally - managed resources.
+        /// </summary>
+        /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
         protected virtual void Dispose(bool disposing)
         {
             if (_pollingClientTask != null)

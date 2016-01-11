@@ -1,5 +1,8 @@
 ﻿namespace Drey.Configuration.DataModel
 {
+    /// <summary>
+    /// A connection string, for a specific package.
+    /// </summary>
     public class PackageConnectionString : DataModelBase
     {
         /// <summary>

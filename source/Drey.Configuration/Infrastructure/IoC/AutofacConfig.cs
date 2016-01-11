@@ -7,11 +7,19 @@ using System;
 
 namespace Drey.Configuration.Infrastructure.IoC
 {
+    /// <summary>
+    /// Autofac configuration.
+    /// <remarks>Configuration routine for autofac, as well as holds the static instance of the configured container.</remarks>
+    /// </summary>
     static class AutofacConfig
     {
         static ILog _log = LogProvider.GetCurrentClassLogger();
         static IContainer _container;
 
+        /// <summary>
+        /// The configured autofac container.
+        /// </summary>
+        /// <exception cref="System.InvalidOperationException">Autofac Container has not been configured.</exception>
         public static IContainer Container
         {
             get
@@ -24,6 +32,12 @@ namespace Drey.Configuration.Infrastructure.IoC
             }
         }
 
+        /// <summary>
+        /// Configuration routine of the autofac container.
+        /// </summary>
+        /// <param name="eventBus">The event bus.</param>
+        /// <param name="hoardeManager">The hoarde manager.</param>
+        /// <param name="configurationManager">The host's configuration manager.</param>
         public static void Configure(IEventBus eventBus, ServiceModel.IHoardeManager hoardeManager, INutConfiguration configurationManager)
         {
             var builder = new ContainerBuilder();
@@ -56,6 +70,9 @@ namespace Drey.Configuration.Infrastructure.IoC
             _container = builder.Build();
         }
 
+        /// <summary>
+        /// Disposes the container.
+        /// </summary>
         public static void DisposeContainer()
         {
             if (_container != null)

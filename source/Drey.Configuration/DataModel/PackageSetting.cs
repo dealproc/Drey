@@ -1,5 +1,8 @@
 ﻿namespace Drey.Configuration.DataModel
 {
+    /// <summary>
+    /// An application setting, for a specific package.
+    /// </summary>
     public class PackageSetting : DataModelBase
     {
         /// <summary>

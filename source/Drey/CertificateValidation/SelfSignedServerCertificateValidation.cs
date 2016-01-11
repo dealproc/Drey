@@ -20,6 +20,9 @@ namespace Drey.CertificateValidation
             _thumbprint = thumbprint;
         }
 
+        /// <summary>
+        /// Initializes the certificate validation callback.
+        /// </summary>
         public void Initialize()
         {
             ServicePointManager.ServerCertificateValidationCallback = ValidateServerCertificate;

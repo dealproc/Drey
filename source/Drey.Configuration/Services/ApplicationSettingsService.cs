@@ -35,11 +35,21 @@ namespace Drey.Configuration.Services
             get { return _packageSettingsRepository.ByKey(_packageId, key); }
         }
 
+        /// <summary>
+        /// Checks to see if an application setting exists within the underlying repository, by its key.
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <returns></returns>
         public bool Exists(string key)
         {
             return _packageSettingsRepository.All().Any(setting => setting.PackageId.ToLower() == _packageId.ToLower() && setting.Key.ToLower() == key.ToLower());
         }
 
+        /// <summary>
+        /// Registers an application setting with the underlying repository.
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <param name="value">The value.</param>
         public void Register(string key, string value = "")
         {
             var dataModel = _packageSettingsRepository.Get(_packageId, key) ?? new DataModel.PackageSetting { PackageId = _packageId, Key = key };
@@ -47,6 +57,15 @@ namespace Drey.Configuration.Services
             _packageSettingsRepository.Store(dataModel);
         }
 
+        /// <summary>
+        /// Obtains a lifetime service object to control the lifetime policy for this instance.
+        /// </summary>
+        /// <returns>
+        /// An object of type <see cref="T:System.Runtime.Remoting.Lifetime.ILease" /> used to control the lifetime policy for this instance. This is the current lifetime service object for this instance if one exists; otherwise, a new lifetime service object initialized to the value of the <see cref="P:System.Runtime.Remoting.Lifetime.LifetimeServices.LeaseManagerPollTime" /> property.
+        /// </returns>
+        /// <PermissionSet>
+        ///   <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="RemotingConfiguration, Infrastructure" />
+        /// </PermissionSet>
         [SecurityPermission(SecurityAction.Demand, Flags = SecurityPermissionFlag.Infrastructure)]
         public override object InitializeLifetimeService()
         {

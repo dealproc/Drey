@@ -20,7 +20,7 @@ namespace Drey.Nut
         /// </summary>
         /// <param name="sender">The sender.</param>
         /// <param name="args">The <see cref="ResolveEventArgs"/> instance containing the event data.</param>
-        /// <returns></returns>
+        /// <returns>A resolved assembly.</returns>
         public Assembly ResolveAssemblyInDomain(object sender, ResolveEventArgs args)
         {
             var asmName = args.Name.IndexOf(',') > 0 ? args.Name.Substring(0, args.Name.IndexOf(',')) : args.Name;
@@ -49,6 +49,16 @@ namespace Drey.Nut
             return resolvedDll;
         }
 
+        /// <summary>
+        /// Obtains a lifetime service object to control the lifetime policy for this instance.
+        /// <remarks>We need to override the default functionality here and send back a `null` so that we can control the lifetime of the ServiceControl.  Default lease time is 5 minutes, which does not work for us.</remarks>
+        /// </summary>
+        /// <returns>
+        /// An object of type <see cref="T:System.Runtime.Remoting.Lifetime.ILease" /> used to control the lifetime policy for this instance. This is the current lifetime service object for this instance if one exists; otherwise, a new lifetime service object initialized to the value of the <see cref="P:System.Runtime.Remoting.Lifetime.LifetimeServices.LeaseManagerPollTime" /> property.
+        /// </returns>
+        /// <PermissionSet>
+        ///   <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="RemotingConfiguration, Infrastructure" />
+        /// </PermissionSet>
         [SecurityPermission(SecurityAction.Demand, Flags = SecurityPermissionFlag.Infrastructure)]
         public override object InitializeLifetimeService()
         {

@@ -11,6 +11,9 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace Drey.Configuration.Modules
 {
+    /// <summary>
+    /// Setup UI.
+    /// </summary>
     public class SetupModule : BaseModule
     {
         static readonly ILog _log = LogProvider.For<SetupModule>();
@@ -28,12 +31,25 @@ namespace Drey.Configuration.Modules
             Post["/ClientCertificate"] = SaveNewClientCertificate;
         }
 
+        /// <summary>
+        /// Gets a view allowing the user to do an initial system setup by providing the following items:
+        ///  * Client Certificate
+        ///  * Server Hostname
+        ///  * Server SSL Thumbprint (for self-signed server certs).
+        /// </summary>
+        /// <param name="arg">The argument.</param>
+        /// <returns></returns>
         private dynamic GetIndex(dynamic arg)
         {
             _log.Debug("Index has been accessed.");
             return View["index", new Services.ViewModels.GlobalSettingsPmo()];
         }
 
+        /// <summary>
+        /// Commits the initial settings set by the user to the global settings store.
+        /// </summary>
+        /// <param name="arg">The argument.</param>
+        /// <returns></returns>
         private dynamic CommitSettings(dynamic arg)
         {
             _log.Debug("Committing Settings.");
@@ -61,13 +77,23 @@ namespace Drey.Configuration.Modules
             return View["index", settingsPmo];
         }
 
+        /// <summary>
+        /// Presents a view where the user may provide a new client certificate for use by the runtime environment.
+        /// </summary>
+        /// <param name="arg">The argument.</param>
+        /// <returns></returns>
         private dynamic UpdateClientCertificate(dynamic arg)
         {
             _log.Debug("Attempting to update Client Certificate.");
             return Negotiate.WithView("ClientCertificate");
         }
 
-        // TODO: Restructure this to re-boot all loaded applets.
+        // TODO: Restructure this to re-boot all loaded applets.        
+        /// <summary>
+        /// Saves the new client certificate to the global settings store.
+        /// </summary>
+        /// <param name="arg">The argument.</param>
+        /// <returns></returns>
         private dynamic SaveNewClientCertificate(dynamic arg)
         {
             _log.Debug("Updating new Client Certificate.");
@@ -99,13 +125,23 @@ namespace Drey.Configuration.Modules
             return Negotiate.WithView("ClientCertificate");
         }
 
+        /// <summary>
+        /// Renders a view with the server url and client certificate information presently configured.
+        /// </summary>
+        /// <param name="arg">The argument.</param>
+        /// <returns></returns>
         private dynamic UpdateServerUrl(dynamic arg)
         {
             _log.Debug("Attempting to update Server Url.");
             return Negotiate.WithView("ServerUrl").WithModel(GlobalSettingsService.GetServerHostname());
         }
 
-        // TODO: Restructure this to re-boot all loaded applets.
+        // TODO: Restructure this to re-boot all loaded applets.        
+        /// <summary>
+        /// Saves the updated server url information to the global settings store.
+        /// </summary>
+        /// <param name="arg">The argument.</param>
+        /// <returns></returns>
         private dynamic SaveNewServerUrl(dynamic arg)
         {
             _log.Debug("Updating Server Url.");

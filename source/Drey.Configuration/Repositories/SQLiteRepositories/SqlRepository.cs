@@ -10,7 +10,7 @@ using System.Security.Permissions;
 
 namespace Drey.Configuration.Repositories.SQLiteRepositories
 {
-    public class SqlRepository : MarshalByRefObject
+    public abstract class SqlRepository : MarshalByRefObject
     {
         const string CONNECTION_STRING_FORMAT = "Data Source=\"{0}\";Version=3;";
         const string CONFIG_FILE_NAME = "config.db3";
@@ -19,11 +19,21 @@ namespace Drey.Configuration.Repositories.SQLiteRepositories
 
         Func<INutConfiguration, string> ConnectionStringBuilder = (config) => string.Format(CONNECTION_STRING_FORMAT, PathUtilities.MapPath(Path.Combine(config.WorkingDirectory, CONFIG_FILE_NAME), false));
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SqlRepository"/> class.
+        /// <remarks>Used by IoC container.</remarks>
+        /// </summary>
+        /// <param name="configurationManager">The configuration manager.</param>
         public SqlRepository(INutConfiguration configurationManager)
         {
             _configurationManager = configurationManager;
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SqlRepository"/> class.
+        /// <remarks>Used for integration testing.</remarks>
+        /// </summary>
+        /// <param name="databaseNameAndPath">The database name and path.</param>
         public SqlRepository(string databaseNameAndPath)
         {
             ConnectionStringBuilder = (config) => string.Format(CONNECTION_STRING_FORMAT, databaseNameAndPath);
@@ -77,6 +87,15 @@ namespace Drey.Configuration.Repositories.SQLiteRepositories
             });
         }
 
+        /// <summary>
+        /// Obtains a lifetime service object to control the lifetime policy for this instance.
+        /// </summary>
+        /// <returns>
+        /// An object of type <see cref="T:System.Runtime.Remoting.Lifetime.ILease" /> used to control the lifetime policy for this instance. This is the current lifetime service object for this instance if one exists; otherwise, a new lifetime service object initialized to the value of the <see cref="P:System.Runtime.Remoting.Lifetime.LifetimeServices.LeaseManagerPollTime" /> property.
+        /// </returns>
+        /// <PermissionSet>
+        ///   <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="RemotingConfiguration, Infrastructure" />
+        /// </PermissionSet>
         [SecurityPermission(SecurityAction.Demand, Flags = SecurityPermissionFlag.Infrastructure)]
         public override object InitializeLifetimeService()
         {

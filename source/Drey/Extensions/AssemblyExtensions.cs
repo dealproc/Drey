@@ -1,14 +1,19 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Reflection;
 
 namespace Drey.Extensions
 {
     public static class AssemblyExtensions
     {
-        public static string GetDirectoryLocation(this Assembly asm)
+        /// <summary>
+        /// Gets an assembly's location on disc.
+        /// </summary>
+        /// <param name="assembly">The assembly.</param>
+        /// <returns></returns>
+        public static string GetDirectoryLocation(this Assembly assembly)
         {
-            var fullDirectoryPath = asm.CodeBase;
-            return Path.GetDirectoryName(fullDirectoryPath.Remove(0, 8)) + Path.DirectorySeparatorChar.ToString();
+            return Path.GetDirectoryName((new Uri(assembly.CodeBase)).AbsolutePath) + Path.DirectorySeparatorChar.ToString();
         }
     }
 }

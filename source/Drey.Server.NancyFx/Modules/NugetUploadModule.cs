@@ -10,12 +10,19 @@ using System.Threading.Tasks;
 
 namespace Drey.Server.Modules
 {
+    /// <summary>
+    /// Mimic's the Nuget API for syndication of packages
+    /// </summary>
     public class NugetUploadModule : NancyModule
     {
         static readonly ILog _Log = LogProvider.For<NugetUploadModule>();
 
         readonly IPackageService _packageService;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="NugetUploadModule"/> class.
+        /// </summary>
+        /// <param name="packageService">The package service.</param>
         public NugetUploadModule(IPackageService packageService)
             : base("/api/v2/package")
         {
@@ -27,6 +34,12 @@ namespace Drey.Server.Modules
             this.Before.AddItemToEndOfPipeline(ctx => { _Log.Trace(ctx.Request.Url); return (Response)null; });
         }
 
+        /// <summary>
+        /// Deletes a release from the package store.
+        /// </summary>
+        /// <param name="args">The arguments.</param>
+        /// <param name="ct">The ct.</param>
+        /// <returns></returns>
         private async Task<dynamic> DeleteReleaseAsync(dynamic args, CancellationToken ct)
         {
             string id;
@@ -48,6 +61,12 @@ namespace Drey.Server.Modules
             }
         }
 
+        /// <summary>
+        /// Receives a nuget package; parses it, and stores the package to a persistent storage for later retrieval.
+        /// </summary>
+        /// <param name="_">The _.</param>
+        /// <param name="ct">The ct.</param>
+        /// <returns></returns>
         private async Task<dynamic> ParseAndStorePackage(dynamic _, CancellationToken ct)
         {
             if (!Request.Files.Any())

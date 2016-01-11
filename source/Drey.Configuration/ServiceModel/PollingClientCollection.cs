@@ -1,10 +1,14 @@
 ﻿using Drey.Logging;
+
 using System;
 using System.Collections.Concurrent;
 using System.Threading;
 
 namespace Drey.Configuration.ServiceModel
 {
+    /// <summary>
+    /// Manages the list of polling clients within the system (both for releases, and packages.)
+    /// </summary>
     public class PollingClientCollection : ConcurrentBag<IPollingClient>, IDisposable
     {
         static ILog _log = LogProvider.For<PollingClientCollection>();
@@ -40,6 +44,10 @@ namespace Drey.Configuration.ServiceModel
             GC.SuppressFinalize(this);
         }
 
+        /// <summary>
+        /// Releases unmanaged and - optionally - managed resources.
+        /// </summary>
+        /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
         protected virtual void Dispose(bool disposing)
         {
             if (!disposing || _disposed) { return; }

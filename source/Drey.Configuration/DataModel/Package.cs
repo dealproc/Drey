@@ -1,5 +1,9 @@
 ﻿namespace Drey.Configuration.DataModel
 {
+    /// <summary>
+    /// A package (distinct list selection of Id, Title from release.)
+    /// <remarks>Need to validate if the AutoUpdates flag is still relevant</remarks>
+    /// </summary>
     public class Package
     {
         /// <summary>

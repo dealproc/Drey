@@ -15,10 +15,16 @@ namespace Drey.Configuration.Repositories.SQLiteRepositories
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="PackageSettingRepository"/> class.
+        /// <remarks>Used by IoC container.</remarks>
         /// </summary>
         /// <param name="configurationManager">The configuration manager.</param>
         public PackageSettingRepository(INutConfiguration configurationManager) : base(configurationManager) { }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PackageSettingRepository"/> class.
+        /// <remarks>Used for integration testing.</remarks>
+        /// </summary>
+        /// <param name="databaseNameAndPath">The database name and path.</param>
         public PackageSettingRepository(string databaseNameAndPath) : base(databaseNameAndPath) { }
 
         /// <summary>

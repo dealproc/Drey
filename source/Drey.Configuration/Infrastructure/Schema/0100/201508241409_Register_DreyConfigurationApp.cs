@@ -3,9 +3,15 @@ using System;
 
 namespace Drey.Configuration.Infrastructure.Schema._0100
 {
+    /// <summary>
+    /// Registers the Drey.Configuration package in the repository.
+    /// </summary>
     [Migration(0100201508241409)]
     public class Register_DreyConfigurationApp : Migration
     {
+        /// <summary>
+        /// Forward migrations.
+        /// </summary>
         public override void Up()
         {
             Insert.IntoTable("Releases")
@@ -26,6 +32,10 @@ namespace Drey.Configuration.Infrastructure.Schema._0100
                     UpdatedOn = DateTime.Now
                 });
         }
+
+        /// <summary>
+        /// Reversal migrations.
+        /// </summary>
         public override void Down()
         {
             // no-op

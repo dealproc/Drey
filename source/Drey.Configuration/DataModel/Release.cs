@@ -3,6 +3,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Drey.Configuration.DataModel
 {
+    /// <summary>
+    /// Represents a release managed in the Drey Runtime
+    /// </summary>
     public class Release : DataModelBase
     {
         /// <summary>

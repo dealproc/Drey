@@ -7,6 +7,9 @@ using System;
 
 namespace Drey.Configuration.Modules
 {
+    /// <summary>
+    /// Edits applet settings
+    /// </summary>
     public class AppletModule : BaseModule
     {
         IPackageService _packageService;

@@ -30,12 +30,25 @@ namespace Drey.Server.Modules.well_known
             this.Before.AddItemToEndOfPipeline(ctx => { _Log.Trace(ctx.Request.Url); return (Response)null; });
         }
 
+        /// <summary>
+        /// Returns a list of packages the connected client is subscribed to.  The underlying service can contain implementation specific logic to 
+        /// limit what any specific client may have access to.
+        /// </summary>
+        /// <param name="args">The arguments.</param>
+        /// <param name="ct">The ct.</param>
+        /// <returns></returns>
         private async Task<dynamic> GetSubscribedPackages(dynamic args, CancellationToken ct)
         {
             var packages = await _packageService.GetPackagesAsync(Context.GetMSOwinUser());
             return packages;
         }
 
+        /// <summary>
+        /// Gets a list of releases for a package, filtered for the requesting client.
+        /// </summary>
+        /// <param name="args">The arguments.</param>
+        /// <param name="ct">The ct.</param>
+        /// <returns></returns>
         private async Task<dynamic> GetPackageReleasesAsync(dynamic args, CancellationToken ct)
         {
             try
@@ -62,6 +75,12 @@ namespace Drey.Server.Modules.well_known
             }
         }
 
+        /// <summary>
+        /// Returns a nupkg for download, based on its id and version.  A client may be blocked based on business logic in the underlying package service.
+        /// </summary>
+        /// <param name="args">The arguments.</param>
+        /// <param name="ct">The ct.</param>
+        /// <returns></returns>
         private async Task<dynamic> DownloadReleaseAsync(dynamic args, CancellationToken ct)
         {
             string id = (string)args.id;

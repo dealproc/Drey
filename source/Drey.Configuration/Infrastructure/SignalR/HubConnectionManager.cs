@@ -21,14 +21,47 @@ namespace Drey.Configuration.Infrastructure
         private int _retryPeriod = 10000;
         private bool _disposed = false;
 
+        /// <summary>
+        /// Facade for the HubConnection's Error event.
+        /// </summary>
         public event Action<Exception> Error;
+
+        /// <summary>
+        /// Facade for the HubConnection's Received event.
+        /// </summary>
         public event Action<string> Received;
+        
+        /// <summary>
+        /// Facade for the HubConnection's Closed event.
+        /// </summary>
         public event Action Closed;
+        
+        /// <summary>
+        /// Facade for the HubConnection's Reconnecting event.
+        /// </summary>
         public event Action Reconnecting;
+        
+        /// <summary>
+        /// Facade for the HubConnection's Reconnected event.
+        /// </summary>
         public event Action Reconnected;
+        
+        /// <summary>
+        /// Facade for the HubConnection's ConnectionSlow event.
+        /// </summary>
         public event Action ConnectionSlow;
+        
+        /// <summary>
+        /// Facade for the HubConnection's StateChanged event.
+        /// </summary>
         public event Action<StateChange> StateChanged;
 
+        /// <summary>
+        /// Gets or sets the retry period (in milliseconds).
+        /// </summary>
+        /// <value>
+        /// The retry period (in milliseconds).
+        /// </value>
         public int RetryPeriod
         {
             get { return _retryPeriod; }
@@ -44,50 +77,88 @@ namespace Drey.Configuration.Infrastructure
             }
         }
 
+        /// <summary>
+        /// Retrieves the State property from the managed HubConnection.
+        /// </summary>
         public ConnectionState State
         {
             get { return _hubConnection.State; }
         }
 
+        /// <summary>
+        /// Retrieves the ConnectionType property from the managed HubConnection.
+        /// </summary>
         public IClientTransport ConnectionType
         {
             get { return _hubConnection.Transport; }
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HubConnectionManager"/> class.
+        /// <remarks>This creates a hubconnection with default options, and assigns the provided url.</remarks>
+        /// </summary>
+        /// <param name="url">The URL.</param>
         private HubConnectionManager(string url)
         {
             _hubConnection = new HubConnection(url);
             _hubConnection.TraceWriter = new LibLogTraceWriter();
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HubConnectionManager"/> class.
+        /// <remarks>This allows the capability of providing a custom configured HubConnection to be managed.</remarks>
+        /// </summary>
+        /// <param name="hubConnection">The hub connection.</param>
         private HubConnectionManager(HubConnection hubConnection)
         {
             _hubConnection = hubConnection;
             _hubConnection.TraceWriter = new LibLogTraceWriter();
         }
-
+        /// <summary>
+        /// Finalizes an instance of the <see cref="HubConnectionManager"/> class.
+        /// </summary>
         ~HubConnectionManager()
         {
             Dispose(false);
         }
 
+        /// <summary>
+        /// Gets the hub connection manager.
+        /// </summary>
+        /// <param name="url">The URL.</param>
+        /// <returns></returns>
         public static IHubConnectionManager GetHubConnectionManager(string url)
         {
             IHubConnectionManager connectionManager = new HubConnectionManager(url);
             return connectionManager;
         }
 
+        /// <summary>
+        /// Gets the hub connection manager.
+        /// </summary>
+        /// <param name="hubConnection">The hub connection.</param>
+        /// <returns></returns>
         public static IHubConnectionManager GetHubConnectionManager(HubConnection hubConnection)
         {
             IHubConnectionManager connectionManager = new HubConnectionManager(hubConnection);
             return connectionManager;
         }
 
+        /// <summary>
+        /// Allows the use of a client certificate by the hubconnection for client identification by the server.
+        /// </summary>
+        /// <param name="cert">The cert.</param>
         public void UseClientCertificate(X509Certificate2 cert)
         {
             _hubConnection.AddClientCertificate(cert);
         }
 
+        /// <summary>
+        /// Creates the hub proxy.
+        /// </summary>
+        /// <param name="hubName">Name of the hub.</param>
+        /// <returns></returns>
+        /// <exception cref="System.ArgumentNullException">hubName</exception>
         public IHubProxy CreateHubProxy(string hubName)
         {
             if (string.IsNullOrEmpty(hubName))
@@ -98,6 +169,9 @@ namespace Drey.Configuration.Infrastructure
             return _hubConnection.CreateHubProxy(hubName);
         }
 
+        /// <summary>
+        /// Initializes the HubConnection and starts the connection with the server.
+        /// </summary>
         public async Task Initialize()
         {
             _hubConnection.Received += OnReceived;
@@ -118,6 +192,9 @@ namespace Drey.Configuration.Infrastructure
             }
         }
 
+        /// <summary>
+        /// Shuts-down the managed HubConnection.
+        /// </summary>
         public void Stop()
         {
             _hubConnection.Received -= OnReceived;
@@ -193,7 +270,7 @@ namespace Drey.Configuration.Infrastructure
                 Error(error);
             }
         }
-
+        
         private void OnStateChanged(StateChange stateChange)
         {
             if (StateChanged != null)
@@ -202,12 +279,19 @@ namespace Drey.Configuration.Infrastructure
             }
         }
 
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
         public void Dispose()
         {
             Dispose(true);
             GC.SuppressFinalize(this);
         }
 
+        /// <summary>
+        /// Releases unmanaged and - optionally - managed resources.
+        /// </summary>
+        /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
         protected virtual void Dispose(bool disposing)
         {
             if (!disposing || _disposed) { return; }

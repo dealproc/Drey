@@ -9,6 +9,9 @@ using System.Linq;
 
 namespace Drey.Configuration.Infrastructure.Schema
 {
+    /// <summary>
+    /// Manages the Fluentmigrator migration tooling.
+    /// </summary>
     public static class MigrationManager
     {
         static int MAX_BACKUP_FILES = 5;
@@ -28,6 +31,12 @@ namespace Drey.Configuration.Infrastructure.Schema
             Migrate(dbNameAndPath, true);
         }
 
+        /// <summary>
+        /// Migrates the specified file name and path.
+        /// <remarks>This method is called directly when performing integration tests.</remarks>
+        /// </summary>
+        /// <param name="fileNameAndPath">The file name and path.</param>
+        /// <param name="withBackup">if set to <c>true</c> [with backup].</param>
         public static void Migrate(string fileNameAndPath, bool withBackup = false)
         {
             var currentDb = new FileInfo(fileNameAndPath);

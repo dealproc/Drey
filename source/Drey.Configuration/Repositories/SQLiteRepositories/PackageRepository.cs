@@ -12,10 +12,16 @@ namespace Drey.Configuration.Repositories.SQLiteRepositories
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="PackageRepository"/> class.
+        /// <remarks>Used by the IoC container.</remarks>
         /// </summary>
         /// <param name="configurationManager">The configuration manager.</param>
         public PackageRepository(INutConfiguration configurationManager) : base(configurationManager) { }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PackageRepository"/> class.
+        /// <remarks>Used for integration testing.</remarks>
+        /// </summary>
+        /// <param name="databaseNameAndPath">The database name and path.</param>
         public PackageRepository(string databaseNameAndPath) : base(databaseNameAndPath) { }
 
         /// <summary>
@@ -99,6 +105,11 @@ WHERE Id COLLATE nocase = @id AND Version = @version;
             });
         }
 
+        /// <summary>
+        /// Deletes all package references from the underlying store, matching the provided id and version.
+        /// </summary>
+        /// <param name="packageId">The package identifier.</param>
+        /// <param name="version">The version.</param>
         public void Delete(string packageId, string version)
         {
             Execute(cn => cn.Execute("DELETE FROM Releases WHERE Id COLLATE nocase = @packageId AND Version COLLATE nocase = @version", new { packageId, version }));

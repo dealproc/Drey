@@ -10,6 +10,9 @@ using System.Security.Permissions;
 
 namespace Drey.Configuration.Infrastructure.ConfigurationManagement
 {
+    /// <summary>
+    /// Configuration manager instantiated and shared with packages in the runtime.  This facades the access to the configuration store, hard drive path(s), etc.
+    /// </summary>
     public class DbConfigurationSettings : MarshalByRefObject, Drey.Nut.INutConfiguration, IDisposable
     {
         static readonly ILog _log = LogProvider.For<DbConfigurationSettings>();
@@ -70,6 +73,9 @@ namespace Drey.Configuration.Infrastructure.ConfigurationManagement
             get { return _connectionStringsService; }
         }
 
+        /// <summary>
+        /// Gets the Runtime's Working Directory.
+        /// </summary>
         public string WorkingDirectory
         {
             get { return _hostApplicationConfiguration.WorkingDirectory; }
@@ -80,8 +86,14 @@ namespace Drey.Configuration.Infrastructure.ConfigurationManagement
         /// </summary>
         public string HoardeBaseDirectory { get { return Path.Combine(WorkingDirectory, "Hoarde").NormalizePathSeparator(); } }
 
+        /// <summary>
+        /// Gets the logs directory.
+        /// </summary>
         public string LogsDirectory { get { return Path.Combine(WorkingDirectory, "Logs").NormalizePathSeparator(); } }
 
+        /// <summary>
+        /// Gets the certificate validator.
+        /// </summary>
         public CertificateValidation.ICertificateValidation CertificateValidator
         {
             get
@@ -95,15 +107,31 @@ namespace Drey.Configuration.Infrastructure.ConfigurationManagement
             }
         }
 
+        /// <summary>
+        /// Gets the mode that the runtime is executing in.  Possible values are Development and Production.
+        /// </summary>
         public ExecutionMode Mode
         {
             get { return _hostApplicationConfiguration.Mode; }
         }
+
+        /// <summary>
+        /// Gets the log verbosity.
+        /// </summary>
         public string LogVerbosity
         {
             get { return _hostApplicationConfiguration.LogVerbosity; }
         }
 
+        /// <summary>
+        /// Obtains a lifetime service object to control the lifetime policy for this instance.
+        /// </summary>
+        /// <returns>
+        /// An object of type <see cref="T:System.Runtime.Remoting.Lifetime.ILease" /> used to control the lifetime policy for this instance. This is the current lifetime service object for this instance if one exists; otherwise, a new lifetime service object initialized to the value of the <see cref="P:System.Runtime.Remoting.Lifetime.LifetimeServices.LeaseManagerPollTime" /> property.
+        /// </returns>
+        /// <PermissionSet>
+        ///   <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="RemotingConfiguration, Infrastructure" />
+        /// </PermissionSet>
         [SecurityPermission(SecurityAction.Demand, Flags = SecurityPermissionFlag.Infrastructure)]
         public override object InitializeLifetimeService()
         {
@@ -115,6 +143,9 @@ namespace Drey.Configuration.Infrastructure.ConfigurationManagement
             return null;
         }
 
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
         public void Dispose()
         {
             Dispose(true);
@@ -122,6 +153,10 @@ namespace Drey.Configuration.Infrastructure.ConfigurationManagement
             GC.SuppressFinalize(this);
         }
 
+        /// <summary>
+        /// Releases unmanaged and - optionally - managed resources.
+        /// </summary>
+        /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
         protected virtual void Dispose(bool disposing)
         {
             if (!disposing || _disposed) { return; }

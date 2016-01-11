@@ -1,5 +1,8 @@
 ﻿namespace Drey.Configuration.DataModel
 {
+    /// <summary>
+    /// Runtime-wide settings all packages can use.
+    /// </summary>
     public class GlobalSetting : DataModelBase
     {
         /// <summary>

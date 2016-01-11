@@ -9,6 +9,9 @@ using System.Threading.Tasks;
 
 namespace Drey.Configuration.Modules
 {
+    /// <summary>
+    /// Base module, which provides common business logic across all nancy modules.
+    /// </summary>
     public abstract class BaseModule : NancyModule
     {
         static readonly ILog _log = LogProvider.For<BaseModule>();
@@ -33,6 +36,10 @@ namespace Drey.Configuration.Modules
             WireSetupPipeline(verifyConfigured);
         }
 
+        /// <summary>
+        /// Enforces that the system must have proper settings before continuing to use the rest of the console.
+        /// </summary>
+        /// <param name="verifyConfigured">if set to <c>true</c> [verify configured].</param>
         private void WireSetupPipeline(bool verifyConfigured)
         {
             if (!verifyConfigured) { return; }
@@ -50,6 +57,10 @@ namespace Drey.Configuration.Modules
             });
         }
 
+        /// <summary>
+        /// Issues the RecycleApp event.
+        /// </summary>
+        /// <returns></returns>
         protected dynamic RestartAppDomains()
         {
             Task.Factory.StartNew(() =>

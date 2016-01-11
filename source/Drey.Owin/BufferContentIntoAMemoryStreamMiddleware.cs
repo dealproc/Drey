@@ -1,13 +1,23 @@
 ﻿using Microsoft.Owin;
 
 using System.IO;
+using System.Threading.Tasks;
 
 namespace Owin
 {
+    /// <summary>
+    /// Due to the way that Nancy handles self-hosting environments, this forces uploaded files to be prematurely read into memory before continuing the owin pipeline execution.
+    /// </summary>
     public class BufferContentIntoAMemoryStreamMiddleware : OwinMiddleware
     {
         public BufferContentIntoAMemoryStreamMiddleware(OwinMiddleware next) : base(next) { }
-        public override System.Threading.Tasks.Task Invoke(IOwinContext context)
+
+        /// <summary>
+        /// Process an individual request.
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public override Task Invoke(IOwinContext context)
         {
             // DIRTY HACK TO GET FILES TO UPLOAD!  This is only needed if you need to use client certificates.
             // need to find out why client certificates seem to bork the pipeline.

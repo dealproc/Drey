@@ -9,6 +9,9 @@ using System.Security.Permissions;
 
 namespace Drey.Configuration.ServiceModel
 {
+    /// <summary>
+    /// Manages all packages loaded into the runtime.
+    /// </summary>
     public class HoardeManager : MarshalByRefObject, IHandle<ShellRequestArgs>, IHoardeManager
     {
         static ILog _log = LogProvider.For<HoardeManager>();
@@ -23,6 +26,13 @@ namespace Drey.Configuration.ServiceModel
 
         bool _disposed = false;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HoardeManager"/> class.
+        /// </summary>
+        /// <param name="eventBus">The event bus.</param>
+        /// <param name="configurationManager">The configuration manager.</param>
+        /// <param name="shellRequestHandler">The shell request handler.</param>
+        /// <param name="configureLogging">The configure logging.</param>
         public HoardeManager(IEventBus eventBus, INutConfiguration configurationManager, EventHandler<ShellRequestArgs> shellRequestHandler, Action<INutConfiguration> configureLogging)
         {
             _eventBus = eventBus;
@@ -40,6 +50,10 @@ namespace Drey.Configuration.ServiceModel
             Dispose(false);
         }
 
+        /// <summary>
+        /// Handles a ShellRequestArgs event.
+        /// </summary>
+        /// <param name="e">The e.</param>
         public void Handle(ShellRequestArgs e)
         {
             _log.InfoFormat("'Shell Request' Event Received: {packageId} | {event}", e.PackageId, e.ActionToTake);
@@ -69,6 +83,11 @@ namespace Drey.Configuration.ServiceModel
             }
         }
 
+        /// <summary>
+        /// Determines whether the specified package is loaded and executing in the runtime.
+        /// </summary>
+        /// <param name="package">The package.</param>
+        /// <returns></returns>
         public bool IsOnline(DataModel.Release package)
         {
             _log.DebugFormat("Online packages: {packageList}", _apps.Select(x => x.Value.Item2.Id).ToArray());
@@ -172,7 +191,11 @@ namespace Drey.Configuration.ServiceModel
         {
             return null;
         }
-        
+
+        /// <summary>
+        /// Kills the application container.
+        /// </summary>
+        /// <param name="shell">The shell.</param>
         private void KillAppContainer(Tuple<AppDomain, IShell> shell)
         {
             try
@@ -193,12 +216,19 @@ namespace Drey.Configuration.ServiceModel
             }
         }
 
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
         public void Dispose()
         {
             Dispose(true);
             GC.SuppressFinalize(this);
         }
 
+        /// <summary>
+        /// Releases unmanaged and - optionally - managed resources.
+        /// </summary>
+        /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
         protected virtual void Dispose(bool disposing)
         {
             if (!disposing || _disposed) { return; }

@@ -3,9 +3,15 @@ using System;
 
 namespace Drey.Configuration.Infrastructure.Schema._0100
 {
+    /// <summary>
+    /// Base Tables migration.
+    /// </summary>
     [Migration(0100201508132117)]
     public class Create_BaseTables : AutoReversingMigration
     {
+        /// <summary>
+        /// Steps to migrate the database forward.
+        /// </summary>
         public override void Up()
         {
             Create.Table("Releases")

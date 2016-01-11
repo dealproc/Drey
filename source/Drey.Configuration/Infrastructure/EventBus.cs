@@ -2,29 +2,75 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Security.Permissions;
 
 namespace Drey.Configuration
 {
+    /// <summary>
+    /// Provides a framework to broker messages within an application, keeping individual components loosely coupled.
+    /// TODO: Consider replacing with MediatR or another library.
+    /// </summary>
     public interface IEventBus
     {
+        /// <summary>
+        /// Subscribes the subscriber to the bus, to listen for events.
+        /// </summary>
+        /// <param name="subscriber">The subscriber.</param>
         void Subscribe(object subscriber);
+
+        /// <summary>
+        /// Subscribes the subscriber to the bus, to start listening for messages, with a token for filtering.
+        /// </summary>
+        /// <param name="subscriber">The subscriber.</param>
+        /// <param name="token">The token.</param>
         void Subscribe(object subscriber, object token);
+        
+        /// <summary>
+        /// Unsubscribes the specified subscriber.
+        /// </summary>
+        /// <param name="subscriber">The subscriber.</param>
         void Unsubscribe(object subscriber);
+        
+        /// <summary>
+        /// Publishes a message to all subscribers.
+        /// </summary>
+        /// <param name="message">The message.</param>
         void Publish(object message);
+        
+        /// <summary>
+        /// Publishes a message to all subscribers, with an ability to filter which subscribers receive the message by the token value.
+        /// </summary>
+        /// <param name="message">The message.</param>
+        /// <param name="token">The token.</param>
         void Publish(object message, object token);
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public class EventBus : IEventBus
     {
         readonly List<Handler> handlers = new List<Handler>();
+
+        /// <summary>
+        /// The handler result processing
+        /// </summary>
         public static Action<object, object> HandlerResultProcessing = (target, result) => { };
 
+        /// <summary>
+        /// Subscribes the subscriber to the bus, to listen for events.
+        /// </summary>
+        /// <param name="subscriber">The subscriber.</param>
         public void Subscribe(object subscriber)
         {
             Subscribe(subscriber, null);
         }
 
+        /// <summary>
+        /// Subscribes the subscriber to the bus, to start listening for messages, with a token for filtering.
+        /// </summary>
+        /// <param name="subscriber">The subscriber.</param>
+        /// <param name="token">The token.</param>
+        /// <exception cref="System.ArgumentNullException">subscriber</exception>
         public void Subscribe(object subscriber, object token)
         {
             if (subscriber == null)
@@ -42,6 +88,11 @@ namespace Drey.Configuration
             }
         }
 
+        /// <summary>
+        /// Unsubscribes the specified subscriber.
+        /// </summary>
+        /// <param name="subscriber">The subscriber.</param>
+        /// <exception cref="System.ArgumentNullException">subscriber</exception>
         public void Unsubscribe(object subscriber)
         {
             if (subscriber == null)
@@ -58,10 +109,21 @@ namespace Drey.Configuration
             }
         }
 
+        /// <summary>
+        /// Publishes a message to all subscribers.
+        /// </summary>
+        /// <param name="message">The message.</param>
         public void Publish(object message)
         {
             Publish(message, null);
         }
+
+        /// <summary>
+        /// Publishes a message to all subscribers, with an ability to filter which subscribers receive the message by the token value.
+        /// </summary>
+        /// <param name="message">The message.</param>
+        /// <param name="token">The token.</param>
+        /// <exception cref="System.ArgumentNullException">message</exception>
         public void Publish(object message, object token)
         {
             if (message == null)

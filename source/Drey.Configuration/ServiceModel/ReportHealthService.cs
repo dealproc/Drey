@@ -16,6 +16,9 @@ using System.Timers;
 
 namespace Drey.Configuration.ServiceModel
 {
+    /// <summary>
+    /// Reports health statistics to the server, for display and diagnostic usage.
+    /// </summary>
     class ReportHealthService : IReportPeriodically, IDisposable
     {
         static readonly ILog _log = LogProvider.For<ReportHealthService>();
@@ -35,6 +38,11 @@ namespace Drey.Configuration.ServiceModel
             _reportHealthTrigger.Interval = 15000;
         }
 
+        /// <summary>
+        /// Starts the Health Service.
+        /// </summary>
+        /// <param name="hubConnectionManager">The hub connection manager.</param>
+        /// <param name="runtimeHubProxy">The runtime hub proxy.</param>
         public void Start(IHubConnectionManager hubConnectionManager, IHubProxy runtimeHubProxy)
         {
             _log.Info("Starting 'Report Health Service'.");
@@ -98,6 +106,9 @@ namespace Drey.Configuration.ServiceModel
             _reportHealthTrigger.Start();
         }
 
+        /// <summary>
+        /// Stops the Health Service.
+        /// </summary>
         public void Stop()
         {
             _log.Info("'Report Health Info' trigger stopping.");
@@ -259,11 +270,19 @@ namespace Drey.Configuration.ServiceModel
             _frameworkInfo.NetFxVersions = frameworkVersions.ToArray();
         }
 
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
         public void Dispose()
         {
             Dispose(true);
             GC.SuppressFinalize(this);
         }
+
+        /// <summary>
+        /// Releases unmanaged and - optionally - managed resources.
+        /// </summary>
+        /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
         protected virtual void Dispose(bool disposing)
         {
             _log.Debug("Disposing 'Report Health Trigger'.");

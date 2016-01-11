@@ -9,6 +9,9 @@ using System.Threading.Tasks;
 
 namespace Drey.Configuration.ServiceModel
 {
+    /// <summary>
+    /// Polls for new packages that are published on the server's package feed.
+    /// </summary>
     public class RegisteredPackagesPollingClient : IPollingClient, IDisposable
     {
         static readonly ILog _log = LogProvider.For<RegisteredPackagesPollingClient>();
@@ -144,12 +147,19 @@ namespace Drey.Configuration.ServiceModel
             }
         }
 
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
         public void Dispose()
         {
             Dispose(true);
             _disposed = true;
         }
 
+        /// <summary>
+        /// Releases unmanaged and - optionally - managed resources.
+        /// </summary>
+        /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
         protected virtual void Dispose(bool disposing)
         {
             if (_pollingClientTask != null)

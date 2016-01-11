@@ -20,6 +20,9 @@ using System.Reflection;
 
 namespace Drey.Configuration
 {
+    /// <summary>
+    /// The nancy bootstrapper.
+    /// </summary>
     public class Bootstrapper : AutofacNancyBootstrapper
     {
         static readonly ILog _log = LogProvider.For<Bootstrapper>();

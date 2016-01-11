@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 namespace Drey.Configuration.DataModel
 {
     /// <summary>
-    /// The base entity interface in the system.  Basically, this is allowing for the use of generics at the repository level.
+    /// The base entity interface in the system.  Basically, this allows generics in the repository.
     /// </summary>
     public interface IEntity
     {

@@ -42,6 +42,9 @@ namespace Drey.Server.Directors
             Dispose(false);
         }
 
+        /// <summary>
+        /// Gets the pending task, to hold the consumer's request until the client has a chance to respond.
+        /// </summary>
         public Task<TResponse> PendingTask { get { return _responseCompletion.Task; } }
 
         /// <summary>
@@ -59,6 +62,10 @@ namespace Drey.Server.Directors
             _responseTimeout.Start();
         }
 
+        /// <summary>
+        /// Handles the response from the client, after it is broadcast on the event bus.
+        /// </summary>
+        /// <param name="message">The message.</param>
         public void Handle(TResponse message)
         {
             _responseTimeout.Stop();
@@ -77,12 +84,19 @@ namespace Drey.Server.Directors
             _responseCompletion.SetException(new TimeoutException("Runtime client did not respond within the alloted time."));
         }
 
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
         public void Dispose()
         {
             Dispose(true);
             _disposed = true;
         }
 
+        /// <summary>
+        /// Releases unmanaged and - optionally - managed resources.
+        /// </summary>
+        /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
         private void Dispose(bool disposing)
         {
             if (!disposing || _disposed) { return; }

@@ -11,11 +11,18 @@ using System.Threading.Tasks;
 
 namespace Drey.Configuration.ServiceModel
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public interface IServicesManager : IHandle<Infrastructure.Events.RecycleApp>
     {
         bool Start();
         bool Stop();
     }
+
+    /// <summary>
+    /// 
+    /// </summary>
     public class ServicesManager : IServicesManager, IHandle<Infrastructure.Events.RecycleApp>, IDisposable
     {
         ILog _log;
@@ -73,6 +80,10 @@ namespace Drey.Configuration.ServiceModel
             _eventBus.Subscribe(this);
         }
 
+        /// <summary>
+        /// Starts this manager and its services. Establishes connection with the remote server for log file access, etc.
+        /// </summary>
+        /// <returns></returns>
         public bool Start()
         {
             try
@@ -89,6 +100,10 @@ namespace Drey.Configuration.ServiceModel
             return true;
         }
 
+        /// <summary>
+        /// Stops all services managed by this.
+        /// </summary>
+        /// <returns></returns>
         public bool Stop()
         {
             _log.Info("Drey.Runtime is shutting down.");
@@ -139,6 +154,10 @@ namespace Drey.Configuration.ServiceModel
             return true;
         }
 
+        /// <summary>
+        /// Handles the RecycleApp message.
+        /// </summary>
+        /// <param name="message">The message.</param>
         public void Handle(Infrastructure.Events.RecycleApp message)
         {
             _withRestart = true;
@@ -241,11 +260,19 @@ namespace Drey.Configuration.ServiceModel
             }
         }
 
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
         public void Dispose()
         {
             Dispose(true);
             _disposed = true;
         }
+
+        /// <summary>
+        /// Releases unmanaged and - optionally - managed resources.
+        /// </summary>
+        /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
         protected virtual void Dispose(bool disposing)
         {
             if (!disposing || _disposed) { return; }

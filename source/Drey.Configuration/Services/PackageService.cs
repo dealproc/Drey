@@ -141,6 +141,10 @@ namespace Drey.Configuration.Services
             _packageSettingRepository.Store(model);
         }
 
+        /// <summary>
+        /// Removes the application setting from the underlying repository.
+        /// </summary>
+        /// <param name="model">The model.</param>
         public void RemoveAppSetting(ViewModels.AppSettingPmo model)
         {
             _packageSettingRepository.Delete(model.Id);
@@ -171,6 +175,10 @@ namespace Drey.Configuration.Services
             _connectionStringRepository.Store(model);
         }
 
+        /// <summary>
+        /// Removes the connection string from the underlying repository.
+        /// </summary>
+        /// <param name="model">The model.</param>
         public void RemoveConnectionString(ViewModels.ConnectionStringPmo model)
         {
             _connectionStringRepository.Delete(model.Id);

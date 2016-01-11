@@ -5,6 +5,9 @@ using System.Text;
 
 namespace Drey.Configuration.Infrastructure
 {
+    /// <summary>
+    /// A TextWriter implementation that redirects all values to a liblog log instance, as a Trace event.
+    /// </summary>
     class LibLogTraceWriter : System.IO.TextWriter
     {
         static ILog _log = LogProvider.GetCurrentClassLogger();

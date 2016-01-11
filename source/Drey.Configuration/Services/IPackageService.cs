@@ -58,6 +58,10 @@ namespace Drey.Configuration.Services
         /// <param name="model">The model.</param>
         void RecordAppSetting(ViewModels.AppSettingPmo model);
 
+        /// <summary>
+        /// Removes the application setting from the underlying repository.
+        /// </summary>
+        /// <param name="model">The model.</param>
         void RemoveAppSetting(ViewModels.AppSettingPmo model);
 
         /// <summary>
@@ -73,6 +77,10 @@ namespace Drey.Configuration.Services
         /// <param name="model">The model.</param>
         void RecordConnectionString(ViewModels.ConnectionStringPmo model);
 
+        /// <summary>
+        /// Removes the connection string from the underlying repository.
+        /// </summary>
+        /// <param name="model">The model.</param>
         void RemoveConnectionString(ViewModels.ConnectionStringPmo model);
 
         /// <summary>

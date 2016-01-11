@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace Drey.Configuration.ServiceModel
 {
+    /// <summary>
+    /// Reads the directory listing of all files on this client and returns it to the server, on demand.
+    /// </summary>
     class ListLogsService : RemoteInvocationService<DomainModel.Request<DomainModel.Empty>, DomainModel.Empty, DomainModel.Response<IEnumerable<string>>, IEnumerable<string>>
     {
         readonly INutConfiguration _configurationManager;

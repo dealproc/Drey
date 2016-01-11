@@ -6,6 +6,9 @@ using Nancy.Security;
 
 namespace Drey.Configuration.Modules
 {
+    /// <summary>
+    /// Main UI for web console.
+    /// </summary>
     public class HomeModule : BaseModule
     {
         static ILog _log = LogProvider.For<HomeModule>();

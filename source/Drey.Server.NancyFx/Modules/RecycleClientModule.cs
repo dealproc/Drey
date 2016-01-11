@@ -12,6 +12,10 @@ namespace Drey.Server.Modules
     {
         readonly Directors.IRecycleClientDirector _director;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RecycleClientModule"/> class.
+        /// </summary>
+        /// <param name="director">The director.</param>
         public RecycleClientModule(Directors.IRecycleClientDirector director)
             : base("/runtime")
         {
@@ -20,6 +24,12 @@ namespace Drey.Server.Modules
             Post["/RecycleClient/{clientId}", runAsync: true] = RecycleClientAsync;
         }
 
+        /// <summary>
+        /// Issues a RecycleApp request to a client.
+        /// </summary>
+        /// <param name="arg">The argument.</param>
+        /// <param name="ct">The ct.</param>
+        /// <returns></returns>
         private Task<dynamic> RecycleClientAsync(dynamic arg, CancellationToken ct)
         {
             var model = this.Bind<DomainModel.Request<DomainModel.Empty>>();

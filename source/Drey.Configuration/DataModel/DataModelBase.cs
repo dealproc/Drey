@@ -3,6 +3,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Drey.Configuration.DataModel
 {
+    /// <summary>
+    /// A base entity in the system.
+    /// </summary>
     public abstract class DataModelBase : IEntity
     {
         /// <summary>

@@ -15,6 +15,10 @@ namespace Drey.Server.Modules
 
         readonly Directors.IListLogsDirector _director;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ListLogsModule"/> class.
+        /// </summary>
+        /// <param name="director">The director.</param>
         public ListLogsModule(Directors.IListLogsDirector director)
             : base("/runtime/Logs")
         {
@@ -23,6 +27,12 @@ namespace Drey.Server.Modules
             Post["/ListFiles/{clientId}", runAsync: true] = ListLogFilesAsync;
         }
 
+        /// <summary>
+        /// Issues a ListLogFiles request to a client.
+        /// </summary>
+        /// <param name="arg">The argument.</param>
+        /// <param name="ct">The ct.</param>
+        /// <returns></returns>
         private Task<dynamic> ListLogFilesAsync(dynamic arg, CancellationToken ct)
         {
             _log.Info("Attempting to list client logs.");
@@ -57,6 +67,12 @@ namespace Drey.Server.Modules
             Post["/OpenLog/{clientId}", runAsync: true] = OpenLogFileAsync;
         }
 
+        /// <summary>
+        /// Issues an OpenLogFile request to a client.
+        /// </summary>
+        /// <param name="arg">The argument.</param>
+        /// <param name="ct">The ct.</param>
+        /// <returns></returns>
         private Task<dynamic> OpenLogFileAsync(dynamic arg, CancellationToken ct)
         {
             _log.Info("Attempting to open a log file from a client.");

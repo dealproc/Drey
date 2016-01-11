@@ -21,8 +21,10 @@ namespace Drey.Configuration
 
         IEventBus _eventBus;
         IDisposable _webApp;
+        
         [NonSerialized]
         ServiceModel.IHoardeManager _hoardeManager;
+        
         [NonSerialized]
         ServiceModel.IServicesManager _servicesManager;
 
@@ -34,26 +36,43 @@ namespace Drey.Configuration
             get { return typeof(Nut).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion; }
         }
 
+        /// <summary>
+        /// Gets the package identifier.
+        /// </summary>
         public override string Id
         {
             get { return "Drey.Configuration"; }
         }
 
+        /// <summary>
+        /// Gets a value indicating whether this package requires use of the configuration storage provided by the runtime.
+        /// </summary>
         public override bool RequiresConfigurationStorage
         {
             get { return true; }
         }
 
+        /// <summary>
+        /// Gets the default application settings for this package.
+        /// </summary>
         public override IEnumerable<DefaultAppSetting> AppSettingDefaults
         {
             get { return Enumerable.Empty<DefaultAppSetting>(); }
         }
 
+        /// <summary>
+        /// Gets the default connection string list for this package.
+        /// </summary>
         public override IEnumerable<DefaultConnectionString> ConnectionStringDefaults
         {
             get { return Enumerable.Empty<DefaultConnectionString>(); }
         }
 
+        /// <summary>
+        /// Startups the specified host configuration MGR.
+        /// </summary>
+        /// <param name="hostConfigMgr">The host configuration MGR.</param>
+        /// <returns></returns>
         public override bool Startup(INutConfiguration hostConfigMgr)
         {
             if (!base.Startup(hostConfigMgr)) { return false; }
@@ -138,6 +157,9 @@ namespace Drey.Configuration
             _webApp = host;
         }
 
+        /// <summary>
+        /// Should your app need a specific shutdown routine, you will override this method and impement it.
+        /// </summary>
         public override void Shutdown()
         {
             Log.InfoFormat("{id} is shutting down.", this.Id);
@@ -147,6 +169,10 @@ namespace Drey.Configuration
             _webApp = null;
         }
 
+        /// <summary>
+        /// Handles the ShellRequestArgs message.
+        /// </summary>
+        /// <param name="message">The message.</param>
         public void Handle(ShellRequestArgs message)
         {
             if (message.PackageId.Equals(this.Id, StringComparison.OrdinalIgnoreCase))
@@ -155,6 +181,10 @@ namespace Drey.Configuration
             }
         }
 
+        /// <summary>
+        /// Releases unmanaged and - optionally - managed resources.
+        /// </summary>
+        /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
         protected override void Dispose(bool disposing)
         {
             Log.Trace("Disposing Drey Configuration host.");

@@ -6,6 +6,9 @@ using System.Reflection;
 // Influenced by the Caliburn Micro event aggregator.
 namespace Drey.Server
 {
+    /// <summary>
+    /// TODO: Consider replacing with MediatR or similar package.
+    /// </summary>
     public interface IEventBus
     {
         void Subscribe(object subscriber);
@@ -15,6 +18,9 @@ namespace Drey.Server
         void Publish(object message, object token);
     }
 
+    /// <summary>
+    /// TODO: Consider replacing with MediatR or similar package.
+    /// </summary>
     public class EventBus : IEventBus
     {
         readonly List<Handler> handlers = new List<Handler>();

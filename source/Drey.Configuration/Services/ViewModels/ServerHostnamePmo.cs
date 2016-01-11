@@ -17,8 +17,17 @@ namespace Drey.Configuration.Services.ViewModels
         [Required]
         public string NewHostname { get; set; }
 
+        /// <summary>
+        /// Gets or sets the new server certificate thumbprint.
+        /// </summary>
+        /// <value>
+        /// The new server certificate thumbprint.
+        /// </value>
         public string NewServerCertificateThumbprint { get; set; }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ServerHostnamePmo"/> class.
+        /// </summary>
         public ServerHostnamePmo()
         {
             CurrentHostname = string.Empty;
