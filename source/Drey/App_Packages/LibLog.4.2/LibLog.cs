@@ -699,7 +699,7 @@ namespace Drey.Logging
             {
                 try
                 {
-                    return messageFunc();
+                    return Utilities.StringMasking.Passwords(messageFunc());
                 }
                 catch (Exception ex)
                 {
@@ -1869,7 +1869,7 @@ namespace Drey.Logging.LogProviders
             if (formatParameters == null || formatParameters.Length == 0)
             {
                 // Wrapping messageBuilder to mask passwords.
-                return Utilities.StringMasking.Passwords(messageBuilder);
+                return messageBuilder;
             }
 
             return () =>
