@@ -1887,7 +1887,7 @@ namespace Drey.Logging.LogProviders
                 }
                 try
                 {
-                    return Utilities.StringMasking.Passwords(string.Format(CultureInfo.InvariantCulture, targetMessage, formatParameters));
+                    return string.Format(CultureInfo.InvariantCulture, targetMessage, formatParameters);
                 }
                 catch (FormatException ex)
                 {
