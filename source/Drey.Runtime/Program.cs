@@ -14,8 +14,26 @@ namespace Drey.Runtime
 {
     class Program
     {
+        /// <summary>
+        /// Gets or sets the log verbosity.
+        /// <remarks>Used as a temporary storage location for the main app domain.  do not depend on its value in your <code>Action{INutConfiguration} LogConfiguration = (INutConfiguration config) => { ... }</code> implementation.  It will be null for your app domains.</remarks>
+        /// </summary>
         public static string LogVerbosity { get; protected set; }
 
+        /// <summary>
+        /// Used to establish logging facilities in each package's domain.
+        /// <remarks>
+        /// <para>
+        /// Since we want to control where the log files live, and remove the ability for an end user to dictate this, we are 
+        /// configuring the logging provider in code.  The Drey.Configuration package uses the `config.LogsDirectory` for allowing
+        /// your portal to access the log files from the machine.
+        /// </para>
+        /// <para>
+        /// Note: Try to keep your log files somewhat small-ish (~150-200k/file).  The file needs to go back to the server and through
+        /// a message bus before it gets to your winforms/wpf/webforms/mvc display.
+        /// </para>
+        /// </remarks>
+        /// </summary>
         public static Action<INutConfiguration> LogConfiguration = (INutConfiguration config) =>
         {
             // Step 1. Create configuration object 
@@ -56,8 +74,10 @@ namespace Drey.Runtime
 
             HostFactory.Run(f =>
             {
+                // Options to bind to the linux signals for daemon startup/shutdown.
                 f.UseLinuxIfAvailable();
 
+                // parses command line's extra parameters.  format is `-{key}:{value}`
                 f.AddCommandLineDefinition("verbosity", v => LogVerbosity = v);
                 f.ApplyCommandLine();
 
@@ -74,12 +94,19 @@ namespace Drey.Runtime
         }
     }
 
+    /// <summary>
+    /// Simple wrapper over the Drey tooling to allow interop with Topshelf.
+    /// </summary>
     class HordeServiceWrapper : ServiceControl
     {
+        // CONSIDER: Should we factor this out into the ControlPanelServiceControl, and provide separate implementations for Topshelf and the default windows libraries?
         static ILog _Log = LogProvider.For<HordeServiceWrapper>();
 
         ControlPanelServiceControl _control;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HordeServiceWrapper"/> class.
+        /// </summary>
         public HordeServiceWrapper()
         {
             _control = new ControlPanelServiceControl(
@@ -88,6 +115,12 @@ namespace Drey.Runtime
                 logVerbosity: Program.LogVerbosity
             );
         }
+
+        /// <summary>
+        /// Starts the specified host control.
+        /// </summary>
+        /// <param name="hostControl">The host control.</param>
+        /// <returns></returns>
         public bool Start(HostControl hostControl)
         {
             _Log.Info("Starting Hoarde Service");
@@ -99,6 +132,11 @@ namespace Drey.Runtime
             return true;
         }
 
+        /// <summary>
+        /// Stops the specified host control.
+        /// </summary>
+        /// <param name="hostControl">The host control.</param>
+        /// <returns></returns>
         public bool Stop(HostControl hostControl)
         {
             _Log.Info("Stopping Hoarde Service");

@@ -26,6 +26,18 @@ namespace Drey
 
         bool _disposed = false;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ControlPanelServiceControl"/> class.
+        /// </summary>
+        /// <param name="mode">
+        /// Which mode is the system running in?
+        /// <list type="table">
+        /// <item><term>Production</term><description>Drey will use its normal package detail information to load packages into the runtime for execution.</description></item>
+        /// <item><term>Development</term><description>Drey will discover packages in the ~/Hoarde folder and load them for execution. This prevents the need to package your system for every build.</description></item>
+        /// </list>
+        /// </param>
+        /// <param name="configureLogging">An anction that gets run at the startup of every package which configures the logging provider for that package.</param>
+        /// <param name="logVerbosity">How much logging should be captured?  Pass a compatible string here that works with your chosen framework, and parse it within the configureLogging method.</param>
         public ControlPanelServiceControl(ExecutionMode mode = ExecutionMode.Production, Action<INutConfiguration> configureLogging = null, string logVerbosity = "Info")
         {
             _nutConfiguration = new ApplicationHostNutConfiguration() { Mode = mode, LogVerbosity = logVerbosity };
@@ -45,17 +57,33 @@ namespace Drey
             Dispose(false);
         }
 
+        /// <summary>
+        /// Starts this instance.
+        /// </summary>
         public bool Start()
         {
             return StartupConsole();
         }
 
+        /// <summary>
+        /// Stops this instance.
+        /// </summary>
         public bool Stop()
         {
             ShutdownConsole();
             return true;
         }
 
+        /// <summary>
+        /// Obtains a lifetime service object to control the lifetime policy for this instance.
+        /// <remarks>We need to override the default functionality here and send back a `null` so that we can control the lifetime of the ServiceControl.  Default lease time is 5 minutes, which does not work for us.</remarks>
+        /// </summary>
+        /// <returns>
+        /// An object of type <see cref="T:System.Runtime.Remoting.Lifetime.ILease" /> used to control the lifetime policy for this instance. This is the current lifetime service object for this instance if one exists; otherwise, a new lifetime service object initialized to the value of the <see cref="P:System.Runtime.Remoting.Lifetime.LifetimeServices.LeaseManagerPollTime" /> property.
+        /// </returns>
+        /// <PermissionSet>
+        ///   <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="RemotingConfiguration, Infrastructure" />
+        /// </PermissionSet>
         [SecurityPermission(SecurityAction.Demand, Flags = SecurityPermissionFlag.Infrastructure)]
         public override object InitializeLifetimeService()
         {
@@ -70,7 +98,7 @@ namespace Drey
         /// </summary>
         /// <param name="sender">The sender.</param>
         /// <param name="e">The e.</param>
-        void ShellRequestHandler(object sender, ShellRequestArgs e)
+        private void ShellRequestHandler(object sender, ShellRequestArgs e)
         {
             // right now, the shutdown command is working as expected, but cannot seem to trigger a restart.
             if (e.PackageId.Equals(DreyConstants.ConfigurationPackageName, StringComparison.OrdinalIgnoreCase))
@@ -128,6 +156,10 @@ namespace Drey
                 });
         }
 
+        /// <summary>
+        /// Brings the Drey.Console package online, so other packages can then be brought online or taken offline on demand.
+        /// </summary>
+        /// <returns></returns>
         private bool StartupConsole()
         {
             _log.Info("Console is starting up.");
@@ -137,7 +169,10 @@ namespace Drey
             return _console.Item2.Startup(_nutConfiguration);
         }
 
-        void ShutdownConsole()
+        /// <summary>
+        /// Shuts down the Drey Console and all packages running within it, and subsequently cleans up its app domain.
+        /// </summary>
+        private void ShutdownConsole()
         {
             if (_console == null)
             {
@@ -180,7 +215,11 @@ namespace Drey
             _log.Info("Console has shutdown.");
         }
 
-        void ObserveConsoleFinalizationAndRestart()
+        /// <summary>
+        /// Observes the console finalization and restart.
+        /// <remarks>Due to app domains being shutdown, we needed to provide a higher level tool to observe the shut-down of the app domain before we startup a new instance (with regard to the control panel).</remarks>
+        /// </summary>
+        private void ObserveConsoleFinalizationAndRestart()
         {
             _log.Info("Waiting for console to shutdown so it can be restarted.");
             bool restartIssued = false;
@@ -208,12 +247,19 @@ namespace Drey
             _restartConsoleTask = null;
         }
 
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
         public void Dispose()
         {
             Dispose(true);
             GC.SuppressFinalize(this);
         }
 
+        /// <summary>
+        /// Releases unmanaged and - optionally - managed resources.
+        /// </summary>
+        /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
         protected virtual void Dispose(bool disposing)
         {
             if (!disposing || _disposed) { return; }

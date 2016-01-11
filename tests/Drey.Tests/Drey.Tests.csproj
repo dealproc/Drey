@@ -1,26 +1,27 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\..\packages\xunit.core.2.1.0\build\portable-net45+win8+wp8+wpa81\xunit.core.props" Condition="Exists('..\..\packages\xunit.core.2.1.0\build\portable-net45+win8+wp8+wpa81\xunit.core.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{6403704C-14D9-4069-AD3D-8EEEF95F499C}</ProjectGuid>
+    <ProjectGuid>{4867EC79-E338-45AC-9064-BBBB50E429BB}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Drey</RootNamespace>
-    <AssemblyName>Drey</AssemblyName>
+    <RootNamespace>Drey.Tests</RootNamespace>
+    <AssemblyName>Drey.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
-    <DefineConstants>LIBLOG_PUBLIC;</DefineConstants>
+    <NuGetPackageImportStamp>0e2dbc1e</NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>$(DefineConstants)DEBUG;TRACE</DefineConstants>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -28,61 +29,55 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>$(DefineConstants)TRACE</DefineConstants>
+    <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\NLog.4.2.3\lib\net45\NLog.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Shouldly, Version=2.6.0.0, Culture=neutral, PublicKeyToken=6042cbcb05cbc941, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Shouldly.2.6.0\lib\net40\Shouldly.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
-    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="System.Configuration" />
+    <Reference Include="xunit.abstractions, Version=2.0.0.0, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\xunit.abstractions.2.0.0\lib\net35\xunit.abstractions.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="xunit.core, Version=2.1.0.3179, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\xunit.extensibility.core.2.1.0\lib\portable-net45+win8+wp8+wpa81\xunit.core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="xunit.execution.desktop, Version=2.1.0.3179, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\xunit.extensibility.execution.2.1.0\lib\net45\xunit.execution.desktop.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AppConfigApplicationSettings.cs" />
-    <Compile Include="AppConfigConnectionStrings.cs" />
-    <Compile Include="App_Packages\LibLog.4.2\LibLog.cs" />
-    <Compile Include="CertificateValidation\AuthorityIssuedServerCertificateValidation.cs" />
-    <Compile Include="CertificateValidation\ICertificateValidation.cs" />
-    <Compile Include="CertificateValidation\SelfSignedServerCertificateValidation.cs" />
-    <Compile Include="ControlPanelServiceControl.cs" />
-    <Compile Include="DreyConstants.cs" />
-    <Compile Include="Extensions\AssemblyExtensions.cs" />
-    <Compile Include="Extensions\EnumerableExtensions.cs" />
-    <Compile Include="GlobalSuppressions.cs" />
-    <Compile Include="ApplicationHostNutConfiguration.cs" />
-    <Compile Include="Nut\DefaultAppSetting.cs" />
-    <Compile Include="Nut\DefaultConnectionString.cs" />
-    <Compile Include="Nut\ExecutionMode.cs" />
-    <Compile Include="Nut\IApplicationSettings.cs" />
-    <Compile Include="Nut\IConnectionStrings.cs" />
-    <Compile Include="Nut\IGlobalSettings.cs" />
-    <Compile Include="Nut\INutConfiguration.cs" />
-    <Compile Include="Nut\IShell.cs" />
-    <Compile Include="Nut\DiscoverStartupDllProxy.cs" />
-    <Compile Include="Nut\ProxyBase.cs" />
-    <Compile Include="Nut\ServerAuthenticationTypes.cs" />
-    <Compile Include="Nut\ShellBase.cs" />
-    <Compile Include="Nut\ShellFactory.cs" />
-    <Compile Include="Nut\ShellRequestArgs.cs" />
-    <Compile Include="Nut\StartupProxy.cs" />
+    <Compile Include="App_Packages\LibLog.4.2\LibLogTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Utilities\AppDomainUtils.cs" />
-    <Compile Include="Utilities\PackageUtils.cs" />
-    <Compile Include="Utilities\PathUtilities.cs" />
-    <Compile Include="Utilities\StringMasking.cs" />
+    <Compile Include="Utilities\StringMaskingTests.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Drey.nuspec" />
-    <None Include="drey.targets" />
-    <None Include="uninstall.ps1" />
-    <None Include="install.ps1" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\source\Drey\Drey.csproj">
+      <Project>{6403704c-14d9-4069-ad3d-8eeef95f499c}</Project>
+      <Name>Drey</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
@@ -91,6 +86,7 @@
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
+    <Error Condition="!Exists('..\..\packages\xunit.core.2.1.0\build\portable-net45+win8+wp8+wpa81\xunit.core.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\xunit.core.2.1.0\build\portable-net45+win8+wp8+wpa81\xunit.core.props'))" />
   </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -1583,6 +1583,10 @@ namespace Drey.Logging.LogProviders
                 {
                     return IsEnabled(_logger, logLevel);
                 }
+
+                // wrapping messageFunc here so we can provide password masking facilities.
+                messageFunc = Utilities.StringMasking.Passwords(messageFunc);
+
                 if (exception != null)
                 {
                     return LogException(logLevel, messageFunc, exception, formatParameters);
@@ -1864,7 +1868,8 @@ namespace Drey.Logging.LogProviders
         {
             if (formatParameters == null || formatParameters.Length == 0)
             {
-                return messageBuilder;
+                // Wrapping messageBuilder to mask passwords.
+                return Utilities.StringMasking.Passwords(messageBuilder);
             }
 
             return () =>
@@ -1882,7 +1887,7 @@ namespace Drey.Logging.LogProviders
                 }
                 try
                 {
-                    return string.Format(CultureInfo.InvariantCulture, targetMessage, formatParameters);
+                    return Utilities.StringMasking.Passwords(string.Format(CultureInfo.InvariantCulture, targetMessage, formatParameters));
                 }
                 catch (FormatException ex)
                 {
