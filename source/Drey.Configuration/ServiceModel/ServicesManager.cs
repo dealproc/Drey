@@ -178,16 +178,16 @@ namespace Drey.Configuration.ServiceModel
                 switch (change.NewState)
                 {
                     case ConnectionState.Connecting:
-                        _log.InfoFormat("Attempting to connect to {url}.", brokerUrl);
+                        _log.InfoFormat("Attempting to connect to {url}.", brokerUrl.CurrentHostname);
                         break;
                     case ConnectionState.Connected:
-                        _log.InfoFormat("Connection established with {url}.", brokerUrl);
+                        _log.InfoFormat("Connection established with {url}.", brokerUrl.CurrentHostname);
                         break;
                     case ConnectionState.Reconnecting:
-                        _log.InfoFormat("Lost connection with {url}.  Attempting to reconnect.", brokerUrl);
+                        _log.InfoFormat("Lost connection with {url}.  Attempting to reconnect.", brokerUrl.CurrentHostname);
                         break;
                     case ConnectionState.Disconnected:
-                        _log.InfoFormat("Disconnected from {url}", brokerUrl);
+                        _log.InfoFormat("Disconnected from {url}", brokerUrl.CurrentHostname);
                         break;
                 }
             };
