@@ -23,10 +23,12 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <DefineConstants>$(DefineConstants);DEBUG;</DefineConstants>
+    <DocumentationFile>bin\Debug\Drey.Server.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
+    <DocumentationFile>bin\Release\Drey.Server.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />

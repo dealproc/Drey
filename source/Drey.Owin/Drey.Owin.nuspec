@@ -17,5 +17,6 @@
   </metadata>
   <files>
     <file src="bin\$configuration$\Drey.Owin.dll" target="lib\net451" />
+    <file src="bin\$configuration$\Drey.Owin.XML" target="lib\net451" />
   </files>
 </package>

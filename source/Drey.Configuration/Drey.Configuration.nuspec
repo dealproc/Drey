@@ -16,5 +16,6 @@
   </metadata>
   <files>
     <file src="build\$configuration$\**\*.*" exclude="build\$configuration$\Drey.dll;build\$configuration$\Drey.pdb" target="" />
+    <file src="build\$configuration$\**\*.*" exclude="build\$configuration$\Drey.dll;build\$configuration$\Drey.pdb" target="" />
   </files>
 </package>

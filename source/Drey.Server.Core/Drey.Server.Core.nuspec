@@ -17,6 +17,8 @@
   </metadata>
   <files>
     <file src="bin\$configuration$\Drey.Server.dll" target="lib\net451" />
+    <file src="bin\$configuration$\Drey.Server.XML" target="lib\net451" />
     <file src="bin\$configuration$\Drey.DomainModel.dll" target="lib\net451" />
+    <file src="bin\$configuration$\Drey.DomainModel.XML" target="lib\net451" />
   </files>
 </package>
