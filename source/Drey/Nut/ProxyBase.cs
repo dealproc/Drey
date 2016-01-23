@@ -10,6 +10,7 @@ namespace Drey.Nut
     {
         readonly string _pathToAppPackage;
 
+        //TODO: change to be a params string[] appPackagePaths. document to explain how to utilize.
         public ProxyBase(string pathToAppPackage)
         {
             _pathToAppPackage = pathToAppPackage;

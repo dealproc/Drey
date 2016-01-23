@@ -2,6 +2,7 @@
 using Drey.Server.Services;
 
 using Nancy;
+using Nancy.Security;
 
 using System;
 using System.Linq;
@@ -23,14 +24,17 @@ namespace Drey.Server.Modules
         /// Initializes a new instance of the <see cref="NugetUploadModule"/> class.
         /// </summary>
         /// <param name="packageService">The package service.</param>
-        public NugetUploadModule(IPackageService packageService)
+        /// <param name="claimsValidator"></param>
+        public NugetUploadModule(IPackageService packageService, INugetApiClaimsValidator claimsValidator)
             : base("/api/v2/package")
         {
+            this.RequiresSecurityClaims(claimsValidator.Validate);
+
             _packageService = packageService;
 
             Put["/", runAsync: true] = ParseAndStorePackage;
             Delete["/{id}/{version}", runAsync: true] = DeleteReleaseAsync;
-        
+
             this.Before.AddItemToEndOfPipeline(ctx => { _Log.Trace(ctx.Request.Url); return (Response)null; });
         }
 
@@ -73,9 +77,9 @@ namespace Drey.Server.Modules
             {
                 return ((Response)"Missing file").StatusCode = HttpStatusCode.BadRequest;
             }
-        
+
             _Log.Info("Received a file to be parsed and stored.");
-        
+
             try
             {
                 await _packageService.SyndicateAsync(Request.Files.First().Value);

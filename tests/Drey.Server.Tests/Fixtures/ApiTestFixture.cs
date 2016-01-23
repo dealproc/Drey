@@ -25,6 +25,7 @@ namespace Drey.Server.Tests
         public Server.Directors.IListLogsDirector ListLogsDirector { get; private set; }
         public Server.Directors.IOpenLogFileDirector OpenLogFileDirector { get; private set; }
         public Server.Directors.IRecycleClientDirector RecycleClientDirector { get; private set; }
+        public Server.Services.INugetApiClaimsValidator NugetApiClaimsValidator { get; private set; }
 
         public ApiTestFixture()
         {
@@ -37,6 +38,9 @@ namespace Drey.Server.Tests
 
             RecycleClientDirector = A.Fake<Server.Directors.IRecycleClientDirector>();
             A.CallTo(() => RecycleClientDirector.PendingTask).Returns(DomainModel.Response<DomainModel.Empty>.Success(string.Empty, new DomainModel.Empty()));
+
+            NugetApiClaimsValidator = A.Fake<Server.Services.INugetApiClaimsValidator>();
+            A.CallTo(() => NugetApiClaimsValidator.Validate(A<System.Security.Claims.Claim[]>.Ignored)).Returns(true);
 
             _bootstrapper = new TestNancyBootstrapper(this);
             _browser = new Browser(_bootstrapper, defaults: to => to.Accept("application/json"));

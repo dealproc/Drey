@@ -2,7 +2,9 @@
 using Drey.Server.Services;
 
 using System.Linq;
+using System.Net;
 using System.Net.Http;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web.Http;
 
@@ -14,16 +16,26 @@ namespace Drey.Server.Controllers
         static readonly ILog _log = LogProvider.For<NugetUploadController>();
 
         readonly IPackageService _packageService;
+        readonly INugetApiClaimsValidator _claimsValidator;
 
-        public NugetUploadController(IPackageService packageService)
+        public NugetUploadController(IPackageService packageService, INugetApiClaimsValidator claimsValidator)
         {
             _packageService = packageService;
+            _claimsValidator = claimsValidator;
         }
 
         [HttpPut, Route("")]
         public async Task<IHttpActionResult> ParseAndStorePackageAsync()
         {
-            var msProvider = await Request.Content.ReadAsMultipartAsync<MultipartMemoryStreamProvider>(new MultipartMemoryStreamProvider());
+            if (User != null && User is ClaimsPrincipal)
+            {
+                if (!_claimsValidator.Validate(((ClaimsPrincipal)User).Claims.ToArray()))
+                {
+                    return BadRequest();
+                }
+            }
+
+            var msProvider = await Request.Content.ReadAsMultipartAsync(new MultipartMemoryStreamProvider());
 
             if (!msProvider.Contents.Any())
             {

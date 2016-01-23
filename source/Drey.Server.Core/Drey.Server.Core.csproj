@@ -61,6 +61,7 @@
     <Compile Include="Services\FilesytemFileService.cs" />
     <Compile Include="Services\IClientHealthService.cs" />
     <Compile Include="Services\IFileService.cs" />
+    <Compile Include="Services\INugetApiClaimsValidator.cs" />
     <Compile Include="Services\IPackageService.cs" />
     <Compile Include="Services\IReleaseStore.cs" />
     <Compile Include="Services\PackageService.cs" />
