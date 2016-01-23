@@ -29,6 +29,11 @@ namespace Drey.Nut
         string HoardeBaseDirectory { get; }
 
         /// <summary>
+        /// Gets the base directory for the location that custom dlls/plugins are located.  This is a subfolder of the WorkingDirectory folder.
+        /// </summary>
+        string PluginsBaseDirectory { get; }
+
+        /// <summary>
         /// Gets the logs directory.
         /// </summary>
         string LogsDirectory { get; }

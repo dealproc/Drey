@@ -1,7 +1,9 @@
 ﻿using Drey.Logging;
+using Drey.Utilities;
 
 using System;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Security.Permissions;
 
@@ -17,33 +19,35 @@ namespace Drey.Nut
         /// <param name="assemblyPath">The assembly path.</param>
         /// <param name="config">The configuration.</param>
         /// <returns></returns>
-        public Tuple<AppDomain, IShell> Create(string assemblyPath, EventHandler<ShellRequestArgs> shellRequestHandler, Action<INutConfiguration> configureLogging)
+        public Tuple<AppDomain, IShell> Create(string assemblyPath, EventHandler<ShellRequestArgs> shellRequestHandler, Action<INutConfiguration> configureLogging, params string[] additionalSearchPaths)
         {
             if (string.IsNullOrWhiteSpace(assemblyPath)) { return null; }
 
             _Log.TraceFormat("Loading app from '{0}'", assemblyPath);
 
             var pathToAssembly = Utilities.PathUtilities.MapPath(assemblyPath);
-            var searchPaths = (new[] 
-            { 
-                    Path.GetFullPath(assemblyPath), 
+            var searchPaths = additionalSearchPaths.Select(p => PathUtilities.MapPath(p).NormalizePathSeparator())
+                .Concat(new[]
+                {
+                    Path.GetFullPath(assemblyPath),
                     Environment.CurrentDirectory,
-            });
+                })
+                .ToArray();
 
             var discoverStartupType = typeof(DiscoverStartupDllProxy);
             var startupProxyType = typeof(StartupProxy);
-            var discoveryDomain = Utilities.AppDomainUtils.CreateDomain(Guid.NewGuid().ToString(), searchPaths);
-            Tuple<string, string, string> entryDllAndType;
+            var discoveryDomain = Utilities.AppDomainUtils.CreateDomain(Guid.NewGuid().ToString(), searchPaths.ToArray());
+            DiscoveredLibraryOptions entryDllOptions;
             DiscoverStartupDllProxy discoverPath = null;
 
             try
             {
                 discoverPath = (DiscoverStartupDllProxy)discoveryDomain.CreateInstanceFromAndUnwrap(discoverStartupType.Assembly.Location, discoverStartupType.FullName, false,
-                    BindingFlags.CreateInstance | BindingFlags.Instance | BindingFlags.Public, null, new[] { pathToAssembly }, null, null);
+                    BindingFlags.CreateInstance | BindingFlags.Instance | BindingFlags.Public, null, new object[] { searchPaths }, null, null);
                 discoveryDomain.AssemblyResolve += discoverPath.ResolveAssemblyInDomain;
-                entryDllAndType = discoverPath.DiscoverEntryDll(assemblyPath);
+                entryDllOptions = discoverPath.DiscoverEntryDll(assemblyPath);
 
-                if (entryDllAndType == null)
+                if (entryDllOptions == null)
                 {
                     _Log.Fatal("Installed application does not have a dll with a type that implements Drey.Nut.IShell.  Cannot start.");
                     return null;
@@ -66,15 +70,15 @@ namespace Drey.Nut
             }
 
             _Log.Info("Instantiating app.");
-            var domain = Utilities.AppDomainUtils.CreateDomain(entryDllAndType.Item3, searchPaths);
+            var domain = Utilities.AppDomainUtils.CreateDomain(entryDllOptions.PackageId, searchPaths.ToArray());
             var domainProxy = (StartupProxy)domain.CreateInstanceFromAndUnwrap(startupProxyType.Assembly.Location, startupProxyType.FullName, false,
-                BindingFlags.CreateInstance | BindingFlags.Instance | BindingFlags.Public, null, new[] { Path.GetDirectoryName(entryDllAndType.Item1) }, null, null);
+                BindingFlags.CreateInstance | BindingFlags.Instance | BindingFlags.Public, null, new object[] { searchPaths }, null, null);
             domain.AssemblyResolve += domainProxy.ResolveAssemblyInDomain;
-            var appShell = (IShell)domainProxy.Build(entryDllAndType.Item1, entryDllAndType.Item2);
+            var appShell = (IShell)domainProxy.Build(entryDllOptions.File, entryDllOptions.TypeFullName);
             appShell.ConfigureLogging = configureLogging;
             appShell.OnShellRequest += shellRequestHandler;
             appShell.ShellRequestHandler = shellRequestHandler;
-            
+
             return new Tuple<AppDomain, IShell>(domain, appShell);
         }
 

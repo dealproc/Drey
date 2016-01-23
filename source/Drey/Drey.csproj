@@ -60,6 +60,7 @@
     <Compile Include="ApplicationHostNutConfiguration.cs" />
     <Compile Include="Nut\DefaultAppSetting.cs" />
     <Compile Include="Nut\DefaultConnectionString.cs" />
+    <Compile Include="Nut\DiscoveredLibraryOptions.cs" />
     <Compile Include="Nut\ExecutionMode.cs" />
     <Compile Include="Nut\IApplicationSettings.cs" />
     <Compile Include="Nut\IConnectionStrings.cs" />

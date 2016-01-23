@@ -1,5 +1,6 @@
 ﻿using Drey.Logging;
 using Drey.Nut;
+
 using System;
 using System.IO;
 using System.Linq;
@@ -164,7 +165,7 @@ namespace Drey
         {
             _log.Info("Console is starting up.");
             string packageDir = Utilities.PackageUtils.DiscoverPackage(DreyConstants.ConfigurationPackageName, _nutConfiguration.HoardeBaseDirectory);
-            _console = _appFactory.Create(packageDir, ShellRequestHandler, _configureLogging);
+            _console = _appFactory.Create(packageDir, ShellRequestHandler, _configureLogging, Path.Combine(_nutConfiguration.PluginsBaseDirectory, DreyConstants.ConfigurationPackageName));
 
             return _console.Item2.Startup(_nutConfiguration);
         }

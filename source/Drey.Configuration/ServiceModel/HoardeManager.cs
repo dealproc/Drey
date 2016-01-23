@@ -114,7 +114,7 @@ namespace Drey.Configuration.ServiceModel
                 :
                 Utilities.PackageUtils.DiscoverPackage(id, _configurationManager.HoardeBaseDirectory, version);
 
-            var shell = _appFactory.Create(packageDir, _shellRequestHandler, _configureLogging);
+            var shell = _appFactory.Create(packageDir, _shellRequestHandler, _configureLogging, Path.Combine(_configurationManager.PluginsBaseDirectory, id));
             if (shell == null)
             {
                 _log.Fatal("Did not create the configuration console.  app exiting.");

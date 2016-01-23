@@ -10,14 +10,14 @@ namespace Drey.Nut
     class DiscoverStartupDllProxy : ProxyBase
     {
         static ILog _log = LogProvider.For<DiscoverStartupDllProxy>();
-        public DiscoverStartupDllProxy(string pathToAppPackage) : base(pathToAppPackage) { }
+        public DiscoverStartupDllProxy(params string[] appPackagePaths) : base(appPackagePaths) { }
 
         /// <summary>
         /// Discovers the entry DLL for the applet.
         /// </summary>
         /// <param name="assemblyPath">The assembly path.</param>
         /// <returns></returns>
-        public Tuple<string, string, string> DiscoverEntryDll(string assemblyPath)
+        public DiscoveredLibraryOptions DiscoverEntryDll(string assemblyPath)
         {
             _log.Info("Attempting to discover entry dll.");
             foreach (var file in Directory.GetFiles(assemblyPath, "*.dll"))
@@ -30,7 +30,7 @@ namespace Drey.Nut
                     _log.DebugFormat("--Found entry dll: {0}|{1}", file, entryType.FullName);
                     _log.InfoFormat("Entry Dll discovered: {0}", file);
                     IShell shell = (IShell)asmToReflect.CreateInstance(entryType.FullName);
-                    return new Tuple<string, string, string>(file, entryType.FullName, shell.Id);
+                    return new DiscoveredLibraryOptions(file, entryType.FullName, shell.Id);
                 }
                 else
                 {

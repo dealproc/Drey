@@ -87,6 +87,11 @@ namespace Drey.Configuration.Infrastructure.ConfigurationManagement
         public string HoardeBaseDirectory { get { return Path.Combine(WorkingDirectory, "Hoarde").NormalizePathSeparator(); } }
 
         /// <summary>
+        /// Gets the base directory for the location that custom dlls/plugins are located.  This is a subfolder of the WorkingDirectory folder.
+        /// </summary>
+        public string PluginsBaseDirectory { get { return Path.Combine(WorkingDirectory, "Plugins").NormalizePathSeparator(); } }
+
+        /// <summary>
         /// Gets the logs directory.
         /// </summary>
         public string LogsDirectory { get { return Path.Combine(WorkingDirectory, "Logs").NormalizePathSeparator(); } }

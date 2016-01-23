@@ -5,7 +5,7 @@ namespace Drey.Nut
 {
     class StartupProxy : ProxyBase
     {
-        public StartupProxy(string pathToAppPackage) : base(pathToAppPackage) { }
+        public StartupProxy(params string[] appPackagePaths) : base(appPackagePaths) { }
 
         /// <summary>
         /// Creates an IShell instance within a child app domain, given the library's full path and class name.

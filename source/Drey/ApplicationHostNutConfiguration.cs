@@ -69,6 +69,11 @@ namespace Drey
         }
 
         /// <summary>
+        /// Gets the base directory for the location that custom dlls/plugins are located.  This is a subfolder of the WorkingDirectory folder.
+        /// </summary>
+        public string PluginsBaseDirectory { get { return Path.Combine(WorkingDirectory, "Plugins").NormalizePathSeparator(); } }
+
+        /// <summary>
         /// Gets the logs directory, which is a subfolder of the main WorkingDirectory value.
         /// </summary>
         public string LogsDirectory { get { return Path.Combine(WorkingDirectory, "Logs").NormalizePathSeparator(); } }

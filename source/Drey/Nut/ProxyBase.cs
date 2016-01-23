@@ -8,12 +8,12 @@ namespace Drey.Nut
 {
     class ProxyBase : MarshalByRefObject
     {
-        readonly string _pathToAppPackage;
+        readonly string[] _appPackagePaths;
 
         //TODO: change to be a params string[] appPackagePaths. document to explain how to utilize.
-        public ProxyBase(string pathToAppPackage)
+        public ProxyBase(params string[] appPackagePaths)
         {
-            _pathToAppPackage = pathToAppPackage;
+            _appPackagePaths = appPackagePaths;
         }
 
         /// <summary>
@@ -28,22 +28,27 @@ namespace Drey.Nut
 
             asmName = asmName + ".dll";
 
-            var searchPaths = (new[] 
-            { 
-                    Path.GetFullPath(_pathToAppPackage), 
-                    Environment.CurrentDirectory,
-            });
+            var searchPaths = _appPackagePaths.Concat(new[] { Environment.CurrentDirectory }).Distinct();
 
-			var dllFullPath = searchPaths
-				.Select (path => 
-					// Refactor here to avoid issues with case sensitivity.
-					Directory
-						.EnumerateFiles (path, "*.dll")
-						.FirstOrDefault (f => f.EndsWith(asmName, StringComparison.OrdinalIgnoreCase))
-				).Where(s => !string.IsNullOrWhiteSpace(s));
+            var dllFullPath = searchPaths
+                .Select(path =>
+                {
+                    try
+                    {
+                        // Refactor here to avoid issues with case sensitivity.
+                        return Directory
+                            .EnumerateFiles(path, "*.dll")
+                            .FirstOrDefault(f => f.EndsWith(asmName, StringComparison.OrdinalIgnoreCase));
+                    }
+                    catch
+                    {
+                        return string.Empty;
+                    }
+                }
+                ).Where(s => !string.IsNullOrWhiteSpace(s));
 
-			var resolvedDll = dllFullPath.Where (fullPath => !string.IsNullOrWhiteSpace(fullPath))
-				.Select(path => Assembly.LoadFrom(path))
+            var resolvedDll = dllFullPath.Where(fullPath => !string.IsNullOrWhiteSpace(fullPath))
+                .Select(path => Assembly.LoadFrom(path))
                 .Where(asm => asm != null)
                 .FirstOrDefault();
 

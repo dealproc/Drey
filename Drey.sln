@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Drey", "source\Drey\Drey.csproj", "{6403704C-14D9-4069-AD3D-8EEEF95F499C}"
 EndProject
@@ -52,6 +52,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Drey.Owin", "source\Drey.Owin\Drey.Owin.csproj", "{9CE93619-282D-4136-816B-1055E46CA124}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Drey.Tests", "tests\Drey.Tests\Drey.Tests.csproj", "{4867EC79-E338-45AC-9064-BBBB50E429BB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Samples.ThirdPartyIntegrations", "samples\Samples.ThirdPartyIntegrations\Samples.ThirdPartyIntegrations.csproj", "{3F98F324-6817-454F-B67B-99A77E50819F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Samples.TheIntegration", "samples\Samples.TheIntegration\Samples.TheIntegration.csproj", "{EEE29BB5-836F-4CD2-9820-835306AFC321}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -123,6 +127,14 @@ Global
 		{4867EC79-E338-45AC-9064-BBBB50E429BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4867EC79-E338-45AC-9064-BBBB50E429BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4867EC79-E338-45AC-9064-BBBB50E429BB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3F98F324-6817-454F-B67B-99A77E50819F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3F98F324-6817-454F-B67B-99A77E50819F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3F98F324-6817-454F-B67B-99A77E50819F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3F98F324-6817-454F-B67B-99A77E50819F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EEE29BB5-836F-4CD2-9820-835306AFC321}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EEE29BB5-836F-4CD2-9820-835306AFC321}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EEE29BB5-836F-4CD2-9820-835306AFC321}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EEE29BB5-836F-4CD2-9820-835306AFC321}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -132,5 +144,7 @@ Global
 		{E7B67ADF-F02E-4FF9-A1D1-DE25844B906B} = {0769F612-7ECF-40CA-9E9C-FD5E3C6B1760}
 		{A34546DE-ED68-4FF5-9FDF-F741CC589368} = {0769F612-7ECF-40CA-9E9C-FD5E3C6B1760}
 		{0614EFC2-D3FC-45C2-A3FD-A3054748C333} = {0769F612-7ECF-40CA-9E9C-FD5E3C6B1760}
+		{3F98F324-6817-454F-B67B-99A77E50819F} = {0769F612-7ECF-40CA-9E9C-FD5E3C6B1760}
+		{EEE29BB5-836F-4CD2-9820-835306AFC321} = {0769F612-7ECF-40CA-9E9C-FD5E3C6B1760}
 	EndGlobalSection
 EndGlobal
