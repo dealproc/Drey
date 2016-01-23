@@ -1,6 +1,6 @@
 ﻿using Drey.Server.Logging;
 using Drey.Server.Services;
-
+using System;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -47,6 +47,21 @@ namespace Drey.Server.Controllers
             var release = await _packageService.SyndicateAsync(stream);
 
             return Created(string.Format(".well-known/releases/{0}/{1}", release.Id, release.Version), release);
+        }
+
+        [HttpDelete, Route("{id}/{version}")]
+        public async Task<IHttpActionResult> DeleteAsync(string id, string version)
+        {
+            try
+            {
+                await _packageService.DeleteAsync(id, version);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _log.FatalException("Unknown error occurred.", ex);
+                return InternalServerError(ex);
+            }
         }
     }
 }
