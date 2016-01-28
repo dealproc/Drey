@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace Samples.AppThree
 {
-    public class Nut : ShellBase, IDisposable
+    public class Nut : ShellBase
     {
         static ILog _log = LogProvider.For<Nut>();
 

@@ -12,12 +12,13 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Samples.AppOne</RootNamespace>
     <AssemblyName>Samples.AppOne</AssemblyName>
-    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <WarningLevel>4</WarningLevel>
     <ErrorReport>prompt</ErrorReport>
     <MSBuildCommunityTasksPath>$(SolutionDir)\tools\MSBuild.CommunityTasks</MSBuildCommunityTasksPath>
     <OutputPath>bin\$(Configuration)\</OutputPath>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -64,6 +65,6 @@
     <ItemGroup>
       <BinDirectoryFiles Include="$(OutputPath)**\*.*" Exclude="**\Drey.dll;**\Drey.pdb" />
     </ItemGroup>
-    <Copy SourceFiles="@(BinDirectoryFiles)" DestinationFiles="@(BinDirectoryFiles-&gt;'$(SolutionDir)\Runtime\Hoarde\$(RootNamespace).$(Version)\%(RecursiveDir)%(Filename)%(Extension)')" />
+    <Copy SourceFiles="@(BinDirectoryFiles)" DestinationFiles="@(BinDirectoryFiles->'$(SolutionDir)\Runtime\Hoarde\$(RootNamespace).$(Version)\%(RecursiveDir)%(Filename)%(Extension)')" />
   </Target>
 </Project>
