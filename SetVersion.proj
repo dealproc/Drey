@@ -14,7 +14,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <AssemblyInfoFiles Include="$(MSBuildProjectDirectory)\source\**\AssemblyInfo.cs" />
+    <AssemblyInfoFiles Include="$(MSBuildProjectDirectory)\source\**\AssemblyInfo.cs" Exclude="$(MSBuildProjectDirectory)\source\Drey\**\AssemblyInfo.cs" />
   </ItemGroup>
 
   <PropertyGroup Condition=" '$(Configuration)' == '' ">
@@ -36,18 +36,28 @@
 
     <FileUpdate Files="@(AssemblyInfoFiles)"
                 Regex="Version\(&quot;(\d+)\.(\d+)(\.(\d+)\.(\d+)|\.*)&quot;\)"
-                ReplacementText="Version(&quot;$(BuildSeries)&quot;)">
-    </FileUpdate>
+                ReplacementText="Version(&quot;$(BuildSeries)&quot;)" />
 
     <FileUpdate Files="@(AssemblyInfoFiles)"
                 Regex="AssemblyFileVersion\(&quot;(\d+)\.(\d+)(\.(\d+)\.(\d+)|\.*)&quot;\)"
-                ReplacementText="AssemblyFileVersion(&quot;$(Version)&quot;)">
-    </FileUpdate>
+                ReplacementText="AssemblyFileVersion(&quot;$(Version)&quot;)" />
 
     <FileUpdate Files="@(AssemblyInfoFiles)"
                 Regex="AssemblyInformationalVersion\(&quot;(\d+)\.(\d+)(\.(\d+)\.(\d+)|\.*)&quot;\)"
-                ReplacementText="AssemblyInformationalVersion(&quot;$(BuildInfo)&quot;)">
-    </FileUpdate>
+                ReplacementText="AssemblyInformationalVersion(&quot;$(BuildInfo)&quot;)" />
+
+    <!-- 
+      these two just update the main drey.dll.  We don't want to change its assembly version until the next major release.
+    -->
+    <FileUpdate Files="$(MSBuildProjectDirectory)\source\Drey\Properties\AssemblyInfo.cs"
+                Regex="AssemblyFileVersion\(&quot;(\d+)\.(\d+)(\.(\d+)\.(\d+)|\.*)&quot;\)"
+                ReplacementText="AssemblyFileVersion(&quot;$(Version)&quot;)" />
+
+    <FileUpdate Files="$(MSBuildProjectDirectory)\source\Drey\Properties\AssemblyInfo.cs"
+                Regex="AssemblyInformationalVersion\(&quot;(\d+)\.(\d+)(\.(\d+)\.(\d+)|\.*)&quot;\)"
+                ReplacementText="AssemblyInformationalVersion(&quot;$(BuildInfo)&quot;)" />
+
+
   </Target>
 
   <!-- Projects to Build -->
