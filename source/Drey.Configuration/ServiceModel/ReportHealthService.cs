@@ -178,9 +178,9 @@ namespace Drey.Configuration.ServiceModel
                 WorkingSet64 = Process.GetCurrentProcess().WorkingSet64,
 
                 ExecutablePath = Utilities.PathUtilities.MapPath(_configurationManager.WorkingDirectory),
-                WorkingPath = _configurationManager.WorkingDirectory,
-                LogsPath = _configurationManager.LogsDirectory,
-                PluginsPath = _configurationManager.PluginsBaseDirectory,
+                WorkingPath = Utilities.PathUtilities.MapPath(_configurationManager.WorkingDirectory),
+                LogsPath = Utilities.PathUtilities.MapPath(_configurationManager.LogsDirectory),
+                PluginsPath = Utilities.PathUtilities.MapPath(_configurationManager.PluginsBaseDirectory),
 
                 // Note: These may fail on Linux boxes.  May need to build a "provider" model for each platform.
                 PercentageMemoryInUse = memStatus == null ? 0 : memStatus.MemoryLoad,
