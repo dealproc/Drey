@@ -1,16 +1,15 @@
 ﻿using Drey.Server.Logging;
 using Drey.Server.Services;
+
 using System;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web.Http;
 
-namespace Drey.Server.Controllers
-{
-    [RoutePrefix("api/v2/package")]
+namespace Drey.Server.Controllers {
+	[RoutePrefix("api/v2/package")]
     public class NugetUploadController : ApiController
     {
         static readonly ILog _log = LogProvider.For<NugetUploadController>();

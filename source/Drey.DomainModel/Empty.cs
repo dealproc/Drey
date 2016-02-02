@@ -3,7 +3,5 @@
     /// <summary>
     /// Represents an empty message body.
     /// </summary>
-    public class Empty
-    {
-    }
+    public class Empty { }
 }

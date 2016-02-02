@@ -8,8 +8,10 @@ using System;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Management;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security;
 using System.Timers;
@@ -71,9 +73,11 @@ namespace Drey.Configuration.ServiceModel
                 {
                     _log.WarnException("Security exception while reading registry", secEx);
                 }
-            } catch (NullReferenceException nrEx) 
+            }
+            catch (NullReferenceException nrEx)
             {
-                if (Environment.OSVersion.Platform == PlatformID.MacOSX || Environment.OSVersion.Platform == PlatformID.Unix) {
+                if (Environment.OSVersion.Platform == PlatformID.MacOSX || Environment.OSVersion.Platform == PlatformID.Unix)
+                {
                     _frameworkInfo.NetFxVersions = new[] {
                         new DomainModel.FrameworkVersion
                         {
@@ -83,21 +87,23 @@ namespace Drey.Configuration.ServiceModel
                         }
                     };
 
-                } else {
+                }
+                else {
                     _log.WarnException("Null Reference exception while reading from registry", nrEx);
                 }
             }
 
-            try 
+            try
             {
-                _registeredDbFactories = DbProviderFactories.GetFactoryClasses().Select().Select(x => new DomainModel.RegisteredDbProviderFactory {
+                _registeredDbFactories = DbProviderFactories.GetFactoryClasses().Select().Select(x => new DomainModel.RegisteredDbProviderFactory
+                {
                     Name = x["Name"].ToString(),
                     Description = x["Description"].ToString(),
                     InvariantName = x["InvariantName"].ToString(),
                     AssemblyQualifiedName = x["AssemblyQualifiedName"].ToString()
                 }).ToArray();
-            } 
-            catch (NullReferenceException) 
+            }
+            catch (NullReferenceException)
             {
                 _registeredDbFactories = new DomainModel.RegisteredDbProviderFactory[0];
             }
@@ -167,7 +173,8 @@ namespace Drey.Configuration.ServiceModel
                 Uptime = Environment.TickCount,
                 IPv4Addresses = na,
                 WorkingSet64 = Process.GetCurrentProcess().WorkingSet64,
-                
+                ExecutablePath = Path.GetDirectoryName(new Uri(Assembly.GetExecutingAssembly().CodeBase).AbsolutePath),
+
                 // Note: These may fail on linux boxes.  May need to build a "provider" model for each platform.
                 PercentageMemoryInUse = memStatus == null ? 0 : memStatus.MemoryLoad,
                 TotalMemoryBytes = memStatus == null ? 0 : memStatus.TotalPhysical,

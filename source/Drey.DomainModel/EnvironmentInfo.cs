@@ -56,15 +56,9 @@ namespace Drey.DomainModel
         public ulong TotalMemoryBytes { get; set; }
 
         /// <summary>
-        /// Gets the executable path.
+        /// Gets or sets the executable path.
         /// </summary>
-        public string ExecutablePath
-        {
-            get
-            {
-                return Path.GetDirectoryName(new Uri(Assembly.GetExecutingAssembly().CodeBase).AbsolutePath);
-            }
-        }
+        public string ExecutablePath { get; set; }
 
         /// <summary>
         /// Gets or sets the percentage memory in use.
