@@ -100,6 +100,7 @@ namespace Samples.Server
             cb.RegisterType<Services.ClientHealthService>().AsImplementedInterfaces();
             cb.RegisterType<Services.GroupMembershipService>().AsImplementedInterfaces();
             cb.RegisterType<Infrastructure.SampleClientRegistry>().AsImplementedInterfaces().SingleInstance();
+            cb.RegisterType<Drey.Server.Services.AnonymousNugetApiClaimsValidator>().AsImplementedInterfaces();
 
             var serverASM = Assembly.LoadFrom(Path.Combine(Environment.CurrentDirectory, "Drey.Server.Hubs.dll"));
 

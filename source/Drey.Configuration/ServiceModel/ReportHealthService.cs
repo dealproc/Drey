@@ -173,7 +173,7 @@ namespace Drey.Configuration.ServiceModel
                 Uptime = Environment.TickCount,
                 IPv4Addresses = na,
                 WorkingSet64 = Process.GetCurrentProcess().WorkingSet64,
-                ExecutablePath = Path.GetDirectoryName(new Uri(Assembly.GetExecutingAssembly().CodeBase).AbsolutePath),
+                ExecutablePath = Path.GetDirectoryName(new Uri(Assembly.GetEntryAssembly().CodeBase).AbsolutePath),
 
                 // Note: These may fail on linux boxes.  May need to build a "provider" model for each platform.
                 PercentageMemoryInUse = memStatus == null ? 0 : memStatus.MemoryLoad,
