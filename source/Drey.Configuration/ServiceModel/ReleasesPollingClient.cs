@@ -23,7 +23,7 @@ namespace Drey.Configuration.ServiceModel
         /// </summary>
         const int DELAY_TIME_SEC = 15;
 
-        readonly Drey.Nut.INutConfiguration _configurationManager;
+        readonly INutConfiguration _configurationManager;
         readonly Services.IGlobalSettingsService _globalSettingsService;
         readonly Services.IPackageService _packageService;
         readonly Repositories.IPackageSettingRepository _packageSettingsRepository;
@@ -48,7 +48,7 @@ namespace Drey.Configuration.ServiceModel
         /// <param name="connectionStringsRepository">The connection strings repository.</param>
         /// <param name="eventBus">The event bus.</param>
         /// <param name="packageId">The package identifier.</param>
-        public ReleasesPollingClient(Drey.Nut.INutConfiguration configurationManager,
+        public ReleasesPollingClient(INutConfiguration configurationManager,
             Services.IGlobalSettingsService globalSettingsService,
             Services.IPackageService packageService,
             Repositories.IPackageSettingRepository packageSettingsRepository,
@@ -122,7 +122,7 @@ namespace Drey.Configuration.ServiceModel
 
                         _eventBus.Publish(new ShellRequestArgs
                         {
-                            ActionToTake = Drey.Nut.ShellAction.Restart,
+                            ActionToTake = ShellAction.Restart,
                             PackageId = releaseToDownload.Id,
                             Version = releaseToDownload.Version,
                             ConfigurationManager = CreateConfigurationManager(),
@@ -199,7 +199,7 @@ namespace Drey.Configuration.ServiceModel
 
         private Infrastructure.ConfigurationManagement.DbConfigurationSettings CreateConfigurationManager()
         {
-            return new Drey.Configuration.Infrastructure.ConfigurationManagement.DbConfigurationSettings(_configurationManager, _packageSettingsRepository, _connectionStringsRepository, _packageId);
+            return new Infrastructure.ConfigurationManagement.DbConfigurationSettings(_configurationManager, _packageSettingsRepository, _connectionStringsRepository, _packageId);
         }
 
         /// <summary>

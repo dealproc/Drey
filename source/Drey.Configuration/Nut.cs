@@ -101,8 +101,15 @@ namespace Drey.Configuration
                 _log.WarnException("While trying to configure certificate validation", ex);
             }
 
-            StartServicesManager();
-            StartWebConsole(hostConfigMgr);
+            try {
+                StartWebConsole(hostConfigMgr);
+                StartServicesManager();
+            }
+            catch (Exception exc)
+            {
+                _log.FatalException("Could not bring web console online", exc);
+                return false;
+            }
 
             return true;
         }
@@ -164,9 +171,17 @@ namespace Drey.Configuration
         {
             Log.InfoFormat("{id} is shutting down.", this.Id);
 
-            _hoardeManager.Dispose();
-            _webApp.Dispose();
-            _webApp = null;
+            if (_hoardeManager != null)
+            {
+                _hoardeManager.Dispose();
+                _hoardeManager = null;
+            }
+
+            if (_webApp != null)
+            {
+                _webApp.Dispose();
+                _webApp = null;
+            }
         }
 
         /// <summary>

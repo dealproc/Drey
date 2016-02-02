@@ -32,7 +32,7 @@ namespace Drey.Configuration.Repositories.OnDisk
         /// <returns></returns>
         public IEnumerable<DataModel.Release> All()
         {
-            DirectoryInfo dir = new DirectoryInfo(Drey.Utilities.PathUtilities.MapPath(_configurationManager.HoardeBaseDirectory));
+            DirectoryInfo dir = new DirectoryInfo(Utilities.PathUtilities.MapPath(_configurationManager.HoardeBaseDirectory));
             return dir.EnumerateDirectories("*", SearchOption.TopDirectoryOnly).Select(x =>
             {
                 string version = "";

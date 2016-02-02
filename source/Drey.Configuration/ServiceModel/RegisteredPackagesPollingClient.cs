@@ -132,7 +132,7 @@ namespace Drey.Configuration.ServiceModel
 
         private ReleasesPollingClient CreateReleasesMonitor(string packageId)
         {
-            return new ServiceModel.ReleasesPollingClient(_configurationManager, _globalSettingsService, _packageService, _packageSettingRepository, _connectionStringRepository, _eventBus, packageId);
+            return new ReleasesPollingClient(_configurationManager, _globalSettingsService, _packageService, _packageSettingRepository, _connectionStringRepository, _eventBus, packageId);
         }
 
         void Pause()

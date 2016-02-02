@@ -25,7 +25,7 @@ namespace Drey.Nut
 
             _Log.TraceFormat("Loading app from '{0}'", assemblyPath);
 
-            var pathToAssembly = Utilities.PathUtilities.MapPath(assemblyPath);
+            var pathToAssembly = PathUtilities.MapPath(assemblyPath);
             var searchPaths = additionalSearchPaths.Select(p => PathUtilities.MapPath(p).NormalizePathSeparator())
                 .Concat(new[]
                 {

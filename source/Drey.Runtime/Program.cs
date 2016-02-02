@@ -49,8 +49,8 @@ namespace Drey.Runtime
             // Step 3. Set target properties 
             consoleTarget.Layout = @"${appdomain:format={0\} - {1\}} - ${message} ${onexception: ${exception:format=ToString} | ${stacktrace:format=raw} }";
 
-            fileTarget.FileName = Drey.Utilities.PathUtilities.MapPath(Path.Combine(config.LogsDirectory, @"log.${machinename}.${appdomain:format={1\}}.txt"));
-            fileTarget.ArchiveFileName = Drey.Utilities.PathUtilities.MapPath(Path.Combine(config.LogsDirectory, @"archives/log.${machinename}.${appdomain:format={1\}}.{#####}.txt"));
+            fileTarget.FileName = Utilities.PathUtilities.MapPath(Path.Combine(config.LogsDirectory, @"log.${machinename}.${appdomain:format={1\}}.txt"));
+            fileTarget.ArchiveFileName = Utilities.PathUtilities.MapPath(Path.Combine(config.LogsDirectory, @"archives/log.${machinename}.${appdomain:format={1\}}.{#####}.txt"));
             fileTarget.Layout = "${longdate}|${level:uppercase=true}|${logger}|${message}|${exception:maxInnerExceptionLevel=4}  ${onexception: ${exception:format=ToString} | ${stacktrace:format=raw} }";
             fileTarget.ArchiveAboveSize = 150 * 1024;
             fileTarget.ArchiveNumbering = ArchiveNumberingMode.Sequence;
@@ -65,6 +65,10 @@ namespace Drey.Runtime
             // Step 5. Activate the configuration
             LogManager.Configuration = nlogConfig;
             LogManager.ReconfigExistingLoggers();
+
+            var log = LogManager.GetLogger("LogConfiguration");
+            log.Info("Logs reconfigured.");
+            log.Info("Log file name: {0}", fileTarget.FileName);
         };
 
         [STAThread]

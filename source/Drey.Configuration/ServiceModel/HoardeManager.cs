@@ -58,9 +58,9 @@ namespace Drey.Configuration.ServiceModel
         {
             _log.InfoFormat("'Shell Request' Event Received: {packageId} | {event}", e.PackageId, e.ActionToTake);
 
-            if (e.PackageId.Equals(Drey.DreyConstants.ConfigurationPackageName, StringComparison.OrdinalIgnoreCase))
+            if (e.PackageId.Equals(DreyConstants.ConfigurationPackageName, StringComparison.OrdinalIgnoreCase))
             {
-                _log.DebugFormat("Hoarde manager is not responsible for {packageId}.", Drey.DreyConstants.ConfigurationPackageName);
+                _log.DebugFormat("Hoarde manager is not responsible for {packageId}.", DreyConstants.ConfigurationPackageName);
                 return;
             }
 

@@ -43,6 +43,8 @@ namespace Drey.Configuration.Infrastructure.ConfigurationManagement
             _globalSettingsRepository = new Repositories.SQLiteRepositories.GlobalSettingsRepository(this);
             _applicationSettingsService = new Services.ApplicationSettingsService(_packageId, packageSettingRepository);
             _connectionStringsService = new Services.ConnectionStringsService(_packageId, connectionStringsRepository);
+
+            _log.Debug("Created db configuration settings provider");
         }
         ~DbConfigurationSettings()
         {

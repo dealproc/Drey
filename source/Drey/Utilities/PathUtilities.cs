@@ -27,7 +27,8 @@ namespace Drey.Utilities
             if (respondWith.StartsWith(DreyConstants.RelativeUrlMarker))
             {
 
-                var dir = Assembly.GetExecutingAssembly().GetDirectoryLocation();
+                var dir = Assembly.GetCallingAssembly().GetDirectoryLocation();
+                if (dir.Contains("Hoarde")) { dir = dir.Substring(0, dir.IndexOf("Hoarde")); }
                 respondWith = respondWith.Replace(DreyConstants.RelativeUrlMarker, dir);
             }
 
