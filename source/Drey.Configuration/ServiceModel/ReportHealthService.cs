@@ -1,5 +1,6 @@
 ﻿using Drey.Configuration.Infrastructure;
 using Drey.Logging;
+using Drey.Nut;
 
 using Microsoft.AspNet.SignalR.Client;
 using Microsoft.Win32;
@@ -8,10 +9,8 @@ using System;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Management;
-using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security;
 using System.Timers;
@@ -25,6 +24,8 @@ namespace Drey.Configuration.ServiceModel
     {
         static readonly ILog _log = LogProvider.For<ReportHealthService>();
 
+        static INutConfiguration _configurationManager;
+
         bool _disposed = false;
 
         IHubConnectionManager _hubConnectionManager;
@@ -33,8 +34,10 @@ namespace Drey.Configuration.ServiceModel
         DomainModel.RegisteredDbProviderFactory[] _registeredDbFactories;
         DomainModel.FrameworkInfo _frameworkInfo;
 
-        public ReportHealthService()
+        public ReportHealthService(INutConfiguration configurationManager)
         {
+            _configurationManager = configurationManager;
+
             _reportHealthTrigger = new Timer();
             _reportHealthTrigger.Elapsed += reportHealthTrigger_Elapsed;
             _reportHealthTrigger.Interval = 15000;
@@ -173,9 +176,13 @@ namespace Drey.Configuration.ServiceModel
                 Uptime = Environment.TickCount,
                 IPv4Addresses = na,
                 WorkingSet64 = Process.GetCurrentProcess().WorkingSet64,
-                ExecutablePath = Path.GetDirectoryName(new Uri(Assembly.GetEntryAssembly().CodeBase).AbsolutePath),
 
-                // Note: These may fail on linux boxes.  May need to build a "provider" model for each platform.
+                ExecutablePath = Utilities.PathUtilities.MapPath(_configurationManager.WorkingDirectory),
+                WorkingPath = _configurationManager.WorkingDirectory,
+                LogsPath = _configurationManager.LogsDirectory,
+                PluginsPath = _configurationManager.PluginsBaseDirectory,
+
+                // Note: These may fail on Linux boxes.  May need to build a "provider" model for each platform.
                 PercentageMemoryInUse = memStatus == null ? 0 : memStatus.MemoryLoad,
                 TotalMemoryBytes = memStatus == null ? 0 : memStatus.TotalPhysical,
 
@@ -211,7 +218,7 @@ namespace Drey.Configuration.ServiceModel
 
                         if (name != string.Empty)
                         {
-                            // should gather the main netfx info.
+                            // should gather the main .NET Framework info.
                             frameworkVersions.Add(new DomainModel.FrameworkVersion
                             {
                                 CommonVersion = versionKeyName,
@@ -221,7 +228,7 @@ namespace Drey.Configuration.ServiceModel
                         }
                         else
                         {
-                            // must be the netfx 4.0 node
+                            // must be the .NET Framework 4.0 node
                             foreach (string subKeyName in versionKey.GetSubKeyNames())
                             {
                                 RegistryKey subKey = versionKey.OpenSubKey(subKeyName);

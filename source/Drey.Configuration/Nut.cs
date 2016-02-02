@@ -102,8 +102,8 @@ namespace Drey.Configuration
             }
 
             try {
-                StartWebConsole(hostConfigMgr);
                 StartServicesManager();
+                StartWebConsole(hostConfigMgr);
             }
             catch (Exception exc)
             {

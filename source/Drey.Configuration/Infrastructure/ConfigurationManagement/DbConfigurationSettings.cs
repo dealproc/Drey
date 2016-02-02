@@ -26,9 +26,9 @@ namespace Drey.Configuration.Infrastructure.ConfigurationManagement
         bool _disposed = false;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DbConfigurationSettings"/> class.
+        /// Initializes a new instance of the <see cref="DbConfigurationSettings" /> class.
         /// </summary>
-        /// <param name="runtimeApplicationSettings">The runtime application settings.</param>
+        /// <param name="hostApplicationConfiguration">The host application configuration.</param>
         /// <param name="packageSettingRepository">The package setting repository.</param>
         /// <param name="connectionStringsRepository">The connection strings repository.</param>
         /// <param name="packageId">The package identifier.</param>
@@ -46,6 +46,9 @@ namespace Drey.Configuration.Infrastructure.ConfigurationManagement
 
             _log.Debug("Created db configuration settings provider");
         }
+        /// <summary>
+        /// Finalizes an instance of the <see cref="DbConfigurationSettings"/> class.
+        /// </summary>
         ~DbConfigurationSettings()
         {
             Dispose(false);
@@ -76,6 +79,11 @@ namespace Drey.Configuration.Infrastructure.ConfigurationManagement
         }
 
         /// <summary>
+        /// Provides the folder where the runtime.exe file is located.
+        /// </summary>
+        public string InstallationDirectory { get { return _hostApplicationConfiguration.InstallationDirectory; } }
+
+        /// <summary>
         /// Gets the Runtime's Working Directory.
         /// </summary>
         public string WorkingDirectory
@@ -89,7 +97,7 @@ namespace Drey.Configuration.Infrastructure.ConfigurationManagement
         public string HoardeBaseDirectory { get { return Path.Combine(WorkingDirectory, "Hoarde").NormalizePathSeparator(); } }
 
         /// <summary>
-        /// Gets the base directory for the location that custom dlls/plugins are located.  This is a subfolder of the WorkingDirectory folder.
+        /// Gets the base directory for the location that custom dlls/plugins are located.  This is a sub-folder of the WorkingDirectory folder.
         /// </summary>
         public string PluginsBaseDirectory { get { return Path.Combine(WorkingDirectory, "Plugins").NormalizePathSeparator(); } }
 
@@ -99,7 +107,7 @@ namespace Drey.Configuration.Infrastructure.ConfigurationManagement
         public string LogsDirectory { get { return Path.Combine(WorkingDirectory, "Logs").NormalizePathSeparator(); } }
 
         /// <summary>
-        /// Gets the certificate validator.
+        /// Gets an instance of a certificate validation routine, based on environment configuration.
         /// </summary>
         public CertificateValidation.ICertificateValidation CertificateValidator
         {

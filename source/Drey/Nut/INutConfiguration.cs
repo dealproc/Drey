@@ -19,6 +19,11 @@ namespace Drey.Nut
         IConnectionStrings ConnectionStrings { get; }
 
         /// <summary>
+        /// Provides the folder where the runtime.exe file is located.
+        /// </summary>
+        string InstallationDirectory { get; }
+
+        /// <summary>
         /// Gets the Runtime's Working Directory.
         /// </summary>
         string WorkingDirectory { get; }

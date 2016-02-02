@@ -1,8 +1,8 @@
-﻿using System;
-using System.IO;
-using System.Reflection;
-namespace Drey.DomainModel
+﻿namespace Drey.DomainModel
 {
+    /// <summary>
+    /// A description of the host operating system for the client runtime.
+    /// </summary>
     public class EnvironmentInfo
     {
         /// <summary>
@@ -61,6 +61,21 @@ namespace Drey.DomainModel
         public string ExecutablePath { get; set; }
 
         /// <summary>
+        /// Gets or sets the path where the runtime stores its files for execution.
+        /// </summary>
+        public string WorkingPath { get; set; }
+
+        /// <summary>
+        /// Gets or sets the path where plug-ins for each package are stored.
+        /// </summary>
+        public string PluginsPath { get; set; }
+
+        /// <summary>
+        /// Gets or sets the path where log files are stored.
+        /// </summary>
+        public string LogsPath { get; set; }
+
+        /// <summary>
         /// Gets or sets the percentage memory in use.
         /// </summary>
         public uint PercentageMemoryInUse { get; set; }
@@ -76,6 +91,9 @@ namespace Drey.DomainModel
         /// </summary>
         public RegisteredDbProviderFactory[] RegisteredDbFactories { get; set; }
 
+        /// <summary>
+        /// Gets or sets a list of all installed frameworks on the client machine.
+        /// </summary>
         public FrameworkInfo InstalledFrameworks { get; set; }
     }
 
@@ -103,6 +121,9 @@ namespace Drey.DomainModel
         public string AssemblyQualifiedName { get; set; }
     }
 
+    /// <summary>
+    /// A description of a network interface in the runtime's operating system.
+    /// </summary>
     public class NetworkInterfaceInfo
     {
         /// <summary>
@@ -126,13 +147,29 @@ namespace Drey.DomainModel
         public bool IsReceiveOnly { get; set; }
     }
 
+    /// <summary>
+    /// .NET Framework Information 
+    /// </summary>
     public class FrameworkInfo
     {
+        /// <summary>
+        /// Gets or sets the available .net framework versions on the client runtime's host operating system.
+        /// </summary>
         public FrameworkVersion[] NetFxVersions { get; set; }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether this instance has .net v4.5 installed.
+        /// </summary>
         public bool HasNetFx45 { get; set; }
+
+        /// <summary>
+        /// Gets or sets the .net v4.5 friendly version.
+        /// </summary>
         public string NetFx45FriendlyVersion { get; set; }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FrameworkInfo"/> class.
+        /// </summary>
         public FrameworkInfo()
         {
             HasNetFx45 = false;
@@ -140,10 +177,24 @@ namespace Drey.DomainModel
             NetFxVersions = new FrameworkVersion[0];
         }
     }
+    /// <summary>
+    /// 
+    /// </summary>
     public class FrameworkVersion
     {
+        /// <summary>
+        /// Gets or sets the common version.
+        /// </summary>
         public string CommonVersion { get; set; }
+
+        /// <summary>
+        /// Gets or sets the build version.
+        /// </summary>
         public string BuildVersion { get; set; }
+        
+        /// <summary>
+        /// Gets or sets the service pack.
+        /// </summary>
         public string ServicePack { get; set; }
     }
 }

@@ -4,6 +4,7 @@ using Drey.Nut;
 using System;
 using System.IO;
 using System.Security.Permissions;
+using System.Reflection;
 
 namespace Drey
 {
@@ -51,6 +52,11 @@ namespace Drey
         {
             get { return _connectionStrings; }
         }
+
+        /// <summary>
+        /// Provides the folder where the runtime.exe file is located.
+        /// </summary>
+        public string InstallationDirectory { get { return Path.GetDirectoryName(new Uri(Assembly.GetExecutingAssembly().CodeBase).AbsolutePath); } }
 
         /// <summary>
         /// Gets the base working directory.
