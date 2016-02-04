@@ -87,6 +87,7 @@ namespace Nancy.Embedded.Conventions
                     GetEncodedPath(transformedRequestPath);
 
                 // Resolve relative paths by using c:\ as a fake root path
+                // TODO: When working on the Linux deployment, verify that this will work as expected.  Something tells me that the code will fail here, and not be able to return a proper result.
                 var fileName =
                     Path.GetFullPath(Path.Combine("c:\\", transformedRequestPath));
 
