@@ -83,7 +83,6 @@ namespace Drey.Runtime
 
                 // parses command line's extra parameters.  format is `-{key}:{value}`
                 f.AddCommandLineDefinition("verbosity", v => LogVerbosity = v);
-                f.ApplyCommandLine();
 
                 f.SetDisplayName("Drey Runtime Environment");
                 f.SetServiceName("Runtime");

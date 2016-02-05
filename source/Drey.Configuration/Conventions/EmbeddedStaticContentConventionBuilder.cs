@@ -87,12 +87,11 @@ namespace Nancy.Embedded.Conventions
                     GetEncodedPath(transformedRequestPath);
 
                 // Resolve relative paths by using c:\ as a fake root path
-                // TODO: When working on the Linux deployment, verify that this will work as expected.  Something tells me that the code will fail here, and not be able to return a proper result.
                 var fileName =
-                    Path.GetFullPath(Path.Combine("c:\\", transformedRequestPath));
+                    Path.GetFullPath(Path.Combine(ResolveRootPathMarker(), transformedRequestPath));
 
                 var contentRootPath =
-                    Path.GetFullPath(Path.Combine("c:\\", GetEncodedPath(contentPath)));
+                    Path.GetFullPath(Path.Combine(ResolveRootPathMarker(), GetEncodedPath(contentPath)));
 
                 if (!IsWithinContentFolder(contentRootPath, fileName))
                 {
@@ -101,13 +100,14 @@ namespace Nancy.Embedded.Conventions
                 }
 
                 var resourceName =
-                    Path.GetDirectoryName(assembly.GetName().Name + fileName.Substring(2)).Replace('\\', '.').Replace('-', '_');
+                    Path.GetDirectoryName(assembly.GetName().Name + Path.DirectorySeparatorChar.ToString() + fileName.Substring(ResolveRootPathMarker().Length)).Replace(Path.DirectorySeparatorChar, '.').Replace('-', '_');
 
                 fileName =
                     Path.GetFileName(fileName);
 
                 if (!assembly.GetManifestResourceNames().Any(x => string.Equals(x, resourceName + "." + fileName, StringComparison.OrdinalIgnoreCase)))
                 {
+                    //TODO: Remove this before commit!
                     context.Trace.TraceLog.WriteLog(x => x.AppendLine(string.Concat("[EmbeddedStaticContentConventionBuilder] The requested resource '", requestPath, "' was not found in assembly '", assembly.GetName().Name, "'")));
                     return () => null;
                 }
@@ -115,6 +115,16 @@ namespace Nancy.Embedded.Conventions
                 context.Trace.TraceLog.WriteLog(x => x.AppendLine(string.Concat("[EmbeddedStaticContentConventionBuilder] Returning file '", fileName, "'")));
                 return () => new EmbeddedFileResponse(assembly, resourceName, fileName);
             };
+        }
+
+        static PlatformID[] UNIX_PATHS_NECESSARY = new[] { PlatformID.MacOSX, PlatformID.Unix };
+        private static string ResolveRootPathMarker()
+        {
+            if (UNIX_PATHS_NECESSARY.Any(id => Environment.OSVersion.Platform == id))
+            {
+                return Path.DirectorySeparatorChar.ToString();
+            }
+            return @"c:\";
         }
 
         private static string GetEncodedPath(string path)
