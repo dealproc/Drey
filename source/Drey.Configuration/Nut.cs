@@ -1,5 +1,6 @@
 ﻿using Autofac;
 
+using Drey.Configuration.Infrastructure.Events;
 using Drey.Configuration.Infrastructure.Schema;
 using Drey.Logging;
 using Drey.Nut;
@@ -8,23 +9,23 @@ using Nancy.Hosting.Self;
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 
 namespace Drey.Configuration
 {
     [Serializable]
-    public class Nut : ShellBase, IHandle<ShellRequestArgs>, IDisposable
+    public class Nut : ShellBase, IHandle<RecycleApp>, IDisposable
     {
         static ILog _log = LogProvider.For<Nut>();
 
         IEventBus _eventBus;
         IDisposable _webApp;
-        
+        bool _disposed = false;
+
         [NonSerialized]
         ServiceModel.IHoardeManager _hoardeManager;
-        
+
         [NonSerialized]
         ServiceModel.IServicesManager _servicesManager;
 
@@ -101,7 +102,8 @@ namespace Drey.Configuration
                 _log.WarnException("While trying to configure certificate validation", ex);
             }
 
-            try {
+            try
+            {
                 StartServicesManager();
                 StartWebConsole(hostConfigMgr);
             }
@@ -147,7 +149,7 @@ namespace Drey.Configuration
             var pkgSettingsRepository = Infrastructure.IoC.AutofacConfig.Container.Resolve<Repositories.IPackageSettingRepository>();
             var connStrRepository = Infrastructure.IoC.AutofacConfig.Container.Resolve<Repositories.IConnectionStringRepository>();
 
-            this.ConfigurationManager = new Infrastructure.ConfigurationManagement.DbConfigurationSettings(this.ConfigurationManager, pkgSettingsRepository, connStrRepository, this.Id);
+            ConfigurationManager = new Infrastructure.ConfigurationManagement.DbConfigurationSettings(ConfigurationManager, pkgSettingsRepository, connStrRepository, Id);
         }
         private void StartServicesManager()
         {
@@ -169,7 +171,7 @@ namespace Drey.Configuration
         /// </summary>
         public override void Shutdown()
         {
-            Log.InfoFormat("{id} is shutting down.", this.Id);
+            Log.InfoFormat("{id} is shutting down.", Id);
 
             if (_hoardeManager != null)
             {
@@ -185,15 +187,18 @@ namespace Drey.Configuration
         }
 
         /// <summary>
-        /// Handles the ShellRequestArgs message.
+        /// Handles the specified message.
         /// </summary>
         /// <param name="message">The message.</param>
-        public void Handle(ShellRequestArgs message)
+        public void Handle(RecycleApp message)
         {
-            if (message.PackageId.Equals(this.Id, StringComparison.OrdinalIgnoreCase))
+            EmitShellRequest(new ShellRequestArgs
             {
-                EmitShellRequest(message);
-            }
+                ActionToTake = ShellAction.Restart,
+                PackageId = DreyConstants.ConfigurationPackageName,
+                Version = string.Empty,
+                ConfigurationManager = null
+            });
         }
 
         /// <summary>
@@ -202,11 +207,11 @@ namespace Drey.Configuration
         /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
         protected override void Dispose(bool disposing)
         {
-            Log.Trace("Disposing Drey Configuration host.");
-
             base.Dispose(disposing);
 
-            if (!disposing) { return; }
+            if (!disposing || _disposed) { return; }
+
+            Log.Trace("Disposing Drey Configuration host.");
 
             if (_eventBus != null)
             {
@@ -233,6 +238,8 @@ namespace Drey.Configuration
             }
 
             Infrastructure.IoC.AutofacConfig.DisposeContainer();
+
+            _disposed = true;
         }
     }
 }

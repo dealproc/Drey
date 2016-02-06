@@ -151,8 +151,8 @@ namespace Drey.Configuration.ServiceModel
 
             _log.Info("Cleaning up hoarde due to restart and RemoveOtherVersionsOnRestart being set to true.");
 
-            var dir = new System.IO.DirectoryInfo(Drey.Utilities.PathUtilities.MapPath(_configurationManager.HoardeBaseDirectory));
-            var deployments = dir.EnumerateDirectories(e.PackageId + "*", searchOption: System.IO.SearchOption.TopDirectoryOnly)
+            var dir = new DirectoryInfo(Utilities.PathUtilities.MapPath(_configurationManager.HoardeBaseDirectory));
+            var deployments = dir.EnumerateDirectories(e.PackageId + "*", searchOption: SearchOption.TopDirectoryOnly)
                 .Where(di => !di.Name.EndsWith(e.Version))
                 .Apply(di =>
                 {

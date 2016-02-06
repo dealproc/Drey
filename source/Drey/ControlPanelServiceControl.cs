@@ -29,6 +29,9 @@ namespace Drey
 
         bool _disposed = false;
 
+        bool _shuttingDown = false;
+
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ControlPanelServiceControl"/> class.
         /// </summary>
@@ -73,6 +76,7 @@ namespace Drey
         /// </summary>
         public bool Stop(HostControl hostControl)
         {
+            _shuttingDown = true;
             ShutdownConsole();
             return true;
         }
@@ -87,6 +91,9 @@ namespace Drey
         /// <param name="e">The e.</param>
         private void ShellRequestHandler(object sender, ShellRequestArgs e)
         {
+            // when shutting down, the shutdown command is executing the ShutdownConsole() method.
+            if (_shuttingDown) { return; } 
+
             // right now, the shutdown command is working as expected, but cannot seem to trigger a restart.
             if (e.PackageId.Equals(DreyConstants.ConfigurationPackageName, StringComparison.OrdinalIgnoreCase))
             {
@@ -166,7 +173,6 @@ namespace Drey
                 _log.Debug("Console has been shutdown already.");
                 return;
             }
-
 
             try
             {

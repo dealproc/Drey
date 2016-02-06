@@ -14,16 +14,25 @@ namespace Drey.Configuration.ServiceModel
     /// <summary>
     /// 
     /// </summary>
-    public interface IServicesManager : IHandle<Infrastructure.Events.RecycleApp>
+    public interface IServicesManager : IDisposable
     {
+        /// <summary>
+        /// Starts this instance.
+        /// </summary>
+        /// <returns></returns>
         bool Start();
+
+        /// <summary>
+        /// Stops this instance.
+        /// </summary>
+        /// <returns></returns>
         bool Stop();
     }
 
     /// <summary>
     /// 
     /// </summary>
-    public class ServicesManager : IServicesManager, IHandle<Infrastructure.Events.RecycleApp>, IDisposable
+    public class ServicesManager : IServicesManager
     {
         ILog _log;
 
@@ -47,10 +56,7 @@ namespace Drey.Configuration.ServiceModel
         Func<RegisteredPackagesPollingClient> _packagesPollerFactory;
         Func<PollingClientCollection> _pollingCollectionFactory;
 
-
         bool _disposed = false;
-
-        bool _withRestart = false;
 
         public ServicesManager(INutConfiguration configurationManager, IEventBus eventBus,
             IEnumerable<IReportPeriodically> pushServices,
@@ -108,22 +114,6 @@ namespace Drey.Configuration.ServiceModel
         {
             _log.Info("Drey.Runtime is shutting down.");
 
-            var packages = _packageRepository.GetPackages().Where(pkg => pkg.Id != DreyConstants.ConfigurationPackageName);
-
-            packages.Apply(p =>
-            {
-                _log.DebugFormat("Issuing request to shut down {packageName}", p.Id);
-                // Had to refactor from using the event bus due to the event bus not
-                // respecting delays from the shutdown process of each package.
-                _hoardeManager.Handle(new ShellRequestArgs
-                {
-                    ActionToTake = ShellAction.Shutdown,
-                    PackageId = p.Id,
-                    Version = string.Empty,
-                    ConfigurationManager = null
-                });
-            });
-
             if (_pushServices.Any())
             {
                 _log.Info("Shutting down push services.");
@@ -142,30 +132,7 @@ namespace Drey.Configuration.ServiceModel
                 _hubConnectionManager = null;
             }
 
-            _log.InfoFormat("Issuing shell request with restart: {withRestart}", _withRestart);
-            _eventBus.Publish(new ShellRequestArgs
-            {
-                ActionToTake = _withRestart ? ShellAction.Restart : ShellAction.Shutdown,
-                PackageId = DreyConstants.ConfigurationPackageName,
-                Version = string.Empty,
-                ConfigurationManager = null
-            });
-
-            _withRestart = false;
-
             return true;
-        }
-
-        /// <summary>
-        /// Handles the RecycleApp message.
-        /// </summary>
-        /// <param name="message">The message.</param>
-        public void Handle(Infrastructure.Events.RecycleApp message)
-        {
-            _withRestart = true;
-
-            Stop();
-            Start();
         }
 
         private Task Connect()
@@ -268,7 +235,7 @@ namespace Drey.Configuration.ServiceModel
         public void Dispose()
         {
             Dispose(true);
-            _disposed = true;
+            GC.SuppressFinalize(this);
         }
 
         /// <summary>
@@ -278,8 +245,6 @@ namespace Drey.Configuration.ServiceModel
         protected virtual void Dispose(bool disposing)
         {
             if (!disposing || _disposed) { return; }
-
-            Stop();
 
             if (_eventBus != null)
             {
@@ -307,6 +272,8 @@ namespace Drey.Configuration.ServiceModel
                 _hubConnectionManager.Dispose();
                 _hubConnectionManager = null;
             }
+
+            _disposed = true;
         }
     }
 }
