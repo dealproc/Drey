@@ -1,5 +1,4 @@
-﻿using Drey.Logging;
-using Drey.Nut;
+﻿using Drey.Nut;
 
 using NLog;
 using NLog.Config;
@@ -87,70 +86,17 @@ namespace Drey.Runtime
                 f.SetDisplayName("Drey Runtime Environment");
                 f.SetServiceName("Runtime");
 
-                f.Service<HordeServiceWrapper>();
+                f.Service(() => new ControlPanelServiceControl(
+                    mode: ExecutionMode.Development,
+                    configureLogging: LogConfiguration,
+                    logVerbosity: LogVerbosity
+                ));
 
                 f.EnableServiceRecovery(rc =>
                 {
                     rc.RestartService(1);
                 });
             });
-        }
-    }
-
-    /// <summary>
-    /// Simple wrapper over the Drey tooling to allow interop with Topshelf.
-    /// </summary>
-    class HordeServiceWrapper : ServiceControl
-    {
-        // CONSIDER: Should we factor this out into the ControlPanelServiceControl, and provide separate implementations for Topshelf and the default windows libraries?
-        static ILog _Log = LogProvider.For<HordeServiceWrapper>();
-
-        ControlPanelServiceControl _control;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="HordeServiceWrapper"/> class.
-        /// </summary>
-        public HordeServiceWrapper()
-        {
-            _control = new ControlPanelServiceControl(
-                mode: ExecutionMode.Development,
-                configureLogging: Program.LogConfiguration,
-                logVerbosity: Program.LogVerbosity
-            );
-        }
-
-        /// <summary>
-        /// Starts the specified host control.
-        /// </summary>
-        /// <param name="hostControl">The host control.</param>
-        /// <returns></returns>
-        public bool Start(HostControl hostControl)
-        {
-            _Log.Info("Starting Hoarde Service");
-            if (!_control.Start())
-            {
-                _control.Stop();
-                return false;
-            }
-            return true;
-        }
-
-        /// <summary>
-        /// Stops the specified host control.
-        /// </summary>
-        /// <param name="hostControl">The host control.</param>
-        /// <returns></returns>
-        public bool Stop(HostControl hostControl)
-        {
-            _Log.Info("Stopping Hoarde Service");
-            try
-            {
-                return _control.Stop();
-            }
-            finally
-            {
-                _control.Dispose();
-            }
         }
     }
 }

@@ -7,12 +7,14 @@ using System.Linq;
 using System.Security.Permissions;
 using System.Threading.Tasks;
 
+using Topshelf;
+
 namespace Drey
 {
     /// <summary>
     /// 
     /// </summary>
-    public class ControlPanelServiceControl : MarshalByRefObject, IDisposable
+    public class ControlPanelServiceControl : MarshalByRefObject, ServiceControl, IDisposable
     {
         readonly ILog _log;
         readonly ShellFactory _appFactory;
@@ -61,7 +63,7 @@ namespace Drey
         /// <summary>
         /// Starts this instance.
         /// </summary>
-        public bool Start()
+        public bool Start(HostControl hostControl)
         {
             return StartupConsole();
         }
@@ -69,26 +71,10 @@ namespace Drey
         /// <summary>
         /// Stops this instance.
         /// </summary>
-        public bool Stop()
+        public bool Stop(HostControl hostControl)
         {
             ShutdownConsole();
             return true;
-        }
-
-        /// <summary>
-        /// Obtains a lifetime service object to control the lifetime policy for this instance.
-        /// <remarks>We need to override the default functionality here and send back a `null` so that we can control the lifetime of the ServiceControl.  Default lease time is 5 minutes, which does not work for us.</remarks>
-        /// </summary>
-        /// <returns>
-        /// An object of type <see cref="T:System.Runtime.Remoting.Lifetime.ILease" /> used to control the lifetime policy for this instance. This is the current lifetime service object for this instance if one exists; otherwise, a new lifetime service object initialized to the value of the <see cref="P:System.Runtime.Remoting.Lifetime.LifetimeServices.LeaseManagerPollTime" /> property.
-        /// </returns>
-        /// <PermissionSet>
-        ///   <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="RemotingConfiguration, Infrastructure" />
-        /// </PermissionSet>
-        [SecurityPermission(SecurityAction.Demand, Flags = SecurityPermissionFlag.Infrastructure)]
-        public override object InitializeLifetimeService()
-        {
-            return null;
         }
 
         /// <summary>
@@ -184,6 +170,8 @@ namespace Drey
 
             try
             {
+                _log.Info(new string('*', 50));
+                _log.Info(new string('*', 50));
                 _log.Info("Console is shutting down.");
 
                 if (_console.Item2 != null)
@@ -214,6 +202,8 @@ namespace Drey
             }
 
             _log.Info("Console has shutdown.");
+            _log.Info(new string('*', 50));
+            _log.Info(new string('*', 50));
         }
 
         /// <summary>
@@ -246,6 +236,28 @@ namespace Drey
             }
 
             _restartConsoleTask = null;
+        }
+
+
+        /// <summary>
+        /// Obtains a lifetime service object to control the lifetime policy for this instance.
+        /// <remarks>We need to override the default functionality here and send back a `null` so that we can control the lifetime of the ServiceControl.  Default lease time is 5 minutes, which does not work for us.</remarks>
+        /// </summary>
+        /// <returns>
+        /// An object of type <see cref="T:System.Runtime.Remoting.Lifetime.ILease" /> used to control the lifetime policy for this instance. This is the current lifetime service object for this instance if one exists; otherwise, a new lifetime service object initialized to the value of the <see cref="P:System.Runtime.Remoting.Lifetime.LifetimeServices.LeaseManagerPollTime" /> property.
+        /// </returns>
+        /// <PermissionSet>
+        ///   <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="RemotingConfiguration, Infrastructure" />
+        /// </PermissionSet>
+        [SecurityPermission(SecurityAction.Demand, Flags = SecurityPermissionFlag.Infrastructure)]
+        public override object InitializeLifetimeService()
+        {
+            //
+            // Returning null designates an infinite non-expiring lease.
+            // We must therefore ensure that RemotingServices.Disconnect() is called when
+            // it's no longer needed otherwise there will be a memory leak.
+            //
+            return null;
         }
 
         /// <summary>
