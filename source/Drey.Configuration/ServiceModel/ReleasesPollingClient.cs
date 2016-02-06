@@ -14,8 +14,10 @@ namespace Drey.Configuration.ServiceModel
     /// <summary>
     /// Manages resolving updated versions of installed packages, downloads them, and signals to the runtime to reload the package at the current release level.
     /// </summary>
-    class ReleasesPollingClient : IPollingClient, IDisposable
+    public class ReleasesPollingClient : IPollingClient, IDisposable
     {
+        public delegate ReleasesPollingClient Factory(string packageId);
+
         static readonly ILog _log = LogProvider.For<ReleasesPollingClient>();
 
         /// <summary>
@@ -48,21 +50,21 @@ namespace Drey.Configuration.ServiceModel
         /// <param name="connectionStringsRepository">The connection strings repository.</param>
         /// <param name="eventBus">The event bus.</param>
         /// <param name="packageId">The package identifier.</param>
-        public ReleasesPollingClient(INutConfiguration configurationManager,
+        public ReleasesPollingClient(string packageId, 
+            INutConfiguration configurationManager,
             Services.IGlobalSettingsService globalSettingsService,
             Services.IPackageService packageService,
             Repositories.IPackageSettingRepository packageSettingsRepository,
             Repositories.IConnectionStringRepository connectionStringsRepository,
-            IEventBus eventBus,
-            string packageId)
+            IEventBus eventBus)
         {
+            _packageId = packageId;
             _configurationManager = configurationManager;
             _globalSettingsService = globalSettingsService;
             _packageService = packageService;
             _packageSettingsRepository = packageSettingsRepository;
             _connectionStringsRepository = connectionStringsRepository;
             _eventBus = eventBus;
-            _packageId = packageId;
         }
         ~ReleasesPollingClient()
         {

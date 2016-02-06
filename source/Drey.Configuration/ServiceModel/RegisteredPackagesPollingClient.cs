@@ -18,54 +18,52 @@ namespace Drey.Configuration.ServiceModel
 
         const int DELAY_TIME_MS = 60;
 
-        readonly Drey.Nut.INutConfiguration _configurationManager;
+        ReleasesPollingClient.Factory _releasePollingClientFactory;
+
         readonly Services.IGlobalSettingsService _globalSettingsService;
         readonly Services.IPackageService _packageService;
-        readonly Repositories.IPackageSettingRepository _packageSettingRepository;
-        readonly Repositories.IConnectionStringRepository _connectionStringRepository;
         readonly PollingClientCollection _pollingClients;
-        readonly IEventBus _eventBus;
 
         Task _pollingClientTask;
         CancellationToken _ct;
 
         bool _disposed = false;
 
+        /// <summary>
+        /// Gets the title.
+        /// </summary>
         public string Title { get { return "Packages Polling Client"; } }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="RegisteredPackagesPollingClient"/> class.
+        /// Initializes a new instance of the <see cref="RegisteredPackagesPollingClient" /> class.
         /// </summary>
-        /// <param name="configurationManager">The configuration manager.</param>
         /// <param name="globalSettingsService">The global settings service.</param>
         /// <param name="packageService">The package service.</param>
-        /// <param name="packageSettingRepository">The package setting repository.</param>
-        /// <param name="connectionStringRepository">The connection string repository.</param>
-        /// <param name="eventBus">The event bus.</param>
         /// <param name="pollingClients">The polling clients.</param>
-        public RegisteredPackagesPollingClient(Drey.Nut.INutConfiguration configurationManager,
+        /// <param name="releasePollingClientFactory">The release polling client factory.</param>
+        public RegisteredPackagesPollingClient(
             Services.IGlobalSettingsService globalSettingsService,
             Services.IPackageService packageService,
-            Repositories.IPackageSettingRepository packageSettingRepository,
-            Repositories.IConnectionStringRepository connectionStringRepository,
-            IEventBus eventBus,
-            PollingClientCollection pollingClients)
+            PollingClientCollection pollingClients,
+            ReleasesPollingClient.Factory releasePollingClientFactory
+            )
         {
-            _configurationManager = configurationManager;
             _globalSettingsService = globalSettingsService;
             _packageService = packageService;
-            _packageSettingRepository = packageSettingRepository;
-            _connectionStringRepository = connectionStringRepository;
             _pollingClients = pollingClients;
-            _eventBus = eventBus;
+
+            _releasePollingClientFactory = releasePollingClientFactory;
         }
+        /// <summary>
+        /// Finalizes an instance of the <see cref="RegisteredPackagesPollingClient"/> class.
+        /// </summary>
         ~RegisteredPackagesPollingClient()
         {
             Dispose(false);
         }
 
         /// <summary>
-        /// Starts the Registerd Packages Polling client, and start observing for new packages on the feed.
+        /// Starts the Registered Packages Polling client, and start observing for new packages on the feed.
         /// </summary>
         /// <param name="ct">The ct.</param>
         public void Start(CancellationToken ct)
@@ -80,7 +78,7 @@ namespace Drey.Configuration.ServiceModel
             foreach (var pkg in packages)
             {
                 _log.TraceFormat("Creating a release monitor for {packageId}.", pkg.Id);
-                _pollingClients.Add(CreateReleasesMonitor(pkg.Id));
+                _pollingClients.Add(_releasePollingClientFactory.Invoke(pkg.Id));
             }
         }
 
@@ -105,7 +103,7 @@ namespace Drey.Configuration.ServiceModel
 
                     if (newPackages.Any())
                     {
-                        var clients = newPackages.Select(p => CreateReleasesMonitor(p.Id));
+                        var clients = newPackages.Select(p => _releasePollingClientFactory.Invoke(p.Id));
                         foreach (var client in clients)
                         {
                             _pollingClients.Add(client);
@@ -128,11 +126,6 @@ namespace Drey.Configuration.ServiceModel
                 _log.InfoFormat("Waiting {0} seconds before re-checking for new releases.", DELAY_TIME_MS);
                 Pause();
             }
-        }
-
-        private ReleasesPollingClient CreateReleasesMonitor(string packageId)
-        {
-            return new ReleasesPollingClient(_configurationManager, _globalSettingsService, _packageService, _packageSettingRepository, _connectionStringRepository, _eventBus, packageId);
         }
 
         void Pause()

@@ -82,8 +82,6 @@ namespace Drey.Configuration.ServiceModel
             _packageSettingsRepository = packageSettingsRepository;
 
             _hoardeManager = hoardeManager;
-
-            _eventBus.Subscribe(this);
         }
 
         /// <summary>
@@ -212,15 +210,16 @@ namespace Drey.Configuration.ServiceModel
             else if (_globalSettings.HasValidSettings())
             {
                 _log.Info("Resolving packages from local cache.");
-                // Just discover the packages from the hdd's hoarde directory and start 'em up.
+                // Just discover the packages from the hard disk drive's hoarde directory and start 'em up.
                 packages.Apply(p =>
                     _eventBus.Publish(new ShellRequestArgs
                     {
                         ActionToTake = ShellAction.Startup,
                         PackageId = p.Id,
                         Version = string.Empty,
-                        ConfigurationManager = new Drey.Configuration.Infrastructure.ConfigurationManagement.DbConfigurationSettings(_configurationManager, _packageSettingsRepository, _connectionStringsRepository, p.Id)
-                    }));
+                        ConfigurationManager = new Infrastructure.ConfigurationManagement.DbConfigurationSettings(_configurationManager, _packageSettingsRepository, _connectionStringsRepository, p.Id)
+                    })
+                );
             }
             else
             {
@@ -245,11 +244,6 @@ namespace Drey.Configuration.ServiceModel
         protected virtual void Dispose(bool disposing)
         {
             if (!disposing || _disposed) { return; }
-
-            if (_eventBus != null)
-            {
-                _eventBus.Unsubscribe(this);
-            }
 
             if (_pollingCollection != null)
             {

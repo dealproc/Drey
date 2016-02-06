@@ -42,13 +42,14 @@ namespace Drey.Configuration.Infrastructure.IoC
         {
             var builder = new ContainerBuilder();
 
-            builder.RegisterInstance<IEventBus>(eventBus);
-            builder.RegisterInstance<ServiceModel.IHoardeManager>(hoardeManager);
-            builder.RegisterInstance<INutConfiguration>(configurationManager);
+            builder.RegisterInstance(eventBus);
+            builder.RegisterInstance(hoardeManager);
+            builder.RegisterInstance(configurationManager);
 
             builder.RegisterType<ServiceModel.ServicesManager>().AsImplementedInterfaces().SingleInstance();
             builder.RegisterType<ServiceModel.PollingClientCollection>().AsSelf().SingleInstance();
             builder.RegisterType<ServiceModel.RegisteredPackagesPollingClient>().AsSelf().SingleInstance();
+            builder.RegisterType<ServiceModel.ReleasesPollingClient>();
 
             // we will apply most of the configuration in one or more assembly modules.
             builder.RegisterAssemblyModules(typeof(AutofacConfig).Assembly);
