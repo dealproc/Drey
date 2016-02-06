@@ -126,21 +126,23 @@ namespace Drey.Configuration.ServiceModel
 
             if (_pushServices.Any())
             {
-                _log.Debug("Shutting down push services.");
-                _pushServices.Apply(x => x.Stop());
+                _log.Info("Shutting down push services.");
+                Task.WaitAll(_pushServices.Select(x => x.Stop()).ToArray());
+                _log.Info("All services should be shut down.");
             }
 
             _runtimeHubProxy = null;
 
             if (_hubConnectionManager != null)
             {
-                _log.Debug("Shutting down hub connection manager.");
+                _log.Info("Shutting down hub connection manager.");
                 _hubConnectionManager.Stop();
+                _log.Info("Disposing the connection manager.");
                 _hubConnectionManager.Dispose();
                 _hubConnectionManager = null;
             }
 
-            _log.DebugFormat("Issuing shell request with restart: {withRestart}", _withRestart);
+            _log.InfoFormat("Issuing shell request with restart: {withRestart}", _withRestart);
             _eventBus.Publish(new ShellRequestArgs
             {
                 ActionToTake = _withRestart ? ShellAction.Restart : ShellAction.Shutdown,

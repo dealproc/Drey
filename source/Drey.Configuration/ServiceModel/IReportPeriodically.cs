@@ -3,6 +3,7 @@
 using Microsoft.AspNet.SignalR.Client;
 
 using System;
+using System.Threading.Tasks;
 
 namespace Drey.Configuration.ServiceModel
 {
@@ -16,11 +17,11 @@ namespace Drey.Configuration.ServiceModel
         /// </summary>
         /// <param name="hubConnectionManager">The hub connection manager.</param>
         /// <param name="runtimeHubProxy">The runtime hub proxy.</param>
-        void Start(IHubConnectionManager hubConnectionManager, IHubProxy runtimeHubProxy);
+        Task Start(IHubConnectionManager hubConnectionManager, IHubProxy runtimeHubProxy);
 
         /// <summary>
         /// Stops the reporting service.
         /// </summary>
-        void Stop();
+        Task Stop();
     }
 }

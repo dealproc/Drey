@@ -18,18 +18,16 @@ namespace Samples.ThirdPartyIntegrations
         string _serviceConfiguration;
         IContainer _container;
 
-        public Nut()
-        {
-            var bin = Path.GetDirectoryName(this.GetType().Assembly.CodeBase).Remove(0, 6);
-            var configPath = Path.Combine(bin, "Config", "Services.config");
-            using (var fReader = new StreamReader(configPath))
-                _serviceConfiguration = fReader.ReadToEnd();
-        }
-
         public override bool Startup(INutConfiguration configurationManager)
         {
             _log.Info("Samples - Third Party Integrations Proof of Concept online.");
             if (!base.Startup(configurationManager)) { return false; }
+
+            var bin = Path.GetDirectoryName(GetType().Assembly.CodeBase).Remove(0, 6);
+            var configPath = Path.Combine(bin, "Config", "Services.config");
+            using (var fReader = new StreamReader(configPath))
+                _serviceConfiguration = fReader.ReadToEnd();
+
 
             var cb = new ContainerBuilder();
 
@@ -51,7 +49,7 @@ namespace Samples.ThirdPartyIntegrations
 
         public override string Id
         {
-            get { return this.GetType().Namespace; }
+            get { return GetType().Namespace; }
         }
 
         public override bool RequiresConfigurationStorage

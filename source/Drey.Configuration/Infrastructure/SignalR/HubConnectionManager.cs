@@ -197,6 +197,7 @@ namespace Drey.Configuration.Infrastructure
         /// </summary>
         public void Stop()
         {
+            _log.Info("Hub connection event proxies are being removed.");
             _hubConnection.Received -= OnReceived;
             _hubConnection.Closed -= OnClosed;
             _hubConnection.Reconnecting -= OnReconnecting;
@@ -205,6 +206,7 @@ namespace Drey.Configuration.Infrastructure
             _hubConnection.Error -= OnError;
             _hubConnection.StateChanged -= OnStateChanged;
 
+            _log.Info("Hub connection is being stopped.");
             _hubConnection.Stop();
         }
 

@@ -14,7 +14,7 @@ namespace Drey.Utilities
         /// <returns></returns>
         public static string DiscoverPackage(string packageId, string hordeDirectory, string specificVersion = "Latest")
         {
-            var configPath = Utilities.PathUtilities.MapPath(hordeDirectory);
+            var configPath = PathUtilities.MapPath(hordeDirectory);
 
             var versionFolders = Directory.GetDirectories(configPath, packageId + "*").Select(dir => (new DirectoryInfo(dir)).Name);
             Version latestVersion;

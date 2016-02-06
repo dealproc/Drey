@@ -55,6 +55,7 @@
     <ProjectReference Include="..\..\source\Drey\Drey.csproj">
       <Project>{6403704c-14d9-4069-ad3d-8eeef95f499c}</Project>
       <Name>Drey</Name>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

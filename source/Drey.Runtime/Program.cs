@@ -78,11 +78,11 @@ namespace Drey.Runtime
 
             HostFactory.Run(f =>
             {
-                // Options to bind to the linux signals for daemon startup/shutdown.
-                f.UseLinuxIfAvailable();
-
                 // parses command line's extra parameters.  format is `-{key}:{value}`
                 f.AddCommandLineDefinition("verbosity", v => LogVerbosity = v);
+
+                // Options to bind to the linux signals for daemon startup/shutdown.
+                f.UseLinuxIfAvailable();
 
                 f.SetDisplayName("Drey Runtime Environment");
                 f.SetServiceName("Runtime");

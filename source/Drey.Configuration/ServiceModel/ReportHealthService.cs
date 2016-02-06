@@ -13,7 +13,7 @@ using System.Linq;
 using System.Management;
 using System.Runtime.InteropServices;
 using System.Security;
-using System.Timers;
+using System.Threading.Tasks;
 
 namespace Drey.Configuration.ServiceModel
 {
@@ -27,20 +27,18 @@ namespace Drey.Configuration.ServiceModel
         static INutConfiguration _configurationManager;
 
         bool _disposed = false;
+        bool _stop = false;
+
+        Task _worker;
 
         IHubConnectionManager _hubConnectionManager;
         IHubProxy _runtimeHubProxy;
-        Timer _reportHealthTrigger;
         DomainModel.RegisteredDbProviderFactory[] _registeredDbFactories;
         DomainModel.FrameworkInfo _frameworkInfo;
 
         public ReportHealthService(INutConfiguration configurationManager)
         {
             _configurationManager = configurationManager;
-
-            _reportHealthTrigger = new Timer();
-            _reportHealthTrigger.Elapsed += reportHealthTrigger_Elapsed;
-            _reportHealthTrigger.Interval = 15000;
         }
 
         /// <summary>
@@ -48,7 +46,7 @@ namespace Drey.Configuration.ServiceModel
         /// </summary>
         /// <param name="hubConnectionManager">The hub connection manager.</param>
         /// <param name="runtimeHubProxy">The runtime hub proxy.</param>
-        public void Start(IHubConnectionManager hubConnectionManager, IHubProxy runtimeHubProxy)
+        public Task Start(IHubConnectionManager hubConnectionManager, IHubProxy runtimeHubProxy)
         {
             _log.Info("Starting 'Report Health Service'.");
             _hubConnectionManager = hubConnectionManager;
@@ -112,87 +110,97 @@ namespace Drey.Configuration.ServiceModel
             }
 
             _log.Info("Starting 'Report Health Info' trigger.");
-            _reportHealthTrigger.Start();
+            _worker = new Task(Report);
+            _worker.Start();
+
+            return Task.FromResult((object)null);
         }
 
         /// <summary>
         /// Stops the Health Service.
         /// </summary>
-        public void Stop()
+        public Task Stop()
         {
             _log.Info("'Report Health Info' trigger stopping.");
-            if (_reportHealthTrigger != null)
+            if (_worker != null)
             {
-                _reportHealthTrigger.Stop();
+                _stop = true;
+                _log.Info("'Report Health Info' is shutting down.  waiting a max of 30 seconds.");
+                return _worker;
             }
+
+            return Task.FromResult((object)null);
         }
 
         /// <summary>
         /// Reports to the broker the current health information of this client.
         /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="ElapsedEventArgs"/> instance containing the event data.</param>
-        private void reportHealthTrigger_Elapsed(object sender, ElapsedEventArgs e)
+        private void Report()
         {
-            MemoryStatusEx memStatus = null;
-
-            try
+            while (!_stop)
             {
-                _log.Debug("Reading extended memory status from kernel32.dll");
-                memStatus = MemoryStatusEx.MemoryInfo;
+                MemoryStatusEx memStatus = null;
+
+                try
+                {
+                    _log.Debug("Reading extended memory status from kernel32.dll");
+                    memStatus = MemoryStatusEx.MemoryInfo;
+                }
+                catch (Exception ex)
+                {
+                    _log.ErrorException("Error retrieving extended memory information.", ex);
+                }
+
+                if (_hubConnectionManager.State != ConnectionState.Connected)
+                {
+                    _log.Info("Connection has not been established with broker.  Could not report health statistics.");
+                    return;
+                }
+
+                _log.Debug("Resolving local IP addresses on all networks.");
+                var na = System.Net.Dns.GetHostAddresses(System.Net.Dns.GetHostName())
+                    .Where(ha => ha.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
+                    .Select(x => x.ToString())
+                    .ToArray();
+
+                _log.Debug("Resolving human readable OS name.");
+                var osFriendlyName = (from x in new ManagementObjectSearcher("SELECT * FROM Win32_OperatingSystem")
+                                      .Get()
+                                      .OfType<ManagementObject>()
+                                      select x.GetPropertyValue("Caption")).First();
+
+                _log.Debug("Building environment information to report to broker.");
+                var ei = new DomainModel.EnvironmentInfo
+                {
+                    Is64BitOperatingSystem = Environment.Is64BitOperatingSystem,
+                    Is64BitProcess = Environment.Is64BitProcess,
+                    MachineName = Environment.MachineName,
+                    OSFriendlyName = (osFriendlyName ?? "Unknown").ToString(),
+                    OSVersion = Environment.OSVersion.VersionString,
+                    ProcessorCount = Environment.ProcessorCount,
+                    Uptime = Environment.TickCount,
+                    IPv4Addresses = na,
+                    WorkingSet64 = Process.GetCurrentProcess().WorkingSet64,
+
+                    ExecutablePath = Utilities.PathUtilities.MapPath(_configurationManager.WorkingDirectory),
+                    WorkingPath = Utilities.PathUtilities.MapPath(_configurationManager.WorkingDirectory),
+                    LogsPath = Utilities.PathUtilities.MapPath(_configurationManager.LogsDirectory),
+                    PluginsPath = Utilities.PathUtilities.MapPath(_configurationManager.PluginsBaseDirectory),
+
+                    // Note: These may fail on Linux boxes.  May need to build a "provider" model for each platform.
+                    PercentageMemoryInUse = memStatus == null ? 0 : memStatus.MemoryLoad,
+                    TotalMemoryBytes = memStatus == null ? 0 : memStatus.TotalPhysical,
+
+                    EnvironmentVersion = Environment.Version.ToString(),
+                    RegisteredDbFactories = _registeredDbFactories,
+                    InstalledFrameworks = _frameworkInfo
+                };
+
+                _log.Debug("Returning environment information to broker.");
+                _runtimeHubProxy.Invoke("ReportHealth", ei).GetAwaiter().GetResult();
+
+                Task.Delay(TimeSpan.FromSeconds(15)).GetAwaiter().GetResult();
             }
-            catch (Exception ex)
-            {
-                _log.ErrorException("Error retrieving extended memory information.", ex);
-            }
-
-            if (_hubConnectionManager.State != ConnectionState.Connected)
-            {
-                _log.Info("Connection has not been established with broker.  Could not report health statistics.");
-                return;
-            }
-
-            _log.Debug("Resolving local IP addresses on all networks.");
-            var na = System.Net.Dns.GetHostAddresses(System.Net.Dns.GetHostName())
-                .Where(ha => ha.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
-                .Select(x => x.ToString())
-                .ToArray();
-
-            _log.Debug("Resolving human readable OS name.");
-            var osFriendlyName = (from x in new ManagementObjectSearcher("SELECT * FROM Win32_OperatingSystem")
-                                  .Get()
-                                  .OfType<ManagementObject>()
-                                  select x.GetPropertyValue("Caption")).First();
-
-            _log.Debug("Building environment information to report to broker.");
-            var ei = new DomainModel.EnvironmentInfo
-            {
-                Is64BitOperatingSystem = Environment.Is64BitOperatingSystem,
-                Is64BitProcess = Environment.Is64BitProcess,
-                MachineName = Environment.MachineName,
-                OSFriendlyName = (osFriendlyName ?? "Unknown").ToString(),
-                OSVersion = Environment.OSVersion.VersionString,
-                ProcessorCount = Environment.ProcessorCount,
-                Uptime = Environment.TickCount,
-                IPv4Addresses = na,
-                WorkingSet64 = Process.GetCurrentProcess().WorkingSet64,
-
-                ExecutablePath = Utilities.PathUtilities.MapPath(_configurationManager.WorkingDirectory),
-                WorkingPath = Utilities.PathUtilities.MapPath(_configurationManager.WorkingDirectory),
-                LogsPath = Utilities.PathUtilities.MapPath(_configurationManager.LogsDirectory),
-                PluginsPath = Utilities.PathUtilities.MapPath(_configurationManager.PluginsBaseDirectory),
-
-                // Note: These may fail on Linux boxes.  May need to build a "provider" model for each platform.
-                PercentageMemoryInUse = memStatus == null ? 0 : memStatus.MemoryLoad,
-                TotalMemoryBytes = memStatus == null ? 0 : memStatus.TotalPhysical,
-
-                EnvironmentVersion = Environment.Version.ToString(),
-                RegisteredDbFactories = _registeredDbFactories,
-                InstalledFrameworks = _frameworkInfo
-            };
-
-            _log.Debug("Returning environment information to broker.");
-            _runtimeHubProxy.Invoke("ReportHealth", ei);
         }
 
         private void DiscoverDotNetFrameworks()
@@ -303,10 +311,18 @@ namespace Drey.Configuration.ServiceModel
 
             if (!disposing || _disposed) { return; }
 
-            if (_reportHealthTrigger != null)
+            if (_worker != null)
             {
-                _reportHealthTrigger.Dispose();
-                _reportHealthTrigger = null;
+                try
+                {
+                    _stop = true;
+                    _worker.Wait();
+                }
+                catch (Exception)
+                {
+                    //squelching.
+                }
+                _worker = null;
             }
             _disposed = true;
         }
