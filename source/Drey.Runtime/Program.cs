@@ -48,8 +48,8 @@ namespace Drey.Runtime
             // Step 3. Set target properties 
             consoleTarget.Layout = @"${appdomain:format={0\} - {1\}} - ${message} ${onexception: ${exception:format=ToString} | ${stacktrace:format=raw} }";
 
-            fileTarget.FileName = Utilities.PathUtilities.MapPath(Path.Combine(config.LogsDirectory, @"log.${appdomain:format={1\}}.txt"));
-            fileTarget.ArchiveFileName = Utilities.PathUtilities.MapPath(Path.Combine(config.LogsDirectory, @"archives/log.${appdomain:format={1\}}.{#####}.txt"));
+            fileTarget.FileName = Path.Combine(Utilities.PathUtilities.MapPath(config.LogsDirectory), @"log.${appdomain:format={1\}}.txt");
+            fileTarget.ArchiveFileName = Path.Combine(Utilities.PathUtilities.MapPath(config.LogsDirectory), @"archives/log.${appdomain:format={1\}}.{#####}.txt");
             fileTarget.Layout = "${longdate}|${level:uppercase=true}|${logger}|${message}|${exception:maxInnerExceptionLevel=4}  ${onexception: ${exception:format=ToString} | ${stacktrace:format=raw} }";
             fileTarget.ArchiveAboveSize = 150 * 1024;
             fileTarget.ArchiveNumbering = ArchiveNumberingMode.Sequence;
