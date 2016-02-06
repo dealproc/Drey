@@ -33,6 +33,9 @@ namespace Drey.Nut
         /// </summary>
         public bool RemoveOtherVersionsOnRestart { get; set; }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ShellRequestArgs"/> class.
+        /// </summary>
         public ShellRequestArgs()
         {
             RemoveOtherVersionsOnRestart = false;

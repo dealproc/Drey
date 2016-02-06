@@ -1,4 +1,6 @@
 ﻿using Autofac;
+
+using Drey.Extensions;
 using Drey.Logging;
 using Drey.Nut;
 
@@ -23,11 +25,19 @@ namespace Samples.ThirdPartyIntegrations
             _log.Info("Samples - Third Party Integrations Proof of Concept online.");
             if (!base.Startup(configurationManager)) { return false; }
 
-            var bin = Path.GetDirectoryName(GetType().Assembly.CodeBase).Remove(0, 6);
-            var configPath = Path.Combine(bin, "Config", "Services.config");
-            using (var fReader = new StreamReader(configPath))
-                _serviceConfiguration = fReader.ReadToEnd();
-
+            try
+            {
+                var bin = GetType().Assembly.GetDirectoryLocation();
+                var configPath = Path.Combine(bin, "Config", "Services.config");
+                _log.InfoFormat("Attempting to read Services.config from '{path}'", configPath);
+                using (var fReader = new StreamReader(configPath))
+                    _serviceConfiguration = fReader.ReadToEnd();
+            }
+            catch (Exception)
+            {
+                _log.Fatal("Could not load Services.config from disc.");
+                return false;
+            }
 
             var cb = new ContainerBuilder();
 

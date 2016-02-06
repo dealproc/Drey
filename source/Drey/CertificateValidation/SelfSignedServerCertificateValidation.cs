@@ -68,7 +68,7 @@ namespace Drey.CertificateValidation
             _log.DebugFormat("Certificate effective date: {date}", cert2.GetEffectiveDateString());
             _log.DebugFormat("Certificate expiration date: {date}", cert2.GetExpirationDateString());
 
-            return _thumbprint.Equals(cert2.Thumbprint, System.StringComparison.OrdinalIgnoreCase);
+            return _thumbprint.Equals(cert2.Thumbprint, StringComparison.OrdinalIgnoreCase);
         }
     }
 }

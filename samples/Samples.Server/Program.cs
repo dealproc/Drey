@@ -34,7 +34,7 @@ namespace Samples.Server
                 Directory.Delete(PACKAGES_DIR, true);
             }
 
-            var url = "https://+:81";
+            var url = "https://+:9001";
 
             try
             {
@@ -45,7 +45,7 @@ namespace Samples.Server
                     app.UseCors(CorsOptions.AllowAll);
 
                     app.Use<GlobalExceptionMiddleware>();
-                    app.Use<BufferContentIntoAMemoryStreamMiddleware>();
+                    //app.Use<BufferContentIntoAMemoryStreamMiddleware>();
                     app.Use<ProvideGenericUserMiddleware>();
 
                     // auth's the client certificate.
@@ -65,8 +65,8 @@ namespace Samples.Server
 
                     // hack-ish way to get the IConnectionManager into the Autofac Container.
                     var cb = new ContainerBuilder();
-                    cb.RegisterInstance<IConnectionManager>(hubConfig.Resolver.Resolve<IConnectionManager>());
-                    cb.Register<IHubContext<Drey.Server.Hubs.IRuntimeClient>>((ctx) => ctx.Resolve<IConnectionManager>().GetHubContext<Drey.Server.Hubs.IRuntimeClient>("Runtime"));
+                    cb.RegisterInstance(hubConfig.Resolver.Resolve<IConnectionManager>());
+                    cb.Register((ctx) => ctx.Resolve<IConnectionManager>().GetHubContext<Drey.Server.Hubs.IRuntimeClient>("Runtime"));
                     cb.Update(_container);
 
                     app.MapSignalR(hubConfig);
@@ -92,7 +92,7 @@ namespace Samples.Server
             _fileService = new Drey.Server.Services.FilesytemFileService(PACKAGES_DIR);
 
             ContainerBuilder cb = new ContainerBuilder();
-            cb.RegisterInstance<Drey.Server.Services.IFileService>(_fileService);
+            cb.RegisterInstance(_fileService);
             cb.RegisterType<Drey.Server.EventBus>().AsImplementedInterfaces().SingleInstance();
 
             cb.RegisterType<Stores.ReleasesStore>().AsImplementedInterfaces();

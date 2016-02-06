@@ -17,7 +17,9 @@ namespace Drey.Nut
         /// Creates the specified app.
         /// </summary>
         /// <param name="assemblyPath">The assembly path.</param>
-        /// <param name="config">The configuration.</param>
+        /// <param name="shellRequestHandler">The shell request handler.</param>
+        /// <param name="configureLogging">The configure logging.</param>
+        /// <param name="additionalSearchPaths">The additional search paths.</param>
         /// <returns></returns>
         public Tuple<AppDomain, IShell> Create(string assemblyPath, EventHandler<ShellRequestArgs> shellRequestHandler, Action<INutConfiguration> configureLogging, params string[] additionalSearchPaths)
         {
@@ -36,7 +38,7 @@ namespace Drey.Nut
 
             var discoverStartupType = typeof(DiscoverStartupDllProxy);
             var startupProxyType = typeof(StartupProxy);
-            var discoveryDomain = Utilities.AppDomainUtils.CreateDomain(Guid.NewGuid().ToString(), searchPaths.ToArray());
+            var discoveryDomain = AppDomainUtils.CreateDomain(Guid.NewGuid().ToString(), searchPaths.ToArray());
             DiscoveredLibraryOptions entryDllOptions;
             DiscoverStartupDllProxy discoverPath = null;
 
@@ -70,11 +72,11 @@ namespace Drey.Nut
             }
 
             _Log.Info("Instantiating app.");
-            var domain = Utilities.AppDomainUtils.CreateDomain(entryDllOptions.PackageId, searchPaths.ToArray());
+            var domain = AppDomainUtils.CreateDomain(entryDllOptions.PackageId, searchPaths.ToArray());
             var domainProxy = (StartupProxy)domain.CreateInstanceFromAndUnwrap(startupProxyType.Assembly.Location, startupProxyType.FullName, false,
                 BindingFlags.CreateInstance | BindingFlags.Instance | BindingFlags.Public, null, new object[] { searchPaths }, null, null);
             domain.AssemblyResolve += domainProxy.ResolveAssemblyInDomain;
-            var appShell = (IShell)domainProxy.Build(entryDllOptions.File, entryDllOptions.TypeFullName);
+            var appShell = domainProxy.Build(entryDllOptions.File, entryDllOptions.TypeFullName);
             appShell.ConfigureLogging = configureLogging;
             appShell.OnShellRequest += shellRequestHandler;
             appShell.ShellRequestHandler = shellRequestHandler;

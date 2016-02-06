@@ -13,7 +13,15 @@ namespace Drey.Extensions
         /// <returns></returns>
         public static string GetDirectoryLocation(this Assembly assembly)
         {
-            return Path.GetDirectoryName((new Uri(assembly.CodeBase)).AbsolutePath) + Path.DirectorySeparatorChar.ToString();
+            var path = Path.GetDirectoryName((new Uri(assembly.CodeBase)).AbsolutePath) + Path.DirectorySeparatorChar.ToString();
+
+            if (Environment.OSVersion.Platform == PlatformID.MacOSX || Environment.OSVersion.Platform == PlatformID.Unix)
+            {
+                // see if the root folder marker exists.  if not, append it.
+                path = path.StartsWith(Path.DirectorySeparatorChar.ToString()) ? path : Path.DirectorySeparatorChar.ToString() + path;
+            }
+
+            return path;
         }
     }
 }

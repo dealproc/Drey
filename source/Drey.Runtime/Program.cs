@@ -48,17 +48,17 @@ namespace Drey.Runtime
             // Step 3. Set target properties 
             consoleTarget.Layout = @"${appdomain:format={0\} - {1\}} - ${message} ${onexception: ${exception:format=ToString} | ${stacktrace:format=raw} }";
 
-            fileTarget.FileName = Utilities.PathUtilities.MapPath(Path.Combine(config.LogsDirectory, @"log.${machinename}.${appdomain:format={1\}}.txt"));
-            fileTarget.ArchiveFileName = Utilities.PathUtilities.MapPath(Path.Combine(config.LogsDirectory, @"archives/log.${machinename}.${appdomain:format={1\}}.{#####}.txt"));
+            fileTarget.FileName = Utilities.PathUtilities.MapPath(Path.Combine(config.LogsDirectory, @"log.${appdomain:format={1\}}.txt"));
+            fileTarget.ArchiveFileName = Utilities.PathUtilities.MapPath(Path.Combine(config.LogsDirectory, @"archives/log.${appdomain:format={1\}}.{#####}.txt"));
             fileTarget.Layout = "${longdate}|${level:uppercase=true}|${logger}|${message}|${exception:maxInnerExceptionLevel=4}  ${onexception: ${exception:format=ToString} | ${stacktrace:format=raw} }";
             fileTarget.ArchiveAboveSize = 150 * 1024;
             fileTarget.ArchiveNumbering = ArchiveNumberingMode.Sequence;
 
             // Step 4. Define rules
-            var rule1 = new LoggingRule("*", NLog.LogLevel.FromString(config.LogVerbosity), consoleTarget);
+            var rule1 = new LoggingRule("*", LogLevel.FromString(config.LogVerbosity), consoleTarget);
             nlogConfig.LoggingRules.Add(rule1);
 
-            var rule2 = new LoggingRule("*", NLog.LogLevel.FromString(config.LogVerbosity), fileTarget);
+            var rule2 = new LoggingRule("*", LogLevel.FromString(config.LogVerbosity), fileTarget);
             nlogConfig.LoggingRules.Add(rule2);
 
             // Step 5. Activate the configuration
@@ -71,32 +71,34 @@ namespace Drey.Runtime
         };
 
         [STAThread]
-        public static void Main(string[] args)
+        public static int Main(string[] args)
         {
             LogVerbosity = "Info";
 
-            HostFactory.Run(f =>
+            var instance = HostFactory.New(factory =>
             {
                 // parses command line's extra parameters.  format is `-{key}:{value}`
-                f.AddCommandLineDefinition("verbosity", v => LogVerbosity = v);
+                factory.AddCommandLineDefinition("verbosity", v => LogVerbosity = v);
 
                 // Options to bind to the linux signals for daemon startup/shutdown.
-                f.UseLinuxIfAvailable();
+                factory.UseLinuxIfAvailable();
 
-                f.SetDisplayName("Drey Runtime Environment");
-                f.SetServiceName("Runtime");
+                factory.SetDisplayName("Drey Runtime Environment");
+                factory.SetServiceName("Runtime");
 
-                f.Service(() => new ControlPanelServiceControl(
+                factory.Service(() => new ControlPanelServiceControl(
                     mode: ExecutionMode.Development,
                     configureLogging: LogConfiguration,
                     logVerbosity: LogVerbosity
                 ));
 
-                f.EnableServiceRecovery(rc =>
+                factory.EnableServiceRecovery(rc =>
                 {
                     rc.RestartService(1);
                 });
             });
+
+            return (int)instance.Run();
         }
     }
 }

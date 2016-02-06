@@ -58,6 +58,9 @@ namespace Drey
             _log = LogProvider.For<ControlPanelServiceControl>();
             _appFactory = new ShellFactory();
         }
+        /// <summary>
+        /// Finalizes an instance of the <see cref="ControlPanelServiceControl"/> class.
+        /// </summary>
         ~ControlPanelServiceControl()
         {
             Dispose(false);
@@ -140,7 +143,7 @@ namespace Drey
 
             _log.Info("Cleaning up hoarde due to restart and RemoveOtherVersionsOnRestart being set to true.");
 
-            var dir = new System.IO.DirectoryInfo(Drey.Utilities.PathUtilities.MapPath(_nutConfiguration.HoardeBaseDirectory));
+            var dir = new DirectoryInfo(Utilities.PathUtilities.MapPath(_nutConfiguration.HoardeBaseDirectory));
             var deployments = dir.EnumerateDirectories(e.PackageId + "*", searchOption: System.IO.SearchOption.TopDirectoryOnly)
                 .Where(di => !di.Name.EndsWith(e.Version))
                 .Apply(di =>
