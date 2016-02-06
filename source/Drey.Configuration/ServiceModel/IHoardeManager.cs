@@ -1,17 +1,14 @@
-﻿using System;
+﻿using Drey.Nut;
+
+using System;
+
 namespace Drey.Configuration.ServiceModel
 {
     /// <summary>
     /// Interface for the Hoarde Manager
     /// </summary>
-    public interface IHoardeManager : IDisposable
+    public interface IHoardeManager : IDisposable, IHandle<ShellRequestArgs>
     {
-        /// <summary>
-        /// Handles a ShellRequestArgs event.
-        /// </summary>
-        /// <param name="e">The e.</param>
-        void Handle(Drey.Nut.ShellRequestArgs e);
-
         /// <summary>
         /// Determines whether the specified package is loaded and executing in the runtime.
         /// </summary>

@@ -12,7 +12,7 @@ namespace Drey.Configuration.ServiceModel
     /// <summary>
     /// Manages all packages loaded into the runtime.
     /// </summary>
-    public class HoardeManager : MarshalByRefObject, IHandle<ShellRequestArgs>, IHoardeManager
+    public class HoardeManager : MarshalByRefObject, IHoardeManager, IHandle<ShellRequestArgs>
     {
         static ILog _log = LogProvider.For<HoardeManager>();
 
@@ -198,21 +198,23 @@ namespace Drey.Configuration.ServiceModel
         /// <param name="shell">The shell.</param>
         private void KillAppContainer(Tuple<AppDomain, IShell> shell)
         {
+            var appId = shell.Item2.Id;
+
             try
             {
                 shell.Item2.Shutdown();
-                _log.Debug("Shutdown has completed.");
+                _log.DebugFormat("Shutdown of {appId} has completed.", appId);
                 shell.Item2.Dispose();
-                _log.Debug("Shell has been disposed.");
+                _log.DebugFormat("Shell from {appId} has been disposed.", appId);
                 AppDomain.Unload(shell.Item1);
             }
             catch (CannotUnloadAppDomainException ex)
             {
-                _log.WarnException("Could not unload app domain.", ex);
+                _log.WarnException("Could not unload AppDomain for package: {appId}.", ex, appId);
             }
             catch (AppDomainUnloadedException ex)
             {
-                _log.WarnException("failure to unload app domain?", ex);
+                _log.WarnException("Failure to unload AppDomain for package: {appId}.", ex, appId);
             }
         }
 
