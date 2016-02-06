@@ -25,13 +25,12 @@ namespace Drey.Configuration.ServiceModel
         /// </summary>
         const int DELAY_TIME_SEC = 15;
 
+        readonly string _packageId;
+        readonly Infrastructure.ConfigurationManagement.DbConfigurationSettings.Factory _dbConfigurationSettingsFactory;
         readonly INutConfiguration _configurationManager;
         readonly Services.IGlobalSettingsService _globalSettingsService;
         readonly Services.IPackageService _packageService;
-        readonly Repositories.IPackageSettingRepository _packageSettingsRepository;
-        readonly Repositories.IConnectionStringRepository _connectionStringsRepository;
         readonly IEventBus _eventBus;
-        readonly string _packageId;
 
         Task _pollingClientTask;
         CancellationToken _ct;
@@ -43,29 +42,29 @@ namespace Drey.Configuration.ServiceModel
         /// <summary>
         /// Initializes a new instance of the <see cref="ReleasesPollingClient" /> class.
         /// </summary>
+        /// <param name="packageId">The package identifier.</param>
+        /// <param name="dbConfigurationSettingsFactory">The database configuration settings factory.</param>
         /// <param name="configurationManager">The configuration manager.</param>
         /// <param name="globalSettingsService">The global settings service.</param>
         /// <param name="packageService">The package service.</param>
-        /// <param name="packageSettingsRepository">The package settings repository.</param>
-        /// <param name="connectionStringsRepository">The connection strings repository.</param>
         /// <param name="eventBus">The event bus.</param>
-        /// <param name="packageId">The package identifier.</param>
-        public ReleasesPollingClient(string packageId, 
+        public ReleasesPollingClient(string packageId,
+            Infrastructure.ConfigurationManagement.DbConfigurationSettings.Factory dbConfigurationSettingsFactory,
             INutConfiguration configurationManager,
             Services.IGlobalSettingsService globalSettingsService,
             Services.IPackageService packageService,
-            Repositories.IPackageSettingRepository packageSettingsRepository,
-            Repositories.IConnectionStringRepository connectionStringsRepository,
             IEventBus eventBus)
         {
             _packageId = packageId;
+            _dbConfigurationSettingsFactory = dbConfigurationSettingsFactory;
             _configurationManager = configurationManager;
             _globalSettingsService = globalSettingsService;
             _packageService = packageService;
-            _packageSettingsRepository = packageSettingsRepository;
-            _connectionStringsRepository = connectionStringsRepository;
             _eventBus = eventBus;
         }
+        /// <summary>
+        /// Finalizes an instance of the <see cref="ReleasesPollingClient"/> class.
+        /// </summary>
         ~ReleasesPollingClient()
         {
             Dispose(false);
@@ -90,7 +89,7 @@ namespace Drey.Configuration.ServiceModel
                 ActionToTake = ShellAction.Startup,
                 PackageId = _packageId,
                 Version = string.Empty,
-                ConfigurationManager = CreateConfigurationManager()
+                ConfigurationManager = _dbConfigurationSettingsFactory.Invoke(_packageId)
             });
 
             while (!_ct.IsCancellationRequested)
@@ -127,7 +126,7 @@ namespace Drey.Configuration.ServiceModel
                             ActionToTake = ShellAction.Restart,
                             PackageId = releaseToDownload.Id,
                             Version = releaseToDownload.Version,
-                            ConfigurationManager = CreateConfigurationManager(),
+                            ConfigurationManager = _dbConfigurationSettingsFactory.Invoke(_packageId),
                             RemoveOtherVersionsOnRestart = true
                         });
                     }
@@ -197,11 +196,6 @@ namespace Drey.Configuration.ServiceModel
             var zipFolderName = zipFileInfo.Name;
             zipFolderName = zipFolderName.Substring(0, zipFolderName.Length - zipFileInfo.Extension.Length);
             pkg.ExtractContents(new NuGet.PhysicalFileSystem(_configurationManager.HoardeBaseDirectory), zipFolderName);
-        }
-
-        private Infrastructure.ConfigurationManagement.DbConfigurationSettings CreateConfigurationManager()
-        {
-            return new Infrastructure.ConfigurationManagement.DbConfigurationSettings(_configurationManager, _packageSettingsRepository, _connectionStringsRepository, _packageId);
         }
 
         /// <summary>

@@ -15,6 +15,13 @@ namespace Drey.Configuration.Infrastructure.ConfigurationManagement
     /// </summary>
     public class DbConfigurationSettings : MarshalByRefObject, Drey.Nut.INutConfiguration, IDisposable
     {
+        /// <summary>
+        /// Factory delegate for registering with Autofac.   Allows autofac to create an instance of DbConfigurationSettings.
+        /// </summary>
+        /// <param name="packageId">The package identifier.</param>
+        /// <returns></returns>
+        public delegate DbConfigurationSettings Factory(string packageId);
+
         static readonly ILog _log = LogProvider.For<DbConfigurationSettings>();
 
         readonly string _packageId;

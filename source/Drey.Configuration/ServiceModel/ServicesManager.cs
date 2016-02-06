@@ -37,13 +37,12 @@ namespace Drey.Configuration.ServiceModel
         ILog _log;
 
         readonly INutConfiguration _configurationManager;
+        readonly Infrastructure.ConfigurationManagement.DbConfigurationSettings.Factory _dbConfigurationSettingsFactory;
         readonly IEventBus _eventBus;
         readonly IEnumerable<IRemoteInvocationService> _remoteInvokedServices;
         readonly IEnumerable<IReportPeriodically> _pushServices;
         readonly Services.IGlobalSettingsService _globalSettings;
         readonly Repositories.IPackageRepository _packageRepository;
-        readonly Repositories.IConnectionStringRepository _connectionStringsRepository;
-        readonly Repositories.IPackageSettingRepository _packageSettingsRepository;
         readonly IHoardeManager _hoardeManager;
 
 
@@ -58,28 +57,31 @@ namespace Drey.Configuration.ServiceModel
 
         bool _disposed = false;
 
-        public ServicesManager(INutConfiguration configurationManager, IEventBus eventBus,
+        public ServicesManager(
+            INutConfiguration configurationManager,
+            Infrastructure.ConfigurationManagement.DbConfigurationSettings.Factory dbConfigurationSettingsFactory,
+            IEventBus eventBus,
             IEnumerable<IReportPeriodically> pushServices,
             IEnumerable<IRemoteInvocationService> remoteInvokedServices,
-            Services.IGlobalSettingsService globalSettings, Func<RegisteredPackagesPollingClient> packagesPollerFactory,
-            Func<PollingClientCollection> pollingCollectionFactory, Repositories.IPackageRepository packageRepository, Repositories.IConnectionStringRepository connectionStringsRepository,
-            Repositories.IPackageSettingRepository packageSettingsRepository, 
+            Services.IGlobalSettingsService globalSettings,
+            Func<RegisteredPackagesPollingClient> packagesPollerFactory,
+            Func<PollingClientCollection> pollingCollectionFactory,
+            Repositories.IPackageRepository packageRepository,
             IHoardeManager hoardeManager)
         {
             _log = LogProvider.For<ServicesManager>();
 
             _configurationManager = configurationManager;
+            _dbConfigurationSettingsFactory = dbConfigurationSettingsFactory;
             _eventBus = eventBus;
-            _remoteInvokedServices = remoteInvokedServices;
             _pushServices = pushServices;
+            _remoteInvokedServices = remoteInvokedServices;
             _globalSettings = globalSettings;
 
             _packagesPollerFactory = packagesPollerFactory;
             _pollingCollectionFactory = pollingCollectionFactory;
 
             _packageRepository = packageRepository;
-            _connectionStringsRepository = connectionStringsRepository;
-            _packageSettingsRepository = packageSettingsRepository;
 
             _hoardeManager = hoardeManager;
         }
@@ -123,8 +125,6 @@ namespace Drey.Configuration.ServiceModel
 
             if (_hubConnectionManager != null)
             {
-                _log.Info("Shutting down hub connection manager.");
-                _hubConnectionManager.Stop();
                 _log.Info("Disposing the connection manager.");
                 _hubConnectionManager.Dispose();
                 _hubConnectionManager = null;
@@ -217,7 +217,7 @@ namespace Drey.Configuration.ServiceModel
                         ActionToTake = ShellAction.Startup,
                         PackageId = p.Id,
                         Version = string.Empty,
-                        ConfigurationManager = new Infrastructure.ConfigurationManagement.DbConfigurationSettings(_configurationManager, _packageSettingsRepository, _connectionStringsRepository, p.Id)
+                        ConfigurationManager = _dbConfigurationSettingsFactory.Invoke(p.Id)
                     })
                 );
             }
