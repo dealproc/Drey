@@ -5,7 +5,6 @@ using System;
 using System.Collections.Concurrent;
 using System.IO;
 using System.Linq;
-using System.Security.Permissions;
 
 namespace Drey.Configuration.ServiceModel
 {
@@ -17,11 +16,11 @@ namespace Drey.Configuration.ServiceModel
         static ILog _log = LogProvider.For<HoardeManager>();
 
         readonly IEventBus _eventBus;
-        readonly ShellFactory _appFactory;
+        readonly Sponsor<ShellFactory> _appFactory;
         readonly INutConfiguration _configurationManager;
         readonly Action<INutConfiguration> _configureLogging;
 
-        ConcurrentDictionary<Guid, Tuple<AppDomain, IShell>> _apps;
+        ConcurrentDictionary<Guid, Tuple<AppDomain, Sponsor<IShell>>> _apps;
         EventHandler<ShellRequestArgs> _shellRequestHandler;
 
         bool _disposed = false;
@@ -36,12 +35,12 @@ namespace Drey.Configuration.ServiceModel
         public HoardeManager(IEventBus eventBus, INutConfiguration configurationManager, EventHandler<ShellRequestArgs> shellRequestHandler, Action<INutConfiguration> configureLogging)
         {
             _eventBus = eventBus;
-            _appFactory = new ShellFactory();
+            _appFactory =new Sponsor<ShellFactory>(new ShellFactory());
             _configurationManager = configurationManager;
             _shellRequestHandler = shellRequestHandler;
             _configureLogging = configureLogging;
 
-            _apps = new ConcurrentDictionary<Guid, Tuple<AppDomain, IShell>>();
+            _apps = new ConcurrentDictionary<Guid, Tuple<AppDomain, Sponsor<IShell>>>();
 
             _eventBus.Subscribe(this);
         }
@@ -90,9 +89,9 @@ namespace Drey.Configuration.ServiceModel
         /// <returns></returns>
         public bool IsOnline(DataModel.Release package)
         {
-            _log.DebugFormat("Online packages: {packageList}", _apps.Select(x => x.Value.Item2.Id).ToArray());
+            _log.DebugFormat("Online packages: {packageList}", _apps.Select(x => x.Value.Item2.Protege.Id).ToArray());
 
-            var isOnline = _apps.Any(a => a.Value.Item2.Id.Equals(package.Id, StringComparison.OrdinalIgnoreCase));
+            var isOnline = _apps.Any(a => a.Value.Item2.Protege.Id.Equals(package.Id, StringComparison.OrdinalIgnoreCase));
             
             _log.DebugFormat("Is {package} online? {isOnline}", package.Id, isOnline);
             
@@ -114,7 +113,7 @@ namespace Drey.Configuration.ServiceModel
                 :
                 Utilities.PackageUtils.DiscoverPackage(id, _configurationManager.HoardeBaseDirectory, version);
 
-            var shell = _appFactory.Create(packageDir, _shellRequestHandler, _configureLogging, Path.Combine(_configurationManager.PluginsBaseDirectory, id));
+            var shell = _appFactory.Protege.Create(packageDir, _shellRequestHandler, _configureLogging, Path.Combine(_configurationManager.PluginsBaseDirectory, id));
             if (shell == null)
             {
                 _log.Fatal("Did not create the configuration console.  app exiting.");
@@ -122,15 +121,15 @@ namespace Drey.Configuration.ServiceModel
             }
 
 
-            _log.InfoFormat("Starting {app}", shell.Item2.Id);
+            _log.InfoFormat("Starting {app}", shell.Item2.Protege.Id);
 
-            if (shell.Item2.Startup(configurationManager))
+            if (shell.Item2.Protege.Startup(configurationManager))
             {
                 _apps.TryAdd(Guid.NewGuid(), shell);
             }
             else
             {
-                _log.InfoFormat("{app} failed to start.  Shutting app down.", shell.Item2.Id);
+                _log.InfoFormat("{app} failed to start.  Shutting app down.", shell.Item2.Protege.Id);
                 KillAppContainer(shell);
             }
 
@@ -169,11 +168,11 @@ namespace Drey.Configuration.ServiceModel
         {
             _log.DebugFormat("Attempting to remove {id}", id);
 
-            var instancesToShutdown = _apps.Where(i => i.Value.Item2.Id == id).Select(x => x.Key).ToArray();
+            var instancesToShutdown = _apps.Where(i => i.Value.Item2.Protege.Id == id).Select(x => x.Key).ToArray();
             foreach (var key in instancesToShutdown)
             {
                 KillAppContainer(_apps[key]);
-                Tuple<AppDomain, IShell> removed;
+                Tuple<AppDomain, Sponsor<IShell>> removed;
                 if (_apps.TryRemove(key, out removed))
                 {
                     _log.Debug("App domain details have been removed from hoarde successfully.");
@@ -185,24 +184,18 @@ namespace Drey.Configuration.ServiceModel
 
             }
         }
-        
-        [SecurityPermission(SecurityAction.Demand, Flags = SecurityPermissionFlag.Infrastructure)]
-        public override object InitializeLifetimeService()
-        {
-            return null;
-        }
 
         /// <summary>
         /// Kills the application container.
         /// </summary>
         /// <param name="shell">The shell.</param>
-        private void KillAppContainer(Tuple<AppDomain, IShell> shell)
+        private void KillAppContainer(Tuple<AppDomain, Sponsor<IShell>> shell)
         {
-            var appId = shell.Item2.Id;
+            var appId = shell.Item2.Protege.Id;
 
             try
             {
-                shell.Item2.Shutdown();
+                shell.Item2.Protege.Shutdown();
                 _log.DebugFormat("Shutdown of {appId} has completed.", appId);
                 shell.Item2.Dispose();
                 _log.DebugFormat("Shell from {appId} has been disposed.", appId);
@@ -235,7 +228,7 @@ namespace Drey.Configuration.ServiceModel
         {
             if (!disposing || _disposed) { return; }
 
-            var appIds = _apps.Select(x => x.Value.Item2.Id).ToArray();
+            var appIds = _apps.Select(x => x.Value.Item2.Protege.Id).ToArray();
 
             appIds.Apply(ShutdownInstance);
 

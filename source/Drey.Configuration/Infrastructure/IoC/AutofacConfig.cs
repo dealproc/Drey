@@ -50,7 +50,7 @@ namespace Drey.Configuration.Infrastructure.IoC
             builder.RegisterType<ServiceModel.PollingClientCollection>().AsSelf().SingleInstance();
             builder.RegisterType<ServiceModel.RegisteredPackagesPollingClient>().AsSelf().SingleInstance();
             builder.RegisterType<ServiceModel.ReleasesPollingClient>();
-            builder.RegisterType<Infrastructure.ConfigurationManagement.DbConfigurationSettings>();
+            builder.RegisterType<ConfigurationManagement.DbConfigurationSettings>();
 
             // we will apply most of the configuration in one or more assembly modules.
             builder.RegisterAssemblyModules(typeof(AutofacConfig).Assembly);

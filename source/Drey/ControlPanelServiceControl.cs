@@ -4,7 +4,6 @@ using Drey.Nut;
 using System;
 using System.IO;
 using System.Linq;
-using System.Security.Permissions;
 using System.Threading.Tasks;
 
 using Topshelf;
@@ -17,12 +16,12 @@ namespace Drey
     public class ControlPanelServiceControl : MarshalByRefObject, ServiceControl, IDisposable
     {
         readonly ILog _log;
-        readonly ShellFactory _appFactory;
-        readonly INutConfiguration _nutConfiguration;
+        readonly Sponsor<ShellFactory> _appFactory;
+        readonly INutConfiguration _configurationManager;
         readonly ExecutionMode _executionMode;
         readonly Action<INutConfiguration> _configureLogging;
 
-        Tuple<AppDomain, IShell> _console;
+        Tuple<AppDomain, Sponsor<IShell>> _console;
 
         Task _restartConsoleTask;
         ShellRequestArgs _requestArgsForRestart;
@@ -42,21 +41,21 @@ namespace Drey
         /// <item><term>Development</term><description>Drey will discover packages in the ~/Hoarde folder and load them for execution. This prevents the need to package your system for every build.</description></item>
         /// </list>
         /// </param>
-        /// <param name="configureLogging">An anction that gets run at the startup of every package which configures the logging provider for that package.</param>
+        /// <param name="configureLogging">An action that gets run at the startup of every package which configures the logging provider for that package.</param>
         /// <param name="logVerbosity">How much logging should be captured?  Pass a compatible string here that works with your chosen framework, and parse it within the configureLogging method.</param>
         public ControlPanelServiceControl(ExecutionMode mode = ExecutionMode.Production, Action<INutConfiguration> configureLogging = null, string logVerbosity = "Info")
         {
-            _nutConfiguration = new ApplicationHostNutConfiguration() { Mode = mode, LogVerbosity = logVerbosity };
+            _configurationManager = new ApplicationHostNutConfiguration() { Mode = mode, LogVerbosity = logVerbosity };
             _executionMode = mode;
 
             if (configureLogging != null)
             {
                 _configureLogging = configureLogging;
-                _configureLogging.Invoke(_nutConfiguration);
+                _configureLogging.Invoke(_configurationManager);
             }
 
             _log = LogProvider.For<ControlPanelServiceControl>();
-            _appFactory = new ShellFactory();
+            _appFactory = new Sponsor<ShellFactory>(new ShellFactory());
         }
         /// <summary>
         /// Finalizes an instance of the <see cref="ControlPanelServiceControl"/> class.
@@ -95,7 +94,7 @@ namespace Drey
         private void ShellRequestHandler(object sender, ShellRequestArgs e)
         {
             // when shutting down, the shutdown command is executing the ShutdownConsole() method.
-            if (_shuttingDown) { return; } 
+            if (_shuttingDown) { return; }
 
             // right now, the shutdown command is working as expected, but cannot seem to trigger a restart.
             if (e.PackageId.Equals(DreyConstants.ConfigurationPackageName, StringComparison.OrdinalIgnoreCase))
@@ -119,6 +118,9 @@ namespace Drey
                         _requestArgsForRestart = e;
                         ShutdownConsole();
                         break;
+                    case ShellAction.Heartbeat:
+                        _log.TraceFormat("Received heartbeat from {packageId} at {now}", e.PackageId, DateTime.Now);
+                        break;
                     default:
                         _log.ErrorFormat("Received an unknown action: {0}", e.ActionToTake);
                         break;
@@ -127,7 +129,7 @@ namespace Drey
                 return;
             }
 
-            _console.Item2.ShellRequestHandler(sender, e);
+            //_console.Item2.Protege.ShellRequestHandler(sender, e);
         }
 
         /// <summary>
@@ -143,7 +145,7 @@ namespace Drey
 
             _log.Info("Cleaning up hoarde due to restart and RemoveOtherVersionsOnRestart being set to true.");
 
-            var dir = new DirectoryInfo(Utilities.PathUtilities.MapPath(_nutConfiguration.HoardeBaseDirectory));
+            var dir = new DirectoryInfo(Utilities.PathUtilities.MapPath(_configurationManager.HoardeBaseDirectory));
             var deployments = dir.EnumerateDirectories(e.PackageId + "*", searchOption: System.IO.SearchOption.TopDirectoryOnly)
                 .Where(di => !di.Name.EndsWith(e.Version))
                 .Apply(di =>
@@ -160,10 +162,10 @@ namespace Drey
         private bool StartupConsole()
         {
             _log.Info("Console is starting up.");
-            string packageDir = Utilities.PackageUtils.DiscoverPackage(DreyConstants.ConfigurationPackageName, _nutConfiguration.HoardeBaseDirectory);
-            _console = _appFactory.Create(packageDir, ShellRequestHandler, _configureLogging, Path.Combine(_nutConfiguration.PluginsBaseDirectory, DreyConstants.ConfigurationPackageName));
+            string packageDir = Utilities.PackageUtils.DiscoverPackage(DreyConstants.ConfigurationPackageName, _configurationManager.HoardeBaseDirectory);
+            _console = _appFactory.Protege.Create(packageDir, ShellRequestHandler, _configureLogging, Path.Combine(_configurationManager.PluginsBaseDirectory, DreyConstants.ConfigurationPackageName));
 
-            return _console.Item2.Startup(_nutConfiguration);
+            return _console.Item2.Protege.Startup(_configurationManager);
         }
 
         /// <summary>
@@ -185,7 +187,7 @@ namespace Drey
 
                 if (_console.Item2 != null)
                 {
-                    _console.Item2.Shutdown();
+                    _console.Item2.Protege.Shutdown();
                     _console.Item2.Dispose();
                 }
                 else
@@ -208,11 +210,11 @@ namespace Drey
             finally
             {
                 _console = null;
-            }
 
-            _log.Info("Console has shutdown.");
-            _log.Info(new string('*', 50));
-            _log.Info(new string('*', 50));
+                _log.Info("Console has shutdown.");
+                _log.Info(new string('*', 50));
+                _log.Info(new string('*', 50));
+            }
         }
 
         /// <summary>
@@ -247,28 +249,6 @@ namespace Drey
             _restartConsoleTask = null;
         }
 
-
-        /// <summary>
-        /// Obtains a lifetime service object to control the lifetime policy for this instance.
-        /// <remarks>We need to override the default functionality here and send back a `null` so that we can control the lifetime of the ServiceControl.  Default lease time is 5 minutes, which does not work for us.</remarks>
-        /// </summary>
-        /// <returns>
-        /// An object of type <see cref="T:System.Runtime.Remoting.Lifetime.ILease" /> used to control the lifetime policy for this instance. This is the current lifetime service object for this instance if one exists; otherwise, a new lifetime service object initialized to the value of the <see cref="P:System.Runtime.Remoting.Lifetime.LifetimeServices.LeaseManagerPollTime" /> property.
-        /// </returns>
-        /// <PermissionSet>
-        ///   <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="RemotingConfiguration, Infrastructure" />
-        /// </PermissionSet>
-        [SecurityPermission(SecurityAction.Demand, Flags = SecurityPermissionFlag.Infrastructure)]
-        public override object InitializeLifetimeService()
-        {
-            //
-            // Returning null designates an infinite non-expiring lease.
-            // We must therefore ensure that RemotingServices.Disconnect() is called when
-            // it's no longer needed otherwise there will be a memory leak.
-            //
-            return null;
-        }
-
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
@@ -293,6 +273,11 @@ namespace Drey
                 _log.Debug("Disposing the restart console task");
                 _restartConsoleTask.Dispose();
                 _restartConsoleTask = null;
+            }
+
+            if (_appFactory != null)
+            {
+                _appFactory.Dispose();
             }
 
             _disposed = true;

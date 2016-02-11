@@ -13,6 +13,7 @@ namespace Drey.Utilities
         /// Creates an app domain for loading an app/plugin.
         /// </summary>
         /// <param name="domainName">Name of the domain.</param>
+        /// <param name="shadowCopyDirectories">The shadow copy directories.</param>
         /// <returns></returns>
         public static AppDomain CreateDomain(string domainName, string[] shadowCopyDirectories)
         {

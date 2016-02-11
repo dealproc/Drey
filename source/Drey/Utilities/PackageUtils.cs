@@ -11,6 +11,7 @@ namespace Drey.Utilities
         /// </summary>
         /// <param name="packageId">The package identifier.</param>
         /// <param name="hordeDirectory">The horde directory.</param>
+        /// <param name="specificVersion">The specific version.</param>
         /// <returns></returns>
         public static string DiscoverPackage(string packageId, string hordeDirectory, string specificVersion = "Latest")
         {

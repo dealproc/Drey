@@ -184,7 +184,6 @@ namespace Drey.Configuration.Services
             _connectionStringRepository.Delete(model.Id);
         }
 
-
         /// <summary>
         /// Retrieves a list of the System.Data Connection Factory Providers registered in this system.
         /// </summary>

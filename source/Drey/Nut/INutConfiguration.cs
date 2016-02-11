@@ -1,4 +1,5 @@
 ﻿using Drey.CertificateValidation;
+
 namespace Drey.Nut
 {
     public interface INutConfiguration
@@ -57,5 +58,13 @@ namespace Drey.Nut
         /// Gets the certificate validator.
         /// </summary>
         ICertificateValidation CertificateValidator { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether [shell controls lifetime sponsorship].
+        /// </summary>
+        /// <value>
+        /// <c>true</c> if [shell controls lifetime sponsorship]; otherwise, <c>false</c>.
+        /// </value>
+        bool ShellControlsLifetimeSponsorship { get; }
     }
 }

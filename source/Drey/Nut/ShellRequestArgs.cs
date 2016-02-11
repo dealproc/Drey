@@ -59,6 +59,10 @@ namespace Drey.Nut
         /// <summary>
         /// Command requests that the app instance be restarted within the runtime.
         /// </summary>
-        Restart = Startup & Shutdown
+        Restart = Startup & Shutdown,
+        /// <summary>
+        /// The heartbeat.
+        /// </summary>
+        Heartbeat = 4
     }
 }

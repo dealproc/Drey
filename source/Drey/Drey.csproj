@@ -80,6 +80,7 @@
     <Compile Include="Nut\ShellRequestArgs.cs" />
     <Compile Include="Nut\StartupProxy.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Sponsor.of.T.cs" />
     <Compile Include="Utilities\AppDomainUtils.cs" />
     <Compile Include="Utilities\PackageUtils.cs" />
     <Compile Include="Utilities\PathUtilities.cs" />

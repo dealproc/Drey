@@ -5,10 +5,13 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Security.Permissions;
 
 namespace Drey.Nut
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <seealso cref="System.MarshalByRefObject" />
     public class ShellFactory : MarshalByRefObject
     {
         static readonly ILog _Log = LogProvider.For<ShellFactory>();
@@ -21,7 +24,7 @@ namespace Drey.Nut
         /// <param name="configureLogging">The configure logging.</param>
         /// <param name="additionalSearchPaths">The additional search paths.</param>
         /// <returns></returns>
-        public Tuple<AppDomain, IShell> Create(string assemblyPath, EventHandler<ShellRequestArgs> shellRequestHandler, Action<INutConfiguration> configureLogging, params string[] additionalSearchPaths)
+        public Tuple<AppDomain, Sponsor<IShell>> Create(string assemblyPath, EventHandler<ShellRequestArgs> shellRequestHandler, Action<INutConfiguration> configureLogging, params string[] additionalSearchPaths)
         {
             if (string.IsNullOrWhiteSpace(assemblyPath)) { return null; }
 
@@ -81,23 +84,7 @@ namespace Drey.Nut
             appShell.OnShellRequest += shellRequestHandler;
             appShell.ShellRequestHandler = shellRequestHandler;
 
-            return new Tuple<AppDomain, IShell>(domain, appShell);
-        }
-
-        /// <summary>
-        /// Obtains a lifetime service object to control the lifetime policy for this instance.
-        /// <remarks>We need to override the default functionality here and send back a `null` so that we can control the lifetime of the ServiceControl.  Default lease time is 5 minutes, which does not work for us.</remarks>
-        /// </summary>
-        /// <returns>
-        /// An object of type <see cref="T:System.Runtime.Remoting.Lifetime.ILease" /> used to control the lifetime policy for this instance. This is the current lifetime service object for this instance if one exists; otherwise, a new lifetime service object initialized to the value of the <see cref="P:System.Runtime.Remoting.Lifetime.LifetimeServices.LeaseManagerPollTime" /> property.
-        /// </returns>
-        /// <PermissionSet>
-        ///   <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="RemotingConfiguration, Infrastructure" />
-        /// </PermissionSet>
-        [SecurityPermission(SecurityAction.Demand, Flags = SecurityPermissionFlag.Infrastructure)]
-        public override object InitializeLifetimeService()
-        {
-            return null;
+            return new Tuple<AppDomain, Sponsor<IShell>>(domain, new Sponsor<IShell>(appShell));
         }
     }
 }

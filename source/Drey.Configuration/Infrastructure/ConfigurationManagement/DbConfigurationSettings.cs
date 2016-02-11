@@ -5,15 +5,13 @@ using Drey.Utilities;
 
 using System;
 using System.IO;
-using System.Runtime.Remoting;
-using System.Security.Permissions;
 
 namespace Drey.Configuration.Infrastructure.ConfigurationManagement
 {
     /// <summary>
     /// Configuration manager instantiated and shared with packages in the runtime.  This facades the access to the configuration store, hard drive path(s), etc.
     /// </summary>
-    public class DbConfigurationSettings : MarshalByRefObject, Drey.Nut.INutConfiguration, IDisposable
+    public class DbConfigurationSettings : MarshalByRefObject, INutConfiguration, IDisposable
     {
         /// <summary>
         /// Factory delegate for registering with Autofac.   Allows autofac to create an instance of DbConfigurationSettings.
@@ -27,8 +25,8 @@ namespace Drey.Configuration.Infrastructure.ConfigurationManagement
         readonly string _packageId;
         readonly INutConfiguration _hostApplicationConfiguration;
         readonly IGlobalSettingsRepository _globalSettingsRepository;
-        readonly IApplicationSettings _applicationSettingsService;
-        readonly IConnectionStrings _connectionStringsService;
+        Sponsor<IApplicationSettings> _applicationSettingsService;
+        Sponsor<IConnectionStrings> _connectionStringsService;
 
         bool _disposed = false;
 
@@ -48,8 +46,8 @@ namespace Drey.Configuration.Infrastructure.ConfigurationManagement
             _packageId = packageId;
 
             _globalSettingsRepository = new Repositories.SQLiteRepositories.GlobalSettingsRepository(this);
-            _applicationSettingsService = new Services.ApplicationSettingsService(_packageId, packageSettingRepository);
-            _connectionStringsService = new Services.ConnectionStringsService(_packageId, connectionStringsRepository);
+            _applicationSettingsService = new Sponsor<IApplicationSettings>(new Services.ApplicationSettingsService(_packageId, packageSettingRepository));
+            _connectionStringsService = new Sponsor<IConnectionStrings>(new Services.ConnectionStringsService(_packageId, connectionStringsRepository));
 
             _log.Debug("Created db configuration settings provider");
         }
@@ -74,7 +72,7 @@ namespace Drey.Configuration.Infrastructure.ConfigurationManagement
         /// </summary>
         public IApplicationSettings ApplicationSettings
         {
-            get { return _applicationSettingsService; }
+            get { return _applicationSettingsService.Protege; }
         }
 
         /// <summary>
@@ -82,7 +80,7 @@ namespace Drey.Configuration.Infrastructure.ConfigurationManagement
         /// </summary>
         public IConnectionStrings ConnectionStrings
         {
-            get { return _connectionStringsService; }
+            get { return _connectionStringsService.Protege; }
         }
 
         /// <summary>
@@ -146,24 +144,12 @@ namespace Drey.Configuration.Infrastructure.ConfigurationManagement
         }
 
         /// <summary>
-        /// Obtains a lifetime service object to control the lifetime policy for this instance.
+        /// Gets a value indicating whether [shell controls lifetime sponsorship].
         /// </summary>
-        /// <returns>
-        /// An object of type <see cref="T:System.Runtime.Remoting.Lifetime.ILease" /> used to control the lifetime policy for this instance. This is the current lifetime service object for this instance if one exists; otherwise, a new lifetime service object initialized to the value of the <see cref="P:System.Runtime.Remoting.Lifetime.LifetimeServices.LeaseManagerPollTime" /> property.
-        /// </returns>
-        /// <PermissionSet>
-        ///   <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="RemotingConfiguration, Infrastructure" />
-        /// </PermissionSet>
-        [SecurityPermission(SecurityAction.Demand, Flags = SecurityPermissionFlag.Infrastructure)]
-        public override object InitializeLifetimeService()
-        {
-            //
-            // Returning null designates an infinite non-expiring lease.
-            // We must therefore ensure that RemotingServices.Disconnect() is called when
-            // it's no longer needed otherwise there will be a memory leak.
-            //
-            return null;
-        }
+        /// <value>
+        /// <c>true</c> if [shell controls lifetime sponsorship]; otherwise, <c>false</c>.
+        /// </value>
+        public bool ShellControlsLifetimeSponsorship { get { return true; } }
 
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
@@ -183,7 +169,18 @@ namespace Drey.Configuration.Infrastructure.ConfigurationManagement
         {
             if (!disposing || _disposed) { return; }
 
-            RemotingServices.Disconnect(this);
+            if (_connectionStringsService != null)
+            {
+                _connectionStringsService.Dispose();
+                _connectionStringsService = null;
+            }
+
+            if (_applicationSettingsService != null)
+            {
+                _applicationSettingsService.Dispose();
+                _applicationSettingsService = null;
+            }
+
 
             _disposed = true;
         }

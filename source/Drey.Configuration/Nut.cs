@@ -24,7 +24,7 @@ namespace Drey.Configuration
         bool _disposed = false;
 
         [NonSerialized]
-        ServiceModel.IHoardeManager _hoardeManager;
+        Sponsor<ServiceModel.IHoardeManager> _sponsoredHoardeManager;
 
         [NonSerialized]
         ServiceModel.IServicesManager _servicesManager;
@@ -134,12 +134,14 @@ namespace Drey.Configuration
         {
             _eventBus = new EventBus();
             _eventBus.Subscribe(this);
-            _hoardeManager = new ServiceModel.HoardeManager(_eventBus, configurationManager, ShellRequestHandler, this.ConfigureLogging);
-            Infrastructure.IoC.AutofacConfig.Configure(_eventBus, _hoardeManager, configurationManager);
+            _sponsoredHoardeManager = new Sponsor<ServiceModel.IHoardeManager>(
+                new ServiceModel.HoardeManager(_eventBus, configurationManager, ShellRequestHandler, this.ConfigureLogging)
+            );
+            Infrastructure.IoC.AutofacConfig.Configure(_eventBus, _sponsoredHoardeManager.Protege, configurationManager);
         }
         private void ResetConfigurationManager()
         {
-            if (this.ConfigurationManager is Infrastructure.ConfigurationManagement.DbConfigurationSettings)
+            if (ConfigurationManager is Infrastructure.ConfigurationManagement.DbConfigurationSettings)
             {
                 _log.Info("Configuration manager has already been reset.");
                 return;
@@ -167,16 +169,16 @@ namespace Drey.Configuration
         }
 
         /// <summary>
-        /// Should your app need a specific shutdown routine, you will override this method and impement it.
+        /// Should your app need a specific shutdown routine, you will override this method and implement it.
         /// </summary>
         public override void Shutdown()
         {
             Log.InfoFormat("{id} is shutting down.", Id);
 
-            if (_hoardeManager != null)
+            if (_sponsoredHoardeManager != null)
             {
-                _hoardeManager.Dispose();
-                _hoardeManager = null;
+                _sponsoredHoardeManager.Dispose();
+                _sponsoredHoardeManager = null;
             }
 
             if (_webApp != null)
@@ -225,10 +227,10 @@ namespace Drey.Configuration
                 _webApp = null;
             }
 
-            if (_hoardeManager != null)
+            if (_sponsoredHoardeManager != null)
             {
-                _hoardeManager.Dispose();
-                _hoardeManager = null;
+                _sponsoredHoardeManager.Dispose();
+                _sponsoredHoardeManager = null;
             }
 
             if (_servicesManager != null)

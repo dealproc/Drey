@@ -2,34 +2,69 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Remoting;
-using System.Security.Permissions;
+using System.Threading.Tasks;
 
 namespace Drey.Nut
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <seealso cref="System.MarshalByRefObject" />
+    /// <seealso cref="Drey.Nut.IShell" />
+    /// <seealso cref="System.IDisposable" />
     public abstract class ShellBase : MarshalByRefObject, IShell, IDisposable
     {
         static ILog _Log = LogProvider.GetCurrentClassLogger();
+
+        Task _keepAlive;
+
+        /// <summary>
+        /// Gets the log.
+        /// </summary>
         protected static ILog Log { get { return _Log; } }
 
+        /// <summary>
+        /// The shell's Id.  This should be a 1-1 correlation with the nuget package id.
+        /// </summary>
         public abstract string Id { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether the package requires usage of the configuation storate utilities in Drey.
+        /// </summary>
         public abstract bool RequiresConfigurationStorage { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether this <see cref="ShellBase"/> is disposed.
+        /// </summary>
         protected bool Disposed { get; private set; }
 
         /// <summary>
-        /// Gets an enumeration of nested <see cref="MarshalByRefObject"/> objects.
+        /// Initializes a new instance of the <see cref="ShellBase"/> class.
         /// </summary>
-        protected virtual IEnumerable<MarshalByRefObject> NestedMarshalByRefObjects
-        {
-            get { return Enumerable.Empty<MarshalByRefObject>(); }
-        }
-
         public ShellBase()
         {
             ConfigureLogging = (config) => { };
             Disposed = false;
+
+            _keepAlive = Task.Factory.StartNew(() =>
+            {
+                while (!Disposed)
+                {
+                    Task.Delay(TimeSpan.FromSeconds(30)).Wait();
+                    EmitShellRequest(new ShellRequestArgs()
+                    {
+                        ActionToTake = ShellAction.Heartbeat,
+                        ConfigurationManager = null,
+                        PackageId = Id,
+                        Version = string.Empty,
+                        RemoveOtherVersionsOnRestart = false
+                    });
+                }
+            });
         }
+        /// <summary>
+        /// Finalizes an instance of the <see cref="ShellBase"/> class.
+        /// </summary>
         ~ShellBase()
         {
             Dispose(false);
@@ -45,14 +80,45 @@ namespace Drey.Nut
         /// </summary>
         public abstract IEnumerable<DefaultConnectionString> ConnectionStringDefaults { get; }
 
-        public INutConfiguration ConfigurationManager { get; protected set; }
+        INutConfiguration _configurationManager;
+        Sponsor<INutConfiguration> _configurationManagerSponsorship;
+        /// <summary>
+        /// Gets or sets the configuration manager.
+        /// </summary>
+        /// <value>
+        /// The configuration manager.
+        /// </value>
+        /// <exception cref="System.Exception">Cannot manage multiple configuration managers in the shell.</exception>
+        public INutConfiguration ConfigurationManager
+        {
+            get { return _configurationManager; }
+            protected set
+            {
+                _configurationManager = value;
+                if (_configurationManagerSponsorship != null && value.ShellControlsLifetimeSponsorship)
+                {
+                    throw new Exception("Cannot manage multiple configuration managers in the shell.");
+                }
+                if (_configurationManagerSponsorship == null && value.ShellControlsLifetimeSponsorship)
+                {
+                    _configurationManagerSponsorship = new Sponsor<INutConfiguration>(value);
+                }
+            }
+        }
 
+        /// <summary>
+        /// An action, provided by the host, to allow the host to configure logging within the package's domain.
+        /// </summary>
         public Action<INutConfiguration> ConfigureLogging { get; set; }
 
         /// <summary>
         /// Occurs when this shell needs the runtime to perform an operation on the shell's behalf.
         /// </summary>
         public event EventHandler<ShellRequestArgs> OnShellRequest;
+
+        /// <summary>
+        /// Gets or sets the shell request handler.
+        /// </summary>
         public EventHandler<ShellRequestArgs> ShellRequestHandler { get; set; }
 
         /// <summary>
@@ -100,27 +166,6 @@ namespace Drey.Nut
             GC.SuppressFinalize(this);
         }
 
-        /// <summary>
-        /// Obtains a lifetime service object to control the lifetime policy for this instance.
-        /// <remarks>We need to override the default functionality here and send back a `null` so that we can control the lifetime of the ServiceControl.  Default lease time is 5 minutes, which does not work for us.</remarks>
-        /// </summary>
-        /// <returns>
-        /// An object of type <see cref="T:System.Runtime.Remoting.Lifetime.ILease" /> used to control the lifetime policy for this instance. This is the current lifetime service object for this instance if one exists; otherwise, a new lifetime service object initialized to the value of the <see cref="P:System.Runtime.Remoting.Lifetime.LifetimeServices.LeaseManagerPollTime" /> property.
-        /// </returns>
-        /// <PermissionSet>
-        ///   <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="RemotingConfiguration, Infrastructure" />
-        /// </PermissionSet>
-        [SecurityPermission(SecurityAction.Demand, Flags = SecurityPermissionFlag.Infrastructure)]
-        public override object InitializeLifetimeService()
-        {
-            //
-            // Returning null designates an infinite non-expiring lease.
-            // We must therefore ensure that RemotingServices.Disconnect() is called when
-            // it's no longer needed otherwise there will be a memory leak.
-            //
-            return null;
-        }
-
         protected virtual void Dispose(bool disposing)
         {
             if (!disposing || Disposed) { return; }
@@ -130,19 +175,12 @@ namespace Drey.Nut
                 ((IDisposable)ConfigurationManager).Dispose();
             }
 
-            Disconnect();
+            if (_configurationManagerSponsorship != null)
+            {
+                _configurationManagerSponsorship.Dispose();
+            }
 
             Disposed = true;
-        }
-
-        private void Disconnect()
-        {
-            RemotingServices.Disconnect(this);
-
-            foreach (var tmp in NestedMarshalByRefObjects)
-            {
-                RemotingServices.Disconnect(tmp);
-            }
         }
 
         /// <summary>

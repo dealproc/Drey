@@ -104,6 +104,14 @@ namespace Drey
         }
 
         /// <summary>
+        /// Gets a value indicating whether [shell controls lifetime sponsorship].
+        /// </summary>
+        /// <value>
+        /// <c>true</c> if [shell controls lifetime sponsorship]; otherwise, <c>false</c>.
+        /// </value>
+        public bool ShellControlsLifetimeSponsorship { get { return false; } }
+
+        /// <summary>
         /// Obtains a lifetime service object to control the lifetime policy for this instance.
         /// <remarks>We need to override the default functionality here and send back a `null` so that we can control the lifetime of the ServiceControl.  Default lease time is 5 minutes, which does not work for us.</remarks>
         /// </summary>
