@@ -30,7 +30,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "!Solution", "!Solution", "{
 		tools\env.ps1 = tools\env.ps1
 		package.proj = package.proj
 		SetVersion.proj = SetVersion.proj
-		xUnit.proj = xUnit.proj
+		xunit.ps1 = xunit.ps1
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Drey.Server.Tests", "tests\Drey.Server.Tests\Drey.Server.Tests.csproj", "{008D7681-F5ED-4E5F-B4A3-AE02BFC57A56}"
