@@ -70,7 +70,9 @@ namespace Drey
         /// </summary>
         public bool Start(HostControl hostControl)
         {
-            return StartupConsole();
+            var started = StartupConsole();
+            _log.InfoFormat("Startup was successful? {started}", started);
+            return started;
         }
 
         /// <summary>
@@ -163,7 +165,10 @@ namespace Drey
         {
             _log.Info("Console is starting up.");
             string packageDir = Utilities.PackageUtils.DiscoverPackage(DreyConstants.ConfigurationPackageName, _configurationManager.HoardeBaseDirectory);
+            _log.InfoFormat("Configuration Package located at '{packageDir}'", packageDir);
+
             _console = _appFactory.Protege.Create(packageDir, ShellRequestHandler, _configureLogging, Path.Combine(_configurationManager.PluginsBaseDirectory, DreyConstants.ConfigurationPackageName));
+            _log.InfoFormat("Starting console service.");
 
             return _console.Item2.Protege.Startup(_configurationManager);
         }
