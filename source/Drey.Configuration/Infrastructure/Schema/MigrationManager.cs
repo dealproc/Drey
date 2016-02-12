@@ -37,14 +37,19 @@ namespace Drey.Configuration.Infrastructure.Schema
         /// </summary>
         /// <param name="fileNameAndPath">The file name and path.</param>
         /// <param name="withBackup">if set to <c>true</c> [with backup].</param>
-        public static void Migrate(string fileNameAndPath, bool withBackup = false)
+        /// <param name="withAnnouncer">if set to <c>true</c> [with announcer].</param>
+        public static void Migrate(string fileNameAndPath, bool withBackup = false, bool withAnnouncer = false)
         {
             var currentDb = new FileInfo(fileNameAndPath);
             var backupDb = string.Empty;
 
             if (withBackup) { Backup(currentDb); }
 
-            var ctx = new RunnerContext(new ConsoleAnnouncer())
+            var emptyAnnouncers = new Announcer[] { };
+            var consoleAnnouncer = new Announcer[] { new ConsoleAnnouncer() };
+            var announcerToProvide = new CompositeAnnouncer(withAnnouncer ? consoleAnnouncer : emptyAnnouncers);
+
+            var ctx = new RunnerContext(announcerToProvide)
             {
                 ApplicationContext = string.Empty,
                 Database = "sqlite",

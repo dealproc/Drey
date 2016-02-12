@@ -35,11 +35,11 @@ namespace Drey.Server.Tests
                     var result = response.Content.ReadAsAsync<IEnumerable<Models.Release>>().Result;
                     result.Count().ShouldBe(1);
                 }
-                else
-                {
-                    var content = response.Content.ReadAsStringAsync().Result;
-                    Console.WriteLine(content);
-                }
+                //else
+                //{
+                //    var content = response.Content.ReadAsStringAsync().Result;
+                //    Console.WriteLine(content);
+                //}
 
                 response.StatusCode.ShouldBe(expectedResponse);
                 return Task.FromResult(0);
