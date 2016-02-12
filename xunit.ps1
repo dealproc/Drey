@@ -1,5 +1,6 @@
 ﻿param(
-    [parameter(Mandatory=$true)] [string]$configuration
+    [parameter(Mandatory=$true)] [string]$configuration,
+    [parameter(Mandatory=$false)] [string]$dotCoverFolder
 )
 
 function RunTestsWithCoverage {
@@ -8,7 +9,12 @@ function RunTestsWithCoverage {
     $reportsDir = Resolve-Path '.\'
     $testDir = Resolve-Path '.\tests'
 
-    $dotCover = "$rootDir\..\..\tools\dotCover\dotCover.exe"
+    if ($dotCoverFolder) {
+        $dotCover = "$dotCoverFolder\dotCover.exe"
+    } else {
+        $dotCover = "$rootDir\..\..\tools\dotCover\dotCover.exe"
+    }
+
     $xunitRunner = "$rootDir\packages\xunit.runner.console.2.1.0\tools\xunit.console.x86.exe"
 
     Write-Host $dotCover
