@@ -165,6 +165,13 @@ namespace Drey
         {
             _log.Info("Console is starting up.");
             string packageDir = Utilities.PackageUtils.DiscoverPackage(DreyConstants.ConfigurationPackageName, _configurationManager.HoardeBaseDirectory);
+
+            if (string.IsNullOrEmpty(packageDir))
+            {
+                _log.Fatal("Could not discover console.  Cannot start.");
+                return false;
+            }
+
             _log.InfoFormat("Configuration Package located at '{packageDir}'", packageDir);
 
             _console = _appFactory.Protege.Create(packageDir, ShellRequestHandler, _configureLogging, Path.Combine(_configurationManager.PluginsBaseDirectory, DreyConstants.ConfigurationPackageName));

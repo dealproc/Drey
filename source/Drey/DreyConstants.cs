@@ -6,7 +6,7 @@ namespace Drey
         /// <summary>
         /// The Id of the console package.  Used for loading the console, etc.
         /// </summary>
-        public static string ConfigurationPackageName { get { return "drey.configuration"; } }
+        public static string ConfigurationPackageName { get { return "Drey.Configuration"; } }
         /// <summary>
         /// The string representation of a relative url path.  Used with a "{some string path}".StartsWith(DreyConstants.RelativeUrlMarker); to determine if the path is relative or absolute.
         /// </summary>
