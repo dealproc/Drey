@@ -1,6 +1,9 @@
-﻿function RunTestsWithCoverage {
+﻿param(
+    [parameter(Mandatory=$true)] [string]$configuration
+)
 
-    $configuration = 'Debug'
+function RunTestsWithCoverage {
+
     $rootDir = Resolve-Path '.\'
     $reportsDir = Resolve-Path '.\'
     $testDir = Resolve-Path '.\tests'
