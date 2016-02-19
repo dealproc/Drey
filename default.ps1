@@ -95,7 +95,7 @@ task Package {
 		New-Item $artifactsDir -Type Directory
 	}
 
-	Get-ChildItem "$rootDir" -Recurse -Include *.nuspec -Exclude Drey.nuspec | % {
+	Get-ChildItem "$rootDir" -Recurse -Include *.nuspec -Exclude Drey.nuspec,Drey.Sdk.nuspec | % {
 		$project = $_.BaseName
 		$nuspec = $_.FullName
 		
@@ -105,4 +105,5 @@ task Package {
 	}
 
 	.nuget\nuget.exe pack ".\source\Drey\Drey.nuspec" -NoDefaultExcludes -NoPackageAnalysis -OutputDirectory "$artifactsDir" -Version "$versionInfo" -Properties "Configuration=$configuration"
+	.nuget\nuget.exe pack ".\source\Drey\Drey.Sdk.nuspec" -NoDefaultExcludes -NoPackageAnalysis -OutputDirectory "$artifactsDir" -Version "$versionInfo" -Properties "Configuration=$configuration"
 }

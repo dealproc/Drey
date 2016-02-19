@@ -13,7 +13,7 @@ $project.Save()
 
 [xml]$xml = Get-Content $project.FullName
 
-if ($xml.Project.PropertyGroup.StartAction -ne $null) { exit 0 }
+if ($xml.Project.PropertyGroup[0].StartAction -ne $null) { exit 0 }
 
 $startAction = $xml.CreateElement("StartAction", $xml.DocumentElement.NamespaceURI)
 $startAction.InnerText = "Program"

@@ -1,22 +1,26 @@
 ﻿param (
-	$InstallPath,
-	$ToolsPath,
-	$Package,
-	$Project
+	$installPath,
+	$toolsPath,
+	$package,
+	$project
 )
 
-$Project.Save();
+[xml]$xml = Get-Content $project.FullName
 
-[xml]$xml = Get-Content $Project.FullName
-
-$startAction = $xml | Select-Xml -XPath "(//Project/PropertyGroup/StartAction)[1]"
-$startProgram = $xml | Select-Xml -XPath "(//Project/PropertyGroup/StartProgram)[1]"
-
-if ($startAction){
-	$xml.RemoveChild($startAction)
-}
-if ($startProgram) {
-	$xml.RemoveChild($startProgram)
+$nodes = $xml.SelectNodes("/Project/PropertyGroup")
+$nodes.ChildNodes | ? { 
+	$_.Name -eq "StartAction" -or $_.Name -eq "StartProgram" } | % {
+	$_.ParentNode.RemoveChildNode($_)
 }
 
-$Project.Save();
+$project.Save()
+
+#$writerSettings = new-object System.Xml.XmlWriterSettings
+#$writerSettings.OmitXmlDeclaration = $false
+#$writerSettings.NewLineOnAttributes = $false
+#$writerSettings.Indent = $true
+#$projectFilePath = Resolve-Path -Path $project.FullName
+#$writer = [System.Xml.XmlWriter]::Create($projectFilePath, $writerSettings)
+#$xml.WriteTo($writer)
+#$writer.Flush()
+#$writer.Close()

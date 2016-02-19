@@ -90,6 +90,7 @@
     <Compile Include="Utilities\StringMasking.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Drey.Sdk.nuspec" />
     <None Include="Drey.nuspec" />
     <None Include="drey.targets" />
     <None Include="uninstall.ps1" />

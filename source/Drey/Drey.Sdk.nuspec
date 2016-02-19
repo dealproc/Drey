@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<package>
+  <metadata>
+    <id>Drey.Sdk</id>
+    <version>$version$</version>
+    <title>Drey SDK</title>
+    <authors>Richard Bennett</authors>
+    <owners>Richard Bennett</owners>
+    <licenseUrl>https://github.com/dealproc/Drey/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/dealproc/Drey</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Drey - Application Creation SDK</description>
+    <releaseNotes></releaseNotes>
+    <copyright>Copyright 2015 - Richard Bennett</copyright>
+    <dependencies>
+      <dependency id="Drey" version="$version$" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src=".\..\..\package\drey.configuration.$version$.nupkg" target="build\" />
+    <file src=".\..\Drey.Runtime\bin\$configuration$\**\*.*" target="build\" />
+    <file src=".\drey.targets" target="build\" />
+
+    <file src=".\install.ps1" target="tools\" />
+    <file src=".\uninstall.ps1" target="tools\" />
+  </files>
+</package>
