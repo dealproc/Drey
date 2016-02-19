@@ -7,34 +7,28 @@
 
 # Find Debug configuration and set debugger settings.
 
-Write-Host "`tSetting startup information in Debug configuration"
+Write-Host "`tSetting dll to run an external program for running applet."
 
 $project.Save()
 
-[xml]$prjXml = Get-Content $project.FullName
+[xml]$xml = Get-Content $project.FullName
 
-foreach ($PropertyGroup in $prjXml.project.ChildNodes)
-{
-	if ($PropertyGroup.StartAction -ne $null)
-	{
-		exit
-	}
-}
+if ($xml.Project.PropertyGroup.StartAction -ne $null) { exit 0 }
 
-$propertyGroupElement = $prjXml.CreateElement("PropertyGroup", $prjXml.Project.GetAttribute("xmlns"));
-$startActionElement = $prjXml.CreateElement("StartAction", $prjXml.Project.GetAttribute("xmlns"));
-$propertyGroupElement.AppendChild($startActionElement)
-$propertyGroupElement.StartAction = "Program"
-$startProgramElement = $prjXml.CreateElement("StartProgram", $prjXml.Project.GetAttribute("xmlns"));
-$propertyGroupElement.AppendChild($startProgramElement)
-$propertyGroupElement.StartProgram = "`$(SolutionDir)Runtime\Runtime.exe"
-$prjXml.project.AppendChild($propertyGroupElement);
+$startAction = $xml.CreateElement("StartAction", $xml.DocumentElement.NamespaceURI)
+$startAction.InnerText = "Program"
+$startProgram = $xml.CreateElement("StartProgram", $xml.DocumentElement.NamespaceURI)
+$startProgram.InnerText = "`$(SolutionDir)Runtime\Runtime.exe"
+
+$xml.Project.PropertyGroup[0].AppendChild($startAction)
+$xml.Project.PropertyGroup[0].AppendChild($startProgram)
+
 $writerSettings = new-object System.Xml.XmlWriterSettings
 $writerSettings.OmitXmlDeclaration = $false
 $writerSettings.NewLineOnAttributes = $false
 $writerSettings.Indent = $true
 $projectFilePath = Resolve-Path -Path $project.FullName
 $writer = [System.Xml.XmlWriter]::Create($projectFilePath, $writerSettings)
-$prjXml.WriteTo($writer)
+$xml.WriteTo($writer)
 $writer.Flush()
 $writer.Close()
