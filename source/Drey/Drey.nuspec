@@ -14,7 +14,7 @@
     <copyright>Copyright 2015 - Richard Bennett</copyright>
   </metadata>
   <files>
-    <file src="bin\$configuration$\**\*.*" target="lib\net451\" />
+    <file src="bin\$configuration$\**\*.*" target="lib\net452\" />
 
     <file src=".\..\..\package\drey.configuration.$version$.nupkg" target="build\" />
     <file src=".\..\Drey.Runtime\bin\$configuration$\**\*.*" target="build\" />
