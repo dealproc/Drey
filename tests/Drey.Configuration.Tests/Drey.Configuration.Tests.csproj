@@ -111,6 +111,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\CommonAssemblyInfo.cs">
+      <Link>CommonAssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="Fixtures\OwinPipeline.cs" />
     <Compile Include="Infrastructure\ConfigurationManagement\DbConfigurationSettingsTests.cs" />
     <Compile Include="Modules\AppletModuleTests.cs" />

@@ -111,6 +111,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\CommonAssemblyInfo.cs">
+      <Link>CommonAssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="ClientCertificateAuthentication\ClientCertificateAuthenticationExtensions.cs" />
     <Compile Include="ClientCertificateAuthentication\ClientCertificateAuthenticationHandler.cs" />
     <Compile Include="ClientCertificateAuthentication\ClientCertificateAuthenticationMiddleware.cs" />

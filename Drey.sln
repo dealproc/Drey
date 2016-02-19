@@ -27,6 +27,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "!Solution", "!Solution", "{2AB82EBD-B7A8-4DD4-8C9A-E346B781076E}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
+		build.ps1 = build.ps1
+		CommonAssemblyInfo.cs = CommonAssemblyInfo.cs
+		default.ps1 = default.ps1
 		tools\env.ps1 = tools\env.ps1
 		package.proj = package.proj
 		SetVersion.proj = SetVersion.proj

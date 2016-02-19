@@ -54,6 +54,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\CommonAssemblyInfo.cs">
+      <Link>CommonAssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="Controllers\LogsController.cs" />
     <Compile Include="Controllers\NugetUploadController.cs" />
     <Compile Include="Controllers\RecycleClientController.cs" />

@@ -51,6 +51,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\CommonAssemblyInfo.cs">
+      <Link>CommonAssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="AppConfigApplicationSettings.cs" />
     <Compile Include="AppConfigConnectionStrings.cs" />
     <Compile Include="App_Packages\LibLog.4.2\LibLog.cs" />

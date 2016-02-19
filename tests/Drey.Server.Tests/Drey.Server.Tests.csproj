@@ -109,6 +109,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\CommonAssemblyInfo.cs">
+      <Link>CommonAssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="Directors\ListLogsDirectorTests.cs" />
     <Compile Include="Directors\OpenLogFileDirectorTests.cs" />
     <Compile Include="Directors\RecycleClientDirectorTests.cs" />
