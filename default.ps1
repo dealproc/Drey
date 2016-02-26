@@ -19,7 +19,7 @@ task Clean {
 	Remove-Item $artifactsDir -Force -Recurse -ErrorAction SilentlyContinue
 	Remove-Item $reportsDir -Force -Recurse -ErrorAction SilentlyContinue
 
-	exec { msbuild Drey.sln /nologo /verbosity:quiet /p:PlatformTarget=x86 /p:Configuration=$configuration /t:Clean }
+	exec { msbuild Drey.sln /nologo /verbosity:quiet /p:PlatformTarget=AnyCPU /p:Configuration=$configuration /t:Clean }
 }
 
 task UpdateVersion {
@@ -45,7 +45,7 @@ task UpdateVersion {
 }
 
 task Compile {
-	exec { msbuild Drey.sln /nologo /verbosity:quiet /p:PlatformTarget=x86 /p:Configuration=$configuration /p:PackagePath=$artifactsDir /p:Version=$version /t:Rebuild }
+	exec { msbuild Drey.sln /nologo /verbosity:quiet /p:PlatformTarget=AnyCPU /p:Configuration=$configuration /p:PackagePath=$artifactsDir /p:Version=$version /t:Rebuild }
 }
 
 task RunTests {
